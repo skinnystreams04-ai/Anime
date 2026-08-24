@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель - Зал Трофеев</title>
+    <link href="https://fonts.googleapis.com/css2?family=Neucha&display=swap" rel="stylesheet">
+
+    <style>
+        body { margin: 0; padding: 40px; font-family: 'Neucha', cursive, sans-serif; background-color: #050605; color: #a4b09c; min-width: 1200px; }
+        .header-title { color: #a6e3a1; font-size: 32px; text-transform: uppercase; font-weight: bold; text-align: center; margin-bottom: 30px; letter-spacing: 2px; text-shadow: 0 0 15px rgba(166, 227, 161, 0.3); }
+        .layout { display: flex; gap: 30px; align-items: flex-start; }
+        .widget-base { background: linear-gradient(180deg, #101411 0%, #080a08 100%); border: 2px solid #283325; border-radius: 8px; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.8); }
+        .widget-header { background: #0b0d0a; border-bottom: 2px solid #283325; padding: 12px 15px; color: #829c73; font-weight: bold; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; }
+        .widget-content { padding: 20px; display: flex; flex-direction: column; gap: 15px; }
+
+        .col-search { width: 350px; } .col-preview { width: 350px; } .col-edit { flex: 1; }
+
+        .input-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; position: relative; }
+        .input-label { color: #829c73; font-size: 15px; text-transform: uppercase; font-weight: bold; display: flex; justify-content: space-between; align-items: center;}
+        
+        input[type="text"], input[type="number"], input[type="date"], textarea { background: #121612; border: 1px solid #4a5c41; color: #c4d1b8; border-radius: 6px; padding: 10px; font-family: 'Neucha', cursive; font-size: 16px; outline: none; transition: 0.2s; }
+        input:focus, textarea:focus { border-color: #a6e3a1; box-shadow: 0 0 10px rgba(166, 227, 161, 0.2); }
+
+        .autocomplete-dropdown { position: absolute; top: 100%; left: 0; width: 100%; background: #121612; border: 1px solid #4a5c41; border-radius: 6px; z-index: 100; margin-top: 5px; max-height: 350px; overflow-y: auto; display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.8); }
+        .ac-item { display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #283325; cursor: pointer; transition: 0.2s; }
+        .ac-item:hover { background: #1a2618; }
+        .ac-item img { width: 45px; height: 65px; object-fit: cover; border-radius: 4px; border: 1px solid #283325;}
+        .ac-details { display: flex; flex-direction: column; justify-content: center; }
+        .ac-title { color: #c4d1b8; font-weight: bold; font-size: 15px; line-height: 1.2; margin-bottom: 4px; }
+        .ac-year { color: #829c73; font-size: 13px; font-family: sans-serif;}
+
+        .btn { background: #222b20; border: 1px solid #4a5c41; color: #a4b09c; padding: 12px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: 0.2s; text-align: center; }
+        .btn-primary { background: #1a2618; border-color: #a6e3a1; color: #a6e3a1; margin-top: 10px; }
+        .btn-primary:hover { background: #a6e3a1; color: #121612; box-shadow: 0 0 15px rgba(166, 227, 161, 0.4); }
+
+        .preview-cover { width: 100%; border-radius: 6px; border: 1px dashed #4a5c41; aspect-ratio: 2/3; object-fit: cover; background: #0b0d0a; display: flex; justify-content: center; align-items: center; color: #4a5c41;}
+        .preview-title { color: #c4d1b8; font-size: 20px; font-weight: bold; text-align: center; margin-top: 10px; }
+        .preview-tags { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; margin-top: 10px; }
+        .tag { background: #121612; border: 1px solid #283325; color: #829c73; font-size: 12px; padding: 2px 6px; border-radius: 4px; }
+
+        .switch { position: relative; display: inline-block; width: 44px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider-switch { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #121612; transition: .3s; border-radius: 22px; border: 1px solid #4a5c41; }
+        .slider-switch:before { position: absolute; content: ""; height: 14px; width: 14px; left: 3px; bottom: 3px; background-color: #4a5c41; transition: .3s; border-radius: 50%; }
+        input:checked + .slider-switch { background-color: #1a2618; border-color: #a6e3a1; }
+        input:checked + .slider-switch:before { transform: translateX(22px); background-color: #a6e3a1; box-shadow: 0 0 5px rgba(166,227,161,0.5); }
+
+        .disabled-block { opacity: 0.3; pointer-events: none; filter: grayscale(100%); transition: 0.3s; }
+
+        .slider-group { margin-bottom: 12px; }
+        .slider-header { display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 5px; color: #c4d1b8; font-weight: bold;}
+        input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: #121612; border-radius: 3px; border: 1px solid #283325; }
+        input[type=range]::-webkit-slider-thumb { height: 18px; width: 18px; border-radius: 50%; background: #a6e3a1; cursor: pointer; -webkit-appearance: none; margin-top: -7px; box-shadow: 0 0 10px rgba(166, 227, 161, 0.5); }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        #toast { position: fixed; bottom: 30px; right: 30px; background: #a6e3a1; color: #121612; padding: 15px 25px; border-radius: 8px; font-weight: bold; font-size: 18px; box-shadow: 0 5px 20px rgba(166, 227, 161, 0.4); transform: translateY(100px); opacity: 0; transition: 0.3s; z-index: 1000; }
+        #toast.show { transform: translateY(0); opacity: 1; }
+    </style>
+</head>
+<body>
+
+    <div class="header-title">Терминал Управления: Зал Трофеев</div>
+
+    <div class="layout">
+        <div class="col-search">
+            <div class="widget-base">
+                <div class="widget-header">1. Поиск и Структура</div>
+                <div class="widget-content">
+                    <div class="input-group">
+                        <span class="input-label">Начни печатать название:</span>
+                        <input type="text" id="search-query" placeholder="Например: Cyberpunk" oninput="liveSearch()" autocomplete="off">
+                        <div id="autocomplete-results" class="autocomplete-dropdown"></div>
+                    </div>
+                    
+                    <div style="border-top: 1px dashed #283325; margin: 10px 0;"></div>
+                    
+                    <div class="input-group">
+                        <span class="input-label" style="color:#cba6f7;">Папка Франшизы (Напр: Beastars)</span>
+                        <input type="text" id="db-franchise" placeholder="Общее название для всех сезонов" style="border-color: #cba6f7;">
+                    </div>
+
+                    <div class="input-group">
+                        <span class="input-label" style="color:#a6e3a1;">Название Вкладки/Сезона</span>
+                        <input type="text" id="season-name" value="1 Сезон" style="border-color: #a6e3a1;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-preview">
+            <div class="widget-base" style="height: 100%;">
+                <div class="widget-header">2. Подтянутые данные</div>
+                <div class="widget-content" style="align-items: center;">
+                    <img id="preview-img" class="preview-cover" src="" alt="Постер не загружен" onerror="this.style.display='none';">
+                    <div id="preview-no-img" class="preview-cover" style="display:flex;">Ожидание...</div>
+                    <div id="preview-title" class="preview-title">Название</div>
+                    <div class="preview-tags" id="preview-genres"><div class="tag">Жанр</div></div>
+                    <input type="hidden" id="db-img-url"><input type="hidden" id="db-studio"><input type="hidden" id="db-year"><input type="hidden" id="db-format"><input type="hidden" id="db-rating"><input type="hidden" id="db-desc">
+                </div>
+            </div>
+        </div>
+
+        <div class="col-edit">
+            <div class="widget-base">
+                <div class="widget-header">3. Твоя оценка и коррекция</div>
+                <div class="widget-content">
+                    <div class="form-grid">
+                        <div class="input-group"><span class="input-label">Всего серий вышло</span><input type="number" id="ep-total" placeholder="Из АПИ"></div>
+                        <div class="input-group"><span class="input-label">Серий просмотрено</span><input type="number" id="ep-watched" value="0"></div>
+                        <div class="input-group"><span class="input-label">Дата просмотра</span><input type="date" id="watch-date"></div>
+                        <div class="input-group">
+                            <div class="input-label"><span style="color: #a6e3a1;">Общее впечатление</span><label class="switch"><input type="checkbox" id="toggle-overall" onchange="toggleBlock('score-overall', this.checked)"><span class="slider-switch"></span></label></div>
+                            <input type="number" id="score-overall" class="disabled-block" min="1" max="10" placeholder="Оценка (1-10)" disabled>
+                        </div>
+                    </div>
+
+                    <div style="border-top: 1px dashed #283325; margin: 15px 0;"></div>
+                    
+                    <div class="input-label" style="margin-bottom: 10px;">
+                        <span>Оценка по критериям:</span>
+                        <label class="switch"><input type="checkbox" id="toggle-theory" onchange="toggleBlock('theory-block', this.checked)"><span class="slider-switch"></span></label>
+                    </div>
+                    
+                    <div class="form-grid disabled-block" id="theory-block">
+                        <!-- МИНИМАЛЬНОЕ ЗНАЧЕНИЕ ИЗМЕНЕНО НА 1 -->
+                        <div class="slider-group"><div class="slider-header"><span>Сюжет</span><span id="v-plot">5</span></div><input type="range" id="sl-plot" min="1" max="10" value="5" oninput="document.getElementById('v-plot').innerText=this.value"></div>
+                        <div class="slider-group"><div class="slider-header"><span>Визуал</span><span id="v-vis">5</span></div><input type="range" id="sl-vis" min="1" max="10" value="5" oninput="document.getElementById('v-vis').innerText=this.value"></div>
+                        <div class="slider-group"><div class="slider-header"><span>Музыка</span><span id="v-mus">5</span></div><input type="range" id="sl-mus" min="1" max="10" value="5" oninput="document.getElementById('v-mus').innerText=this.value"></div>
+                        <div class="slider-group"><div class="slider-header"><span>Мир</span><span id="v-wor">5</span></div><input type="range" id="sl-wor" min="1" max="10" value="5" oninput="document.getElementById('v-wor').innerText=this.value"></div>
+                        <div class="slider-group"><div class="slider-header"><span>Атмосфера</span><span id="v-atm">5</span></div><input type="range" id="sl-atm" min="1" max="10" value="5" oninput="document.getElementById('v-atm').innerText=this.value"></div>
+                    </div>
+
+                    <button class="btn btn-primary" onclick="saveToDatabase()">Сохранить в базу</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="toast">✅ Сезон успешно отправлен в базу!</div>
+
+    <script>
+        // СЛОВАРЬ ПЕРЕВОДА ЖАНРОВ
+        const genreDict = {
+            "Action": "Экшен", "Adventure": "Приключения", "Comedy": "Комедия", "Drama": "Драма", 
+            "Ecchi": "Этти", "Fantasy": "Фэнтези", "Horror": "Ужасы", "Mahou Shoujo": "Махо-сёдзё", 
+            "Mecha": "Меха", "Music": "Музыка", "Mystery": "Детектив", "Psychological": "Психологическое", 
+            "Romance": "Романтика", "Sci-Fi": "Фантастика", "Slice of Life": "Повседневность", 
+            "Sports": "Спорт", "Supernatural": "Сверхъестественное", "Thriller": "Триллер"
+        };
+
+        function toggleBlock(blockId, isChecked) {
+            const block = document.getElementById(blockId);
+            if(isChecked) { block.classList.remove('disabled-block'); if(block.tagName === 'INPUT') block.disabled = false; } 
+            else { block.classList.add('disabled-block'); if(block.tagName === 'INPUT') { block.disabled = true; block.value = ''; } }
+        }
+
+        let typingTimer; const dropdown = document.getElementById('autocomplete-results');
+        document.addEventListener('click', (e) => { if (!document.getElementById('search-query').contains(e.target) && !dropdown.contains(e.target)) { dropdown.style.display = 'none'; } });
+
+        async function liveSearch() {
+            const query = document.getElementById('search-query').value;
+            clearTimeout(typingTimer);
+            if(query.length < 3) { dropdown.style.display = 'none'; return; }
+
+            typingTimer = setTimeout(async () => {
+                const gql = `query ($search: String) { Page(page:1, perPage:6) { media(search: $search, type: ANIME, sort: SEARCH_MATCH) { id title { english romaji } coverImage { medium } seasonYear format } } }`;
+                try {
+                    const res = await fetch('https://graphql.anilist.co', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: gql, variables: { search: query } }) });
+                    const json = await res.json();
+                    const animes = json.data.Page.media;
+                    if(animes.length > 0) {
+                        dropdown.innerHTML = animes.map(a => {
+                            const title = a.title.english || a.title.romaji; const year = a.seasonYear || "TBA"; const format = a.format ? a.format.replace('_', ' ') : "TV";
+                            return `<div class="ac-item" onclick="fetchFullAnimeDetails(${a.id}, '${title.replace(/'/g, "\\'")}')"><img src="${a.coverImage.medium}"><div class="ac-details"><div class="ac-title">${title}</div><div class="ac-year">${format} • ${year}</div></div></div>`;
+                        }).join('');
+                        dropdown.style.display = 'block';
+                    } else { dropdown.style.display = 'none'; }
+                } catch(e) { console.error(e); }
+            }, 500);
+        }
+
+        async function fetchFullAnimeDetails(animeId, animeTitle) {
+            dropdown.style.display = 'none'; document.getElementById('search-query').value = animeTitle; document.getElementById('preview-no-img').innerText = "Загрузка...";
+            const safeFranchiseName = animeTitle.replace(/[:.#$\[\]]/g, "").trim();
+            document.getElementById('db-franchise').value = safeFranchiseName;
+
+            const gql = `query ($id: Int) { Media (id: $id, type: ANIME) { title { english romaji } coverImage { extraLarge } studios(isMain: true) { nodes { name } } seasonYear format episodes description genres isAdult } }`;
+            try {
+                const res = await fetch('https://graphql.anilist.co', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ query: gql, variables: { id: animeId } }) });
+                const json = await res.json();
+                const anime = json.data.Media;
+
+                const imgUrl = anime.coverImage.extraLarge;
+                document.getElementById('preview-no-img').style.display = 'none'; document.getElementById('preview-img').style.display = 'block';
+                document.getElementById('preview-img').src = imgUrl; document.getElementById('preview-title').innerText = anime.title.english || anime.title.romaji;
+
+                // ПЕРЕВОД ЖАНРОВ
+                let genresHtml = ""; 
+                if(anime.genres) {
+                    anime.genres.forEach(g => { 
+                        const ruG = genreDict[g] || g; // Берем из словаря, если нет - оставляем оригинал
+                        genresHtml += `<div class="tag">${ruG}</div>`; 
+                    });
+                }
+                document.getElementById('preview-genres').innerHTML = genresHtml;
+
+                document.getElementById('db-img-url').value = imgUrl;
+                document.getElementById('db-studio').value = anime.studios && anime.studios.nodes.length > 0 ? anime.studios.nodes[0].name : "Неизвестно";
+                document.getElementById('db-year').value = anime.seasonYear || "ТБА";
+                document.getElementById('db-format').value = anime.format ? anime.format.replace('_', ' ') : "TV";
+                document.getElementById('db-rating').value = anime.isAdult ? "18+" : "13+";
+                
+                let desc = anime.description || "Описания нет."; desc = desc.replace(/<[^>]*>?/gm, ''); 
+                document.getElementById('db-desc').value = "Переводим на русский язык...";
+
+                try {
+                    const transUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ru&dt=t&q=${encodeURIComponent(desc)}`;
+                    const transRes = await fetch(transUrl); const transData = await transRes.json();
+                    let ruDesc = ""; if (transData && transData[0]) { transData[0].forEach(chunk => { ruDesc += chunk[0]; }); }
+                    document.getElementById('db-desc').value = ruDesc;
+                } catch(e) { document.getElementById('db-desc').value = desc; }
+
+                let totalEp = anime.episodes || 1; document.getElementById('ep-total').value = totalEp; document.getElementById('ep-watched').value = 0;
+            } catch(e) { console.error(e); }
+        }
+
+        async function saveToDatabase() {
+            const btn = document.querySelector('.btn-primary'); btn.innerText = "Отправка..."; btn.style.pointerEvents = "none";
+            const isOverallRated = document.getElementById('toggle-overall').checked;
+            const isTheoryRated = document.getElementById('toggle-theory').checked;
+            const genreTags = Array.from(document.getElementById('preview-genres').children).map(el => el.innerText);
+
+            let franchiseKey = document.getElementById('db-franchise').value.trim();
+            let seasonKey = document.getElementById('season-name').value.trim();
+            franchiseKey = franchiseKey.replace(/[.#$\[\]]/g, "_"); seasonKey = seasonKey.replace(/[.#$\[\]]/g, "_");
+
+            if(!franchiseKey || !seasonKey) {
+                alert("Укажите Франшизу и Сезон!"); btn.innerText = "Сохранить в базу"; btn.style.pointerEvents = "auto"; return;
+            }
+
+            const animeData = {
+                title: document.getElementById('preview-title').innerText, seasonTab: seasonKey, coverUrl: document.getElementById('db-img-url').value,
+                info: {
+                    studio: document.getElementById('db-studio').value, year: document.getElementById('db-year').value,
+                    format: document.getElementById('db-format').value, rating: document.getElementById('db-rating').value,
+                    episodesTotal: document.getElementById('ep-total').value, episodesWatched: document.getElementById('ep-watched').value,
+                    dateWatched: document.getElementById('watch-date').value, description: document.getElementById('db-desc').value, genres: genreTags
+                },
+                scores: {
+                    overall: isOverallRated ? parseFloat(document.getElementById('score-overall').value) || 0 : 0,
+                    theory: isTheoryRated ? {
+                        plot: parseFloat(document.getElementById('sl-plot').value) || 1, visuals: parseFloat(document.getElementById('sl-vis').value) || 1,
+                        music: parseFloat(document.getElementById('sl-mus').value) || 1, world: parseFloat(document.getElementById('sl-wor').value) || 1, atmosphere: parseFloat(document.getElementById('sl-atm').value) || 1
+                    } : { plot: 0, visuals: 0, music: 0, world: 0, atmosphere: 0 }
+                }, addedAt: Date.now() 
+            };
+
+            const dbUrl = `https://skinwalkerauction-default-rtdb.europe-west1.firebasedatabase.app/anime_db/${franchiseKey}/${seasonKey}.json`;
+
+            try {
+                const response = await fetch(dbUrl, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(animeData) });
+                if (response.ok) {
+                    const toast = document.getElementById('toast'); toast.classList.add('show'); setTimeout(() => { toast.classList.remove('show'); }, 3000);
+                    btn.innerText = "Сохранить в базу"; btn.style.pointerEvents = "auto";
+                } else { alert("Ошибка сохранения!"); btn.innerText = "Ошибка"; }
+            } catch(e) { alert("Ошибка подключения!"); btn.innerText = "Сохранить в базу"; btn.style.pointerEvents = "auto"; }
+        }
+    </script>
+</body>
+</html>
