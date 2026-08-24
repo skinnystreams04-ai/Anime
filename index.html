@@ -11,12 +11,11 @@
         body { margin: 0; padding: 0 0 40px 0; font-family: 'Neucha', cursive, sans-serif; background-color: #050605; color: #a4b09c; min-height: 100vh; overflow-x: hidden;}
 
         .top-nav { background: #0b0d0a; border-bottom: 2px solid #283325; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
-        .nav-logo { color: #a6e3a1; font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; }
-        .nav-links { display: flex; gap: 20px; align-items: center; }
-        .nav-links a { color: #829c73; text-decoration: none; font-size: 18px; text-transform: uppercase; font-weight: bold; transition: 0.2s; }
-        .nav-links a:hover, .nav-links a.active { color: #a6e3a1; text-shadow: 0 0 10px rgba(166, 227, 161, 0.4); }
         
-        /* СТИЛИ АВТОРИЗАЦИИ */
+        /* ЛОГОТИП ТЕПЕРЬ КНОПКА "ГЛАВНАЯ" */
+        .nav-logo { color: #a6e3a1; font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; transition: 0.2s; cursor: pointer; }
+        .nav-logo:hover { filter: brightness(1.2); text-shadow: 0 0 15px rgba(166, 227, 161, 0.5); }
+        
         .nav-auth .twitch-btn { background: #6441a5; color: white; padding: 8px 16px; border-radius: 6px; font-family: sans-serif; font-size: 14px; font-weight: bold; cursor: pointer; border: 1px solid #4a307a; transition: 0.2s; }
         .nav-auth .twitch-btn:hover { background: #7d5bbe; box-shadow: 0 0 15px rgba(100, 65, 165, 0.6); }
         .user-profile { display: flex; align-items: center; gap: 12px; color: #c4d1b8; font-weight: bold; font-family: sans-serif; font-size: 15px; background: rgba(14, 17, 13, 0.8); padding: 4px 15px 4px 4px; border-radius: 20px; border: 1px solid #283325;}
@@ -83,7 +82,6 @@
         
         .loading { font-size: 24px; color: #829c73; text-align: center; margin-top: 50px; width: 100%; }
         
-        /* КНОПКА АДМИНА ТЕПЕРЬ ПО УМОЛЧАНИЮ СКРЫТА */
         .secret-admin-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 40px; height: 40px; background: rgba(11, 13, 10, 0.3); border: 1px solid #283325; color: #4a5c41; border-radius: 50%; justify-content: center; align-items: center; cursor: pointer; z-index: 9999; transition: 0.3s; opacity: 0.2; font-size: 18px; }
         .secret-admin-btn:hover { opacity: 1; background: #1a2618; color: #a6e3a1; border-color: #a6e3a1; box-shadow: 0 0 10px rgba(166,227,161,0.3); }
     </style>
@@ -91,9 +89,9 @@
 <body>
 
     <nav class="top-nav">
-        <div class="nav-logo">Skinwalker Аниме</div>
-        <div class="nav-links"><a href="Anime.html" class="active">Главная</a></div>
-        <!-- ПАНЕЛЬ АВТОРИЗАЦИИ ТВИЧА -->
+        <!-- ЛОГОТИП КНОПКА -->
+        <a href="index.html" class="nav-logo">Skinwalker Аниме</a>
+        
         <div class="nav-auth" id="nav-auth">
             <button class="twitch-btn" onclick="loginTwitch()">Войти через Twitch</button>
         </div>
@@ -117,17 +115,12 @@
 
     <div id="trophy-room" class="trophy-room"><div class="loading">Синхронизация с базой...</div></div>
     
-    <!-- СКРЫТАЯ КНОПКА АДМИНА -->
     <div class="secret-admin-btn" id="admin-btn" onclick="window.location.href='admin.html'" title="Панель управления">⚙️</div>
 
     <script>
-        // --- ДАННЫЕ ДЛЯ TWITCH АВТОРИЗАЦИИ ---
         const TWITCH_CLIENT_ID = 'gko3y2nhxg0ocvte0ru970pbau3eiq';
-        const REDIRECT_URI = 'https://skinnystreams04-ai.github.io/Anime/'; // <-- Вот тут убрали Anime.html
-        
-        // ВАЖНО: ВПИШИ СЮДА СВОЙ ТОЧНЫЙ НИКНЕЙМ НА ТВИЧЕ (МАЛЕНЬКИМИ БУКВАМИ)
-        const ADMIN_USERNAME = 'skinwalker_nozxc'; 
-        // --------------------------------------
+        const REDIRECT_URI = 'https://skinnystreams04-ai.github.io/Anime/';
+        const ADMIN_USERNAME = 'skinnystreams04'; 
 
         const dbUrl = "https://skinwalkerauction-default-rtdb.europe-west1.firebasedatabase.app/anime_db.json";
         Chart.defaults.font.family = "'Neucha', cursive, sans-serif"; Chart.defaults.color = "#829c73";
@@ -142,7 +135,6 @@
         let globalFranchises = []; 
         let currentSortDir = 'desc'; 
 
-        // --- ЛОГИКА АВТОРИЗАЦИИ TWITCH ---
         function loginTwitch() {
             const authUrl = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=`;
             window.location.href = authUrl;
@@ -157,33 +149,24 @@
             const hash = window.location.hash;
             let token = localStorage.getItem('twitch_token');
 
-            // Ловим токен, если только что вернулись с Твича
             if (hash && hash.includes('access_token')) {
                 const params = new URLSearchParams(hash.substring(1));
                 token = params.get('access_token');
                 localStorage.setItem('twitch_token', token);
-                window.history.replaceState(null, null, window.location.pathname); // Очищаем URL от хэша
+                window.history.replaceState(null, null, window.location.pathname); 
             }
 
-            // Если токен есть - запрашиваем профиль
             if (token) {
                 try {
                     const res = await fetch('https://api.twitch.tv/helix/users', {
-                        headers: {
-                            'Client-ID': TWITCH_CLIENT_ID,
-                            'Authorization': `Bearer ${token}`
-                        }
+                        headers: { 'Client-ID': TWITCH_CLIENT_ID, 'Authorization': `Bearer ${token}` }
                     });
                     
-                    if (res.status === 401) {
-                        localStorage.removeItem('twitch_token'); // Токен протух
-                        return;
-                    }
+                    if (res.status === 401) { localStorage.removeItem('twitch_token'); return; }
 
                     const data = await res.json();
                     const user = data.data[0];
                     
-                    // Обновляем панель в шапке
                     document.getElementById('nav-auth').innerHTML = `
                         <div class="user-profile">
                             <img src="${user.profile_image_url}" alt="Avatar">
@@ -192,7 +175,6 @@
                         </div>
                     `;
 
-                    // Показываем кнопку админки только владельцу!
                     if (user.login.toLowerCase() === ADMIN_USERNAME.toLowerCase()) {
                         document.getElementById('admin-btn').style.display = 'flex';
                     }
@@ -200,9 +182,7 @@
                 } catch (e) { console.error('Ошибка авторизации Twitch', e); }
             }
         }
-        // Запускаем проверку при загрузке страницы
         checkTwitchAuth();
-        // ---------------------------------
 
         function getScoreColor(score) {
             const numScore = Number(score);
