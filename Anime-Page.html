@@ -37,9 +37,7 @@
         .info-row { display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 8px; border-bottom: 1px dashed #283325; padding-bottom: 4px; }
         .info-label { color: #829c73; } .info-val { color: #c4d1b8; font-weight: bold; text-align: right; }
         
-        .synopsis-text { font-size: 15px; line-height: 1.5; color: #c4d1b8; text-align: justify; max-height: 250px; overflow-y: auto; padding-right: 5px; }
-        .synopsis-text::-webkit-scrollbar { width: 4px; }
-        .synopsis-text::-webkit-scrollbar-thumb { background: #4a5c41; border-radius: 4px; }
+        .synopsis-text { font-size: 16px; line-height: 1.5; color: #c4d1b8; text-align: justify; }
 
         .player-nav { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
         .season-tabs { display: flex; gap: 10px; border-bottom: 2px solid #283325; padding-bottom: 10px; }
@@ -48,8 +46,8 @@
         .season-btn.active { background: rgba(166, 227, 161, 0.15); border-color: #a6e3a1; color: #a6e3a1; box-shadow: 0 0 10px rgba(166, 227, 161, 0.2); }
         .custom-player { width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: 6px; border: 1px solid #283325; display: flex; justify-content: center; align-items: center; color: #4a5c41; font-size: 24px; }
         
-        /* СТИЛИ ПРЯМОУГОЛЬНЫХ ОЦЕНОК (КАК НА ГЛАВНОЙ) */
-        .scores-row { display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 20px; gap: 10px; }
+        /* Прямоугольники итоговой оценки */
+        .scores-row { display: flex; justify-content: space-between; align-items: stretch; gap: 10px; }
         .score-box { display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(14, 17, 13, 0.35); border: 1px solid rgba(74, 92, 65, 0.3); padding: 12px 5px; border-radius: 8px; flex: 1; backdrop-filter: blur(4px); box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer; transition: 0.2s; }
         .score-box:hover { background: rgba(255,255,255,0.05); transform: translateY(-2px); }
         .score-label { width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; margin-bottom: 6px; font-size: 13px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; text-shadow: 1px 1px 2px #000; text-align: center; }
@@ -61,16 +59,21 @@
 
         .chart-wrapper { width: 100%; height: 240px; margin-bottom: 10px; }
         
-        .interactive-legend { display: flex; justify-content: space-between; gap: 10px; background: rgba(14, 17, 13, 0.8); border: 1px solid #283325; border-radius: 8px; padding: 10px; margin-bottom: 10px; }
-        .legend-col { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.2s; padding: 10px 8px; border-radius: 6px; flex: 1; }
+        /* Таблица критериев БЕЗ РАМОК И ФОНА */
+        .interactive-legend { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
+        .legend-col { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.2s; padding: 5px; border-radius: 6px; flex: 1; }
         .legend-col:hover { background: rgba(255,255,255,0.05); transform: scale(1.02); }
         .legend-title { display: flex; align-items: center; gap: 5px; font-size: 14px; font-weight: bold; text-transform: uppercase; text-shadow: 1px 1px 2px #000; margin-bottom: 6px;}
-        .legend-score { font-size: 22px; font-weight: bold; padding: 2px 15px; border-radius: 4px; border: 1px solid transparent; text-shadow: 1px 1px 2px #000; margin-bottom: 5px;}
+        .legend-score { font-size: 22px; font-weight: bold; text-shadow: 1px 1px 2px #000; margin-bottom: 5px;}
         .dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid #0b0d0a; }
 
         .legend-breakdown { width: 100%; display: flex; flex-direction: column; gap: 5px; border-top: 1px dashed rgba(74, 92, 65, 0.6); padding-top: 8px; margin-top: 5px;}
         .crit-row { display: flex; justify-content: space-between; font-size: 14px; color: #a4b09c; }
         .crit-row span:last-child { font-weight: bold; text-shadow: 1px 1px 2px #000;}
+
+        /* КНОПКА ОЦЕНИТЬ */
+        .rate-btn { width: 100%; background: rgba(166, 227, 161, 0.1); border: 1px solid #a6e3a1; color: #a6e3a1; padding: 12px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 20px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; margin-top: 15px; box-shadow: 0 0 10px rgba(166, 227, 161, 0.1); }
+        .rate-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 20px rgba(166, 227, 161, 0.5); }
 
         .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b0d0a; z-index: 9999; display: flex; justify-content: center; align-items: center; color: #a6e3a1; font-size: 24px; flex-direction: column; }
     </style>
@@ -88,7 +91,7 @@
 
     <div class="layout" style="display: none;" id="main-layout">
         
-        <!-- ЛЕВАЯ КОЛОНКА (Инфо + Сюжет без виджета) -->
+        <!-- ЛЕВАЯ КОЛОНКА (Только Инфо) -->
         <div class="col-left">
             <div class="widget-base" style="height: 100%;">
                 <div class="widget-header"><div class="widget-title">Информация</div></div>
@@ -102,17 +105,11 @@
                     <div class="info-row"><span class="info-label">Год:</span><span class="info-val" id="year-display">---</span></div>
                     <div class="info-row"><span class="info-label">Просмотрено:</span><span class="info-val" id="ep-display">--- / ---</span></div>
                     <div class="info-row"><span class="info-label">Дата просмотра:</span><span class="info-val" id="date-display">---</span></div>
-
-                    <!-- Описание теперь просто текст с заголовком, без лишних рамок -->
-                    <div style="margin-top: 15px;">
-                        <div style="color: #829c73; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; border-bottom: 1px solid #283325; padding-bottom: 5px;">Описание сюжета</div>
-                        <div class="synopsis-text" id="synopsis-display">Загрузка...</div>
-                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- ЦЕНТРАЛЬНАЯ КОЛОНКА (Плеер + Комментарии) -->
+        <!-- ЦЕНТРАЛЬНАЯ КОЛОНКА (Плеер -> Сюжет -> Комменты) -->
         <div class="col-center">
             <div class="widget-base">
                 <div class="widget-header"><div class="widget-title">Медиатека</div></div>
@@ -122,22 +119,30 @@
                 </div>
             </div>
 
-            <!-- Блок Комментариев (Чистый, без Твич чата) -->
+            <div class="widget-base">
+                <div class="widget-header"><div class="widget-title">Описание сюжета</div></div>
+                <div class="widget-content">
+                    <div class="synopsis-text" id="synopsis-display">Загрузка...</div>
+                </div>
+            </div>
+
             <div class="widget-base" style="flex: 1;">
                 <div class="widget-header"><div class="widget-title">Комментарии</div></div>
-                <div class="widget-content" style="display: flex; justify-content: center; align-items: center; color: #4a5c41; font-size: 18px;">
+                <div class="widget-content" style="display: flex; justify-content: center; align-items: center; color: #4a5c41; font-size: 18px; min-height: 150px;">
                     Здесь скоро появятся отзывы зрителей...
                 </div>
             </div>
         </div>
 
-        <!-- ПРАВАЯ КОЛОНКА (Оценки + Радар в одном стиле) -->
+        <!-- ПРАВАЯ КОЛОНКА (Статистика) -->
         <div class="col-right">
             <div class="widget-base" style="height: 100%;">
                 <div class="widget-header"><div class="widget-title">Статистика</div></div>
                 <div class="widget-content" style="display: flex; flex-direction: column;">
                     
-                    <!-- Конечная оценка в виде прямоугольников -->
+                    <!-- Итоговая оценка -->
+                    <div style="color: #829c73; font-size: 16px; text-transform: uppercase; margin-bottom: 10px; text-align: center; font-weight: bold; letter-spacing: 1px;">Итоговая оценка</div>
+                    
                     <div class="scores-row">
                         <div class="score-box" onmouseover="highlightChart(0)" onmouseout="resetChart()">
                             <div class="score-label streamer">Стример</div>
@@ -153,29 +158,33 @@
                         </div>
                     </div>
 
-                    <!-- Анализ критериев без лишних рамок -->
-                    <div style="margin-top: 5px;">
-                        <div style="color: #829c73; font-size: 16px; text-transform: uppercase; margin-bottom: 15px; text-align: center; border-bottom: 1px dashed #283325; padding-bottom: 5px; font-weight: bold;">Анализ критериев</div>
-                        <div class="chart-wrapper"><canvas id="detailsChart"></canvas></div>
-                        
-                        <div class="interactive-legend">
-                            <div class="legend-col" onmouseover="highlightChart(0)" onmouseout="resetChart()">
-                                <div class="legend-title" style="color: #cba6f7;"><div class="dot" style="background: #cba6f7;"></div>Стример</div>
-                                <div class="legend-score" id="avg-streamer-score">0</div>
-                                <div class="legend-breakdown" id="breakdown-streamer"></div>
-                            </div>
-                            <div class="legend-col" onmouseover="highlightChart(2)" onmouseout="resetChart()">
-                                <div class="legend-title" style="color: #a6e3a1;"><div class="dot" style="background: #a6e3a1;"></div>Я</div>
-                                <div class="legend-score" id="avg-viewer-score" style="color: #6b7a62; border-color: #6b7a62; background: rgba(107, 122, 98, 0.1);">0</div>
-                                <div class="legend-breakdown" id="breakdown-viewer"></div>
-                            </div>
-                            <div class="legend-col" onmouseover="highlightChart(1)" onmouseout="resetChart()">
-                                <div class="legend-title" style="color: #b8a87b;"><div class="dot" style="background: #b8a87b;"></div>Чат</div>
-                                <div class="legend-score" id="avg-chat-score" style="color: #6b7a62; border-color: #6b7a62; background: rgba(107, 122, 98, 0.1);">0</div>
-                                <div class="legend-breakdown" id="breakdown-chat"></div>
-                            </div>
+                    <div style="border-top: 1px dashed #283325; margin: 5px 0 15px 0;"></div>
+
+                    <!-- Анализ критериев -->
+                    <div style="color: #829c73; font-size: 16px; text-transform: uppercase; margin-bottom: 15px; text-align: center; font-weight: bold; letter-spacing: 1px;">Анализ критериев</div>
+                    
+                    <div class="chart-wrapper"><canvas id="detailsChart"></canvas></div>
+                    
+                    <div class="interactive-legend">
+                        <div class="legend-col" onmouseover="highlightChart(0)" onmouseout="resetChart()">
+                            <div class="legend-title" style="color: #cba6f7;"><div class="dot" style="background: #cba6f7;"></div>Стример</div>
+                            <div class="legend-score" id="avg-streamer-score">0</div>
+                            <div class="legend-breakdown" id="breakdown-streamer"></div>
+                        </div>
+                        <div class="legend-col" onmouseover="highlightChart(2)" onmouseout="resetChart()">
+                            <div class="legend-title" style="color: #a6e3a1;"><div class="dot" style="background: #a6e3a1;"></div>Я</div>
+                            <div class="legend-score" id="avg-viewer-score" style="color: #6b7a62;">0</div>
+                            <div class="legend-breakdown" id="breakdown-viewer"></div>
+                        </div>
+                        <div class="legend-col" onmouseover="highlightChart(1)" onmouseout="resetChart()">
+                            <div class="legend-title" style="color: #b8a87b;"><div class="dot" style="background: #b8a87b;"></div>Чат</div>
+                            <div class="legend-score" id="avg-chat-score" style="color: #6b7a62;">0</div>
+                            <div class="legend-breakdown" id="breakdown-chat"></div>
                         </div>
                     </div>
+
+                    <!-- КНОПКА ОЦЕНИТЬ -->
+                    <button class="rate-btn" onclick="alert('Скоро мы прикрутим сюда крутое меню для оценки тайтла!')">Оценить тайтл</button>
 
                 </div>
             </div>
@@ -361,9 +370,6 @@
             const avgEl = document.getElementById('avg-streamer-score');
             avgEl.innerText = avg;
             avgEl.style.color = cAvg;
-            avgEl.style.borderColor = cAvg;
-            avgEl.style.background = cAvg + '1A';
-            avgEl.style.boxShadow = `0 0 10px ${cAvg}40`;
             
             document.getElementById('breakdown-streamer').innerHTML = generateBreakdownHtml(t);
             document.getElementById('breakdown-chat').innerHTML = generateBreakdownHtml(null); 
