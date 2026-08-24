@@ -37,16 +37,6 @@
         .info-row { display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 8px; border-bottom: 1px dashed #283325; padding-bottom: 4px; }
         .info-label { color: #829c73; } .info-val { color: #c4d1b8; font-weight: bold; text-align: right; }
         
-        .imp-block { margin-bottom: 15px; background: rgba(0,0,0,0.3); border-radius: 8px; padding: 15px; border: 1px solid #283325; }
-        .imp-block:last-child { margin-bottom: 0; }
-        .imp-title { color: #829c73; font-size: 18px; text-transform: uppercase; margin-bottom: 15px; text-align: center; border-bottom: 1px solid #283325; padding-bottom: 5px; font-weight: bold;}
-        
-        .imp-score-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-size: 18px; padding: 4px 8px; border-radius: 6px; transition: 0.2s; cursor: pointer; }
-        .imp-score-row:hover { background: rgba(255,255,255,0.05); }
-        .imp-score-row .name { font-weight: bold; text-shadow: 1px 1px 2px #000; }
-        .imp-score-row .val { font-size: 26px; font-weight: bold; display: flex; align-items: center; gap: 5px; justify-content: flex-end; }
-        .imp-score-row .val span { font-size: 14px; color: #829c73; margin-top: 4px; text-shadow: none; }
-
         .synopsis-text { font-size: 15px; line-height: 1.5; color: #c4d1b8; text-align: justify; max-height: 250px; overflow-y: auto; padding-right: 5px; }
         .synopsis-text::-webkit-scrollbar { width: 4px; }
         .synopsis-text::-webkit-scrollbar-thumb { background: #4a5c41; border-radius: 4px; }
@@ -56,8 +46,19 @@
         .season-btn { background: rgba(0,0,0,0.4); border: 1px solid #4a5c41; color: #a4b09c; padding: 6px 16px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; text-transform: uppercase; }
         .season-btn:hover { background: #161a15; color: #c4d1b8; border-color: #829c73; }
         .season-btn.active { background: rgba(166, 227, 161, 0.15); border-color: #a6e3a1; color: #a6e3a1; box-shadow: 0 0 10px rgba(166, 227, 161, 0.2); }
-        .custom-player { width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: 6px; border: 1px solid #283325; display: flex; justify-content: center; align-items: center; color: #4a5c41; font-size: 24px; margin-bottom: 20px; }
+        .custom-player { width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: 6px; border: 1px solid #283325; display: flex; justify-content: center; align-items: center; color: #4a5c41; font-size: 24px; }
         
+        /* СТИЛИ ПРЯМОУГОЛЬНЫХ ОЦЕНОК (КАК НА ГЛАВНОЙ) */
+        .scores-row { display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 20px; gap: 10px; }
+        .score-box { display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(14, 17, 13, 0.35); border: 1px solid rgba(74, 92, 65, 0.3); padding: 12px 5px; border-radius: 8px; flex: 1; backdrop-filter: blur(4px); box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer; transition: 0.2s; }
+        .score-box:hover { background: rgba(255,255,255,0.05); transform: translateY(-2px); }
+        .score-label { width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; margin-bottom: 6px; font-size: 13px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; text-shadow: 1px 1px 2px #000; text-align: center; }
+        .score-label.streamer { color: #cba6f7; border-bottom-color: rgba(203, 166, 247, 0.3); }
+        .score-label.me { color: #a6e3a1; border-bottom-color: rgba(166, 227, 161, 0.3); }
+        .score-label.chat { color: #b8a87b; border-bottom-color: rgba(184, 168, 123, 0.3); }
+        .main-score { font-size: 32px; font-weight: bold; line-height: 1; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 4px #000; text-align: center; }
+        .main-score span { font-size: 14px; color: #c4d1b8; text-shadow: none; }
+
         .chart-wrapper { width: 100%; height: 240px; margin-bottom: 10px; }
         
         .interactive-legend { display: flex; justify-content: space-between; gap: 10px; background: rgba(14, 17, 13, 0.8); border: 1px solid #283325; border-radius: 8px; padding: 10px; margin-bottom: 10px; }
@@ -70,14 +71,6 @@
         .legend-breakdown { width: 100%; display: flex; flex-direction: column; gap: 5px; border-top: 1px dashed rgba(74, 92, 65, 0.6); padding-top: 8px; margin-top: 5px;}
         .crit-row { display: flex; justify-content: space-between; font-size: 14px; color: #a4b09c; }
         .crit-row span:last-child { font-weight: bold; text-shadow: 1px 1px 2px #000;}
-
-        /* СТИЛИ БЛОКА ЧАТА/КОММЕНТОВ */
-        .community-block { display: flex; flex-direction: column; flex: 1; border: 1px solid #283325; border-radius: 8px; overflow: hidden; background: rgba(0,0,0,0.3); }
-        .widget-tab { flex: 1; text-align: center; padding: 12px; color: #829c73; font-weight: bold; font-size: 16px; text-transform: uppercase; cursor: pointer; transition: 0.2s; background: #0b0d0a; border-bottom: 2px solid #283325; }
-        .widget-tab:hover { background: #121612; color: #a6e3a1; }
-        .widget-tab.active { background: rgba(166, 227, 161, 0.1); color: #a6e3a1; border-bottom-color: #a6e3a1; text-shadow: 0 0 10px rgba(166,227,161,0.4);}
-        .widget-tab.disabled { opacity: 0.4; cursor: not-allowed; }
-        .widget-tab.disabled:hover { background: #0b0d0a; color: #829c73; }
 
         .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b0d0a; z-index: 9999; display: flex; justify-content: center; align-items: center; color: #a6e3a1; font-size: 24px; flex-direction: column; }
     </style>
@@ -95,7 +88,7 @@
 
     <div class="layout" style="display: none;" id="main-layout">
         
-        <!-- ЛЕВАЯ КОЛОНКА (Инфо + Сюжет) -->
+        <!-- ЛЕВАЯ КОЛОНКА (Инфо + Сюжет без виджета) -->
         <div class="col-left">
             <div class="widget-base" style="height: 100%;">
                 <div class="widget-header"><div class="widget-title">Информация</div></div>
@@ -110,62 +103,59 @@
                     <div class="info-row"><span class="info-label">Просмотрено:</span><span class="info-val" id="ep-display">--- / ---</span></div>
                     <div class="info-row"><span class="info-label">Дата просмотра:</span><span class="info-val" id="date-display">---</span></div>
 
-                    <!-- Описание переехало сюда -->
-                    <div class="imp-block" style="margin-top: 15px;">
-                        <div class="imp-title">Описание сюжета</div>
+                    <!-- Описание теперь просто текст с заголовком, без лишних рамок -->
+                    <div style="margin-top: 15px;">
+                        <div style="color: #829c73; font-weight: bold; text-transform: uppercase; margin-bottom: 8px; border-bottom: 1px solid #283325; padding-bottom: 5px;">Описание сюжета</div>
                         <div class="synopsis-text" id="synopsis-display">Загрузка...</div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ЦЕНТРАЛЬНАЯ КОЛОНКА (Плеер + Чат/Комменты) -->
+        <!-- ЦЕНТРАЛЬНАЯ КОЛОНКА (Плеер + Комментарии) -->
         <div class="col-center">
-            <div class="widget-base" style="height: 100%;">
+            <div class="widget-base">
                 <div class="widget-header"><div class="widget-title">Медиатека</div></div>
-                <div class="widget-content" style="display: flex; flex-direction: column; gap: 20px;">
-                    <div>
-                        <div class="player-nav"><div class="season-tabs"><button class="season-btn active" id="active-season-tab">1 Сезон</button></div></div>
-                        <div class="custom-player" id="player-view">▶ Плеер ожидает видеоряд</div>
-                    </div>
-                    
-                    <!-- Блок Чата и Комментариев -->
-                    <div class="community-block">
-                        <div style="display: flex; background: #0b0d0a; border-bottom: 2px solid #283325;">
-                            <div class="widget-tab active">Twitch Чат</div>
-                            <div class="widget-tab disabled" title="В разработке">Комментарии (Скоро)</div>
-                        </div>
-                        <div style="height: 350px; background: #0b0d0a;">
-                            <iframe src="https://www.twitch.tv/embed/skinnystreams04/chat?parent=skinnystreams04-ai.github.io&darkpopout" frameborder="0" scrolling="no" height="100%" width="100%"></iframe>
-                        </div>
-                    </div>
+                <div class="widget-content">
+                    <div class="player-nav"><div class="season-tabs"><button class="season-btn active" id="active-season-tab">1 Сезон</button></div></div>
+                    <div class="custom-player" id="player-view">▶ Плеер ожидает видеоряд</div>
+                </div>
+            </div>
+
+            <!-- Блок Комментариев (Чистый, без Твич чата) -->
+            <div class="widget-base" style="flex: 1;">
+                <div class="widget-header"><div class="widget-title">Комментарии</div></div>
+                <div class="widget-content" style="display: flex; justify-content: center; align-items: center; color: #4a5c41; font-size: 18px;">
+                    Здесь скоро появятся отзывы зрителей...
                 </div>
             </div>
         </div>
 
-        <!-- ПРАВАЯ КОЛОНКА (Оценки + Радар) -->
+        <!-- ПРАВАЯ КОЛОНКА (Оценки + Радар в одном стиле) -->
         <div class="col-right">
             <div class="widget-base" style="height: 100%;">
                 <div class="widget-header"><div class="widget-title">Статистика</div></div>
                 <div class="widget-content" style="display: flex; flex-direction: column;">
                     
-                    <!-- Конечная оценка -->
-                    <div class="imp-block">
-                        <div class="imp-title">Конечная оценка</div>
-                        <div class="imp-score-row" onmouseover="highlightChart(0)" onmouseout="resetChart()">
-                            <div class="name" style="color: #cba6f7;">Стример</div><div class="val" id="streamer-score-val">0<span>/10</span></div>
+                    <!-- Конечная оценка в виде прямоугольников -->
+                    <div class="scores-row">
+                        <div class="score-box" onmouseover="highlightChart(0)" onmouseout="resetChart()">
+                            <div class="score-label streamer">Стример</div>
+                            <div class="main-score" id="streamer-score-val">0<span>/10</span></div>
                         </div>
-                        <div class="imp-score-row" onmouseover="highlightChart(2)" onmouseout="resetChart()">
-                            <div class="name" style="color: #a6e3a1;">Моя</div><div class="val" id="my-score-display" style="color: #6b7a62;">0<span>/10</span></div>
+                        <div class="score-box" onmouseover="highlightChart(2)" onmouseout="resetChart()">
+                            <div class="score-label me">Моя</div>
+                            <div class="main-score" id="my-score-display" style="color: #6b7a62;">0<span>/10</span></div>
                         </div>
-                        <div class="imp-score-row" onmouseover="highlightChart(1)" onmouseout="resetChart()">
-                            <div class="name" style="color: #b8a87b;">Чат</div><div class="val" id="chat-score-val" style="color: #6b7a62;">0<span>/10</span></div>
+                        <div class="score-box" onmouseover="highlightChart(1)" onmouseout="resetChart()">
+                            <div class="score-label chat">Чат</div>
+                            <div class="main-score" id="chat-score-val" style="color: #6b7a62;">0<span>/10</span></div>
                         </div>
                     </div>
 
-                    <!-- Анализ критериев -->
-                    <div class="imp-block">
-                        <div class="imp-title">Анализ критериев</div>
+                    <!-- Анализ критериев без лишних рамок -->
+                    <div style="margin-top: 5px;">
+                        <div style="color: #829c73; font-size: 16px; text-transform: uppercase; margin-bottom: 15px; text-align: center; border-bottom: 1px dashed #283325; padding-bottom: 5px; font-weight: bold;">Анализ критериев</div>
                         <div class="chart-wrapper"><canvas id="detailsChart"></canvas></div>
                         
                         <div class="interactive-legend">
@@ -359,7 +349,6 @@
             const elOverall = document.getElementById('streamer-score-val');
             elOverall.innerHTML = `${overall}<span>/10</span>`;
             elOverall.style.color = cOverall;
-            elOverall.style.textShadow = `0 0 15px ${cOverall}66, 2px 2px 4px #000`;
             
             const t = anime.scores.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
             radarChart.data.datasets[0].data = [t.plot, t.visuals, t.music, t.world, t.atmosphere];
