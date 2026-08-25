@@ -73,50 +73,48 @@
         .rate-btn { width: 100%; background: rgba(166, 227, 161, 0.1); border: 1px solid #a6e3a1; color: #a6e3a1; padding: 12px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 20px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; margin-top: 15px; box-shadow: 0 0 10px rgba(166, 227, 161, 0.1); }
         .rate-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 20px rgba(166, 227, 161, 0.5); }
 
-        /* === ОБНОВЛЕННЫЕ СТИЛИ КОММЕНТАРИЕВ === */
-        .comment-input-area { background: rgba(0,0,0,0.3); border: 1px solid #283325; border-radius: 8px; padding: 20px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
-        .comment-textarea { width: 100%; background: #121612; border: 1px solid #4a5c41; color: #c4d1b8; border-radius: 6px; padding: 12px; font-family: 'Neucha', cursive; font-size: 16px; outline: none; transition: 0.2s; resize: vertical; min-height: 80px; box-sizing: border-box; }
-        .comment-textarea:focus { border-color: #a6e3a1; box-shadow: 0 0 10px rgba(166, 227, 161, 0.2); }
-        .send-btn { align-self: flex-end; background: #1a2618; border: 1px solid #a6e3a1; color: #a6e3a1; padding: 10px 25px; font-family: 'Neucha', cursive; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px;}
+        /* === НОВЫЙ ДИЗАЙН КОММЕНТАРИЕВ (СТИЛЬ РЗТ) === */
+        .comment-input-area { background: rgba(0,0,0,0.3); border: 1px solid #283325; border-radius: 12px; padding: 25px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
+        .comment-textarea { width: 100%; background: #121612; border: 1px solid #4a5c41; color: #c4d1b8; border-radius: 8px; padding: 15px; font-family: 'Neucha', cursive; font-size: 18px; outline: none; transition: 0.2s; resize: vertical; min-height: 100px; box-sizing: border-box; }
+        .comment-textarea:focus { border-color: #a6e3a1; box-shadow: 0 0 15px rgba(166, 227, 161, 0.2); }
+        .send-btn { align-self: flex-end; background: #1a2618; border: 1px solid #a6e3a1; color: #a6e3a1; padding: 10px 30px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px;}
         .send-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 15px rgba(166, 227, 161, 0.4); }
         
-        .comments-list { display: flex; flex-direction: column; gap: 20px; }
-        .comment-wrapper { display: flex; flex-direction: column; gap: 10px; }
+        .comments-list { display: flex; flex-direction: column; gap: 25px; }
+        .comment-wrapper { display: flex; flex-direction: column; gap: 15px; }
         
-        /* Сам комментарий (Флекс-контейнер для всего) */
-        .comment-item { display: flex; gap: 15px; background: rgba(14, 17, 13, 0.4); padding: 20px; border-radius: 10px; border: 1px solid #283325; align-items: flex-start; }
-        .comment-avatar { width: 48px; height: 48px; border-radius: 50%; border: 2px solid #4a5c41; flex-shrink: 0; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .comment-item { display: flex; flex-direction: column; background: rgba(14, 17, 13, 0.4); padding: 25px; border-radius: 12px; border: 1px solid #283325; }
         
-        /* Блок с текстом и автором */
-        .comment-body { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-        .author-info { display: flex; align-items: baseline; gap: 10px; margin-bottom: 8px; flex-wrap: wrap; }
-        .comment-author { font-family: sans-serif; font-weight: bold; color: #a6e3a1; font-size: 16px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
-        .comment-date { font-size: 13px; color: #6b7a62; }
+        /* ШАПКА: Аватарка + Ник (слева) и Оценки (справа) */
+        .comment-top { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid #283325; padding-bottom: 15px; margin-bottom: 15px; }
+        .comment-author-block { display: flex; align-items: center; gap: 15px; }
+        .comment-avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #4a5c41; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .comment-author { font-family: sans-serif; font-weight: bold; color: #a6e3a1; font-size: 18px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
         
-        .comment-text { font-size: 16px; color: #c4d1b8; line-height: 1.5; word-break: break-word; white-space: pre-wrap; margin-bottom: 10px; }
-        
-        /* Кнопки под комментарием */
-        .comment-actions { display: flex; gap: 15px; align-items: center; }
-        .comment-actions button { background: transparent; border: none; cursor: pointer; font-family: 'Neucha', cursive; font-size: 13px; text-transform: uppercase; transition: 0.2s; padding: 0; font-weight: bold; letter-spacing: 1px; }
-        .btn-reply { color: #a4b09c; } .btn-reply:hover { color: #a6e3a1; }
-        .btn-edit { color: #829c73; } .btn-edit:hover { color: #cba6f7; }
-        .btn-del { color: #ff5555; } .btn-del:hover { text-shadow: 0 0 5px rgba(255,85,85,0.5); }
-
-        /* ОЦЕНКИ В КОММЕНТАРИЯХ (СТИЛЬ РЗТ) - ПЛАШКА СПРАВА */
-        .comment-rating-badge { background: linear-gradient(180deg, #101411 0%, #080a08 100%); border: 1px solid #283325; border-radius: 8px; padding: 12px 15px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-width: 100px; box-shadow: 0 5px 15px rgba(0,0,0,0.5); flex-shrink: 0; margin-left: 10px; }
-        .cr-overall { font-size: 34px; font-weight: bold; line-height: 1; text-shadow: 1px 1px 3px #000; font-family: sans-serif; letter-spacing: -1px; }
-        .cr-theory { display: flex; gap: 8px; font-family: sans-serif; font-size: 14px; font-weight: bold; margin-top: 10px; border-top: 1px dashed #283325; padding-top: 10px; width: 100%; justify-content: center; }
-        
+        /* ОЦЕНКИ В ШАПКЕ */
+        .comment-rating-block { display: flex; flex-direction: column; align-items: flex-end; }
+        .cr-overall { font-size: 36px; font-weight: bold; line-height: 1; text-shadow: 1px 1px 3px #000; font-family: sans-serif; letter-spacing: -1px; }
+        .cr-theory { display: flex; gap: 8px; font-family: sans-serif; font-size: 15px; font-weight: bold; margin-top: 8px; }
         .cr-theory span { position: relative; cursor: help; text-shadow: 1px 1px 1px #000; transition: transform 0.2s; padding: 2px; }
         .cr-theory span:hover { transform: scale(1.2); z-index: 10; }
         .cr-theory span::after { content: attr(data-title); position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%); background: #121612; color: #c4d1b8; padding: 6px 10px; border-radius: 6px; font-size: 13px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s; border: 1px solid #4a5c41; font-weight: normal; font-family: 'Neucha', cursive; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0,0,0,0.5);}
         .cr-theory span:hover::after { opacity: 1; }
+        
+        /* ТЕКСТ И ПОДВАЛ */
+        .comment-text { font-size: 18px; color: #c4d1b8; line-height: 1.6; word-break: break-word; white-space: pre-wrap; margin-bottom: 20px; }
+        .comment-bottom { display: flex; flex-direction: column; gap: 12px; border-top: 1px dashed #283325; padding-top: 15px; }
+        .comment-date { font-size: 13px; color: #6b7a62; font-family: sans-serif;}
+        .comment-actions { display: flex; gap: 20px; align-items: center; }
+        .comment-actions button { background: transparent; border: none; cursor: pointer; font-family: 'Neucha', cursive; font-size: 15px; text-transform: uppercase; transition: 0.2s; padding: 0; font-weight: bold; letter-spacing: 1px; }
+        .btn-reply { color: #a4b09c; } .btn-reply:hover { color: #a6e3a1; }
+        .btn-edit { color: #829c73; } .btn-edit:hover { color: #cba6f7; }
+        .btn-del { color: #ff5555; } .btn-del:hover { text-shadow: 0 0 5px rgba(255,85,85,0.5); }
 
         /* ВЕТКИ ОТВЕТОВ */
-        .replies-list { display: flex; flex-direction: column; gap: 10px; margin-left: 55px; border-left: 2px solid #283325; padding-left: 15px; }
-        .reply-item { display: flex; gap: 12px; background: rgba(11, 13, 10, 0.6); padding: 15px; border-radius: 8px; border: 1px solid rgba(40, 51, 37, 0.5); align-items: flex-start; }
-        .reply-avatar { width: 34px; height: 34px; border-radius: 50%; border: 1px solid #4a5c41; flex-shrink: 0;}
-        .reply-input-wrapper { display: none; margin-left: 55px; margin-top: 5px; flex-direction: column; gap: 8px; }
+        .replies-list { display: flex; flex-direction: column; gap: 15px; margin-left: 55px; border-left: 2px solid #283325; padding-left: 20px; }
+        .reply-item { display: flex; flex-direction: column; background: rgba(11, 13, 10, 0.6); padding: 15px 20px; border-radius: 8px; border: 1px solid rgba(40, 51, 37, 0.5); }
+        .reply-avatar { width: 36px; height: 36px; border-radius: 50%; border: 1px solid #4a5c41; }
+        .reply-input-wrapper { display: none; margin-left: 55px; margin-top: 5px; flex-direction: column; gap: 10px; }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .modal-box { background: linear-gradient(180deg, #101411 0%, #080a08 100%); border: 2px solid #a6e3a1; border-radius: 12px; padding: 30px; width: 750px; box-shadow: 0 0 30px rgba(166, 227, 161, 0.2); position: relative; }
@@ -195,7 +193,7 @@
             <div class="widget-base" style="flex: 1;">
                 <div class="widget-header"><div class="widget-title">Комментарии</div></div>
                 <div class="widget-content">
-                    <div class="comment-input-area">
+                    <div class="comment-input-area" id="main-comment-area">
                         <textarea id="comment-text" class="comment-textarea" placeholder="Напиши свою рецензию на этот сезон..."></textarea>
                         <button class="send-btn" id="send-comment-btn" onclick="postComment()">Отправить</button>
                     </div>
@@ -303,6 +301,8 @@
         let currentComments = {};
         let radarChart = null;
         let modalRadarChart = null;
+        
+        let editingCommentId = null; // Хранит ID коммента, который сейчас редактируется
 
         const radarColors = [
             { bg: 'rgba(203, 166, 247, 0.2)', border: '#cba6f7' }, 
@@ -469,12 +469,17 @@
 
         function renderComments() {
             const list = document.getElementById('comments-list'); list.innerHTML = '';
+            
+            // Превращаем в массив. Теперь ID не привязан жестко к юзеру, но для совместимости берем c.id
             const arr = Object.entries(currentComments).map(([id, data]) => ({id, ...data})).sort((a,b) => b.timestamp - a.timestamp);
 
-            if (arr.length === 0) { list.innerHTML = '<div style="color: #6b7a62; text-align: center; padding: 20px;">Пока нет комментариев. Будь первым!</div>'; }
+            if (arr.length === 0) { list.innerHTML = '<div style="color: #6b7a62; text-align: center; padding: 20px; font-size: 18px;">Пока нет рецензий. Будь первым!</div>'; }
 
             arr.forEach(c => {
-                const isMe = currentUser && currentUser.id === c.id;
+                // Если это новый коммент, там есть userId. Если старый - c.id и есть userId
+                const authorId = c.userId || c.id;
+                
+                const isMe = currentUser && authorId === currentUser.id;
                 const isAdminViewer = currentUser && currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
                 const d = new Date(c.timestamp);
                 const dateStr = `${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')} в ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
@@ -485,16 +490,16 @@
                                  ${isMe || isAdminViewer ? `<button class="btn-del" onclick="deleteComment('${c.id}')">Удалить</button>` : ''}
                                </div>`;
 
-                // РЕНДЕР ОЦЕНОК (СТИЛЬ РЗТ)
+                // РЕНДЕР ОЦЕНОК В ШАПКЕ (РЗТ СТИЛЬ)
                 let ratingHtml = '';
                 const isAuthorAdmin = c.displayName.toLowerCase() === ADMIN_USERNAME.toLowerCase();
-                const userRating = isAuthorAdmin ? (franchiseData[currentSeasonKey].scores || null) : (currentCommunityRatings[c.id] || null);
+                const userRating = isAuthorAdmin ? (franchiseData[currentSeasonKey].scores || null) : (currentCommunityRatings[authorId] || null);
 
                 if (userRating && userRating.overall > 0) {
                     const ovr = userRating.overall;
                     const t = userRating.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
                     ratingHtml = `
-                    <div class="comment-rating-badge">
+                    <div class="comment-rating-block">
                         <div class="cr-overall" style="color:${getScoreColor(ovr)}">${ovr}</div>
                         <div class="cr-theory">
                             <span style="color:${getScoreColor(t.plot)}" data-title="Сюжет: ${t.plot}">${t.plot}</span>
@@ -512,34 +517,40 @@
                     const replArr = Object.entries(c.replies).map(([rid, rdata]) => ({rid, ...rdata})).sort((a,b)=>a.timestamp - b.timestamp);
                     repliesHtml = `<div class="replies-list">` + replArr.map(rep => {
                         const rd = new Date(rep.timestamp); const rDateStr = `${rd.getDate().toString().padStart(2,'0')}.${(rd.getMonth()+1).toString().padStart(2,'0')} в ${rd.getHours().toString().padStart(2,'0')}:${rd.getMinutes().toString().padStart(2,'0')}`;
-                        return `<div class="reply-item"><img src="${rep.profileImage}" class="reply-avatar"><div class="comment-body" style="padding-right:0;"><div class="author-info" style="margin-bottom:4px;"><span class="comment-author">${rep.displayName}</span><span class="comment-date">${rDateStr}</span></div><div class="comment-text" style="margin-bottom:0; font-size:15px;">${rep.text}</div></div></div>`;
+                        return `<div class="reply-item">
+                                    <div class="comment-author-block" style="margin-bottom: 10px;">
+                                        <img src="${rep.profileImage}" class="reply-avatar">
+                                        <span class="comment-author" style="font-size: 16px;">${rep.displayName}</span>
+                                    </div>
+                                    <div class="comment-text" style="font-size: 16px; margin-bottom: 10px;">${rep.text}</div>
+                                    <div class="comment-date">${rDateStr}</div>
+                                </div>`;
                     }).join('') + `</div>`;
                 }
 
                 list.innerHTML += `
                 <div class="comment-wrapper">
                     <div class="comment-item">
-                        <img src="${c.profileImage}" class="comment-avatar">
-                        <div class="comment-body">
-                            <div class="author-info"><span class="comment-author">${c.displayName}</span><span class="comment-date">${dateStr}</span></div>
-                            <div class="comment-text">${c.text}</div>
+                        <div class="comment-top">
+                            <div class="comment-author-block">
+                                <img src="${c.profileImage}" class="comment-avatar">
+                                <span class="comment-author">${c.displayName}</span>
+                            </div>
+                            ${ratingHtml}
+                        </div>
+                        <div class="comment-text">${c.text}</div>
+                        <div class="comment-bottom">
+                            <span class="comment-date">${dateStr}</span>
                             ${actions}
                         </div>
-                        ${ratingHtml}
                     </div>
                     ${repliesHtml}
                     <div class="reply-input-wrapper" id="reply-box-${c.id}">
-                        <textarea id="reply-text-${c.id}" class="comment-textarea" style="min-height: 40px;" placeholder="Написать ответ..."></textarea>
-                        <button class="send-btn" style="padding: 6px 15px; font-size: 14px;" onclick="postReply('${c.id}')">Отправить ответ</button>
+                        <textarea id="reply-text-${c.id}" class="comment-textarea" style="min-height: 50px;" placeholder="Написать ответ..."></textarea>
+                        <button class="send-btn" style="padding: 8px 20px; font-size: 15px;" onclick="postReply('${c.id}')">Отправить ответ</button>
                     </div>
                 </div>`;
             });
-
-            if (currentUser && currentComments[currentUser.id]) {
-                document.getElementById('comment-text').value = currentComments[currentUser.id].text; document.getElementById('send-comment-btn').innerText = "Изменить отзыв";
-            } else {
-                document.getElementById('comment-text').value = ''; document.getElementById('send-comment-btn').innerText = "Отправить";
-            }
         }
 
         async function postComment() {
@@ -549,28 +560,69 @@
 
             const btn = document.getElementById('send-comment-btn');
             btn.innerText = "ОТПРАВКА..."; btn.style.pointerEvents = "none";
+            
+            // Если редактируем - используем старый ID, если пишем новый - создаем уникальный ID
+            const commentId = editingCommentId ? editingCommentId : (Date.now() + '_' + currentUser.id);
+
+            const commentData = { 
+                userId: currentUser.id, // Сохраняем ID создателя внутри самого коммента
+                displayName: currentUser.display_name, 
+                profileImage: currentUser.profile_image_url, 
+                text: text, 
+                timestamp: Date.now() 
+            };
+
             try {
-                const res = await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/comments/${currentUser.id}.json`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, text: text, timestamp: Date.now() }) });
+                const res = await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/comments/${commentId}.json`, { 
+                    method: 'PUT', 
+                    headers: { 'Content-Type': 'application/json' }, 
+                    body: JSON.stringify(commentData) 
+                });
+                
                 if (!res.ok) throw new Error("Server error");
-                showToast("💬 Рецензия добавлена!"); await loadComments();
-            } catch(e) { showToast("❌ Ошибка при отправке!", true); }
+                
+                showToast(editingCommentId ? "💬 Рецензия изменена!" : "💬 Рецензия добавлена!"); 
+                
+                // СБРАСЫВАЕМ ПОЛЕ ПОСЛЕ ОТПРАВКИ
+                document.getElementById('comment-text').value = '';
+                editingCommentId = null;
+                btn.innerText = "Отправить";
+                
+                await loadComments();
+            } catch(e) { 
+                showToast("❌ Ошибка при отправке!", true); 
+                btn.innerText = editingCommentId ? "Сохранить изменения" : "Отправить";
+            }
             btn.style.pointerEvents = "auto";
         }
 
-        async function deleteComment(userId) {
+        async function deleteComment(commentId) {
             if (!confirm("Точно удалить этот комментарий?")) return;
             try {
-                const res = await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/comments/${userId}.json`, { method: 'DELETE' });
+                const res = await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/comments/${commentId}.json`, { method: 'DELETE' });
                 if (!res.ok) throw new Error("Server error");
-                if (currentUser && userId === currentUser.id) document.getElementById('comment-text').value = '';
-                showToast("🗑️ Комментарий удален."); await loadComments();
+                
+                if (editingCommentId === commentId) {
+                    document.getElementById('comment-text').value = '';
+                    editingCommentId = null;
+                    document.getElementById('send-comment-btn').innerText = "Отправить";
+                }
+                
+                showToast("🗑️ Комментарий удален."); 
+                await loadComments();
             } catch(e) { showToast("❌ Ошибка удаления!", true); }
         }
 
-        function editComment(userId) {
-            if (currentComments[userId]) {
-                document.getElementById('comment-text').value = currentComments[userId].text;
+        function editComment(commentId) {
+            if (currentComments[commentId]) {
+                document.getElementById('comment-text').value = currentComments[commentId].text;
                 document.getElementById('comment-text').focus();
+                
+                // Скроллим к полю ввода плавно
+                document.getElementById('main-comment-area').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                editingCommentId = commentId;
+                document.getElementById('send-comment-btn').innerText = "Сохранить изменения";
             }
         }
 
