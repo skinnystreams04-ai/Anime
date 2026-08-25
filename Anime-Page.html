@@ -17,9 +17,11 @@
         
         .nav-auth .twitch-btn { background: #6441a5; color: white; padding: 8px 16px; border-radius: 6px; font-family: sans-serif; font-size: 14px; font-weight: bold; cursor: pointer; border: 1px solid #4a307a; transition: 0.2s; }
         .nav-auth .twitch-btn:hover { background: #7d5bbe; box-shadow: 0 0 15px rgba(100, 65, 165, 0.6); }
-        .user-profile { display: flex; align-items: center; gap: 12px; color: #c4d1b8; font-weight: bold; font-family: sans-serif; font-size: 15px; background: rgba(14, 17, 13, 0.8); padding: 4px 15px 4px 4px; border-radius: 20px; border: 1px solid #283325;}
-        .user-profile img { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #6441a5; box-shadow: 0 0 10px rgba(100, 65, 165, 0.5); }
-        .logout-btn { background: transparent; border: none; color: #ff5555; cursor: pointer; font-size: 12px; margin-left: 5px; font-family: sans-serif; text-transform: uppercase; font-weight: bold; transition: 0.2s;}
+        
+        /* ОБНОВЛЕННЫЙ ПРОФИЛЬ ПО ГАЙДУ */
+        .user-profile { display: flex; align-items: center; gap: 15px; background: rgba(14, 17, 13, 0.8); padding: 8px 20px 8px 8px; border-radius: 30px; border: 1px solid #283325; box-shadow: 0 4px 15px rgba(0,0,0,0.5);}
+        .user-profile img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid #4a5c41; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); }
+        .logout-btn { background: transparent; border: none; color: #ff5555; cursor: pointer; font-size: 12px; margin-left: 10px; font-family: sans-serif; text-transform: uppercase; font-weight: bold; transition: 0.2s;}
         .logout-btn:hover { text-shadow: 0 0 8px rgba(255, 85, 85, 0.8); }
 
         .layout { display: flex; gap: 20px; align-items: stretch; padding: 0 20px; }
@@ -84,7 +86,7 @@
         .comments-list { display: flex; flex-direction: column; gap: 30px; }
         .comment-wrapper { display: flex; flex-direction: column; gap: 15px; }
         
-        .comment-item { display: flex; flex-direction: column; background: rgba(14, 17, 13, 0.4); border-radius: 12px; border: 1px solid #283325; }
+        .comment-item { display: flex; flex-direction: column; background: rgba(14, 17, 13, 0.4); border-radius: 12px; border: 1px solid #283325; overflow: hidden; }
         
         /* ВЫДЕЛЕННАЯ ШАПКА РЗТ */
         .comment-top { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(90deg, rgba(26, 34, 24, 0.6) 0%, rgba(11, 13, 10, 0.8) 100%); padding: 15px 25px; border-bottom: 2px solid #283325; border-radius: 12px 12px 0 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
@@ -94,7 +96,7 @@
         
         .comment-author { font-family: sans-serif; font-weight: bold; font-size: 20px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
         
-        /* СИСТЕМА РОЛЕЙ */
+        /* СИСТЕМА РОЛЕЙ ИЗ БАЗЫ АУКЦИОНА */
         .role-badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-family: sans-serif; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
         .role-streamer { background: linear-gradient(45deg, #6441a5, #cba6f7); color: #fff; box-shadow: 0 0 10px rgba(203, 166, 247, 0.4); }
         .role-sub { background: linear-gradient(45deg, #d4af37, #f3e5ab); color: #121612; box-shadow: 0 0 10px rgba(212, 175, 55, 0.4); }
@@ -133,7 +135,7 @@
         /* ВЕТКИ ОТВЕТОВ С ТАКОЙ ЖЕ ШАПКОЙ */
         .replies-list { display: flex; flex-direction: column; gap: 15px; margin-left: 60px; border-left: 2px solid #283325; padding-left: 20px; display: none; }
         
-        .reply-item { display: flex; flex-direction: column; background: rgba(11, 13, 10, 0.6); border-radius: 12px; border: 1px solid rgba(40, 51, 37, 0.5); }
+        .reply-item { display: flex; flex-direction: column; background: rgba(11, 13, 10, 0.6); border-radius: 12px; border: 1px solid rgba(40, 51, 37, 0.5); overflow: hidden;}
         .reply-item .comment-top { padding: 12px 20px; border-radius: 12px 12px 0 0; background: linear-gradient(90deg, rgba(26, 34, 24, 0.4) 0%, rgba(11, 13, 10, 0.6) 100%); border-bottom: 1px solid rgba(40,51,37,0.5); }
         .reply-item .comment-avatar { width: 45px; height: 45px; }
         .reply-item .comment-author { font-size: 18px; }
@@ -145,7 +147,6 @@
 
         .reply-input-wrapper { display: none; margin-left: 60px; margin-top: 5px; flex-direction: column; gap: 10px; }
 
-        /* МОДАЛЬНЫЕ ОКНА И UI */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .modal-box { background: linear-gradient(180deg, #101411 0%, #080a08 100%); border: 2px solid #a6e3a1; border-radius: 12px; padding: 30px; width: 750px; box-shadow: 0 0 30px rgba(166, 227, 161, 0.2); position: relative; }
         .modal-title { color: #a6e3a1; font-size: 24px; text-transform: uppercase; margin: 0 0 20px 0; text-align: center; font-weight: bold; letter-spacing: 1px;}
@@ -323,20 +324,15 @@
 
         const FIREBASE_BASE = 'https://skinwalkerauction-default-rtdb.europe-west1.firebasedatabase.app';
         
-        // НАЗВАНИЕ ВЕТКИ С ЗРИТЕЛЯМИ В БД АУКЦИОНА
-        const ROLES_DB_BRANCH = 'auction_data/players'; 
-
         let currentUser = null;
         let currentFranchiseId = null;
         let currentSeasonKey = null;
         let franchiseData = {};
         let currentCommunityRatings = {}; 
         let currentComments = {};
-        let viewersRolesDB = []; 
         let radarChart = null;
         let modalRadarChart = null;
         
-        // Объект для отслеживания редактирования (чтобы не путать основной коммент и ответ)
         let editingTarget = { type: null, id: null, parentId: null }; 
 
         const radarColors = [
@@ -367,6 +363,23 @@
         function loginTwitch() { window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=`; }
         function logoutTwitch() { try { localStorage.removeItem('twitch_token'); } catch(e){} location.reload(); }
 
+        // --- ЛОГИКА ОПРЕДЕЛЕНИЯ РОЛЕЙ ИЗ БАЗЫ АУКЦИОНА ---
+        function getRoleBadge(displayName, forceRole = null) {
+            const lowerName = displayName.toLowerCase();
+            if (lowerName === ADMIN_USERNAME.toLowerCase()) return `<span class="role-badge role-streamer">СТРИМЕР</span>`;
+            
+            let r = "F";
+            if (forceRole) {
+                r = forceRole;
+            } else if (window.playersData && window.playersData[lowerName]) {
+                r = window.playersData[lowerName].role || "F";
+            }
+
+            if (r === 'SUB') return `<span class="role-badge role-sub">SUB</span>`;
+            if (r === 'VIP') return `<span class="role-badge role-vip">VIP</span>`;
+            return `<span class="role-badge role-follow">FOLLOW</span>`;
+        }
+
         async function checkTwitchAuth() {
             try {
                 const hash = window.location.hash;
@@ -383,28 +396,44 @@
                     const res = await fetch('https://api.twitch.tv/helix/users', { headers: { 'Client-ID': TWITCH_CLIENT_ID, 'Authorization': `Bearer ${token}` } });
                     if (res.status === 401) { try { localStorage.removeItem('twitch_token'); } catch(e){} return; }
                     currentUser = (await res.json()).data[0];
+
+                    // Достаем цвет ника пользователя из Twitch API
+                    try {
+                        const colorRes = await fetch(`https://api.twitch.tv/helix/chat/color?user_id=${currentUser.id}`, { headers: { 'Client-ID': TWITCH_CLIENT_ID, 'Authorization': `Bearer ${token}` } });
+                        const colorData = await colorRes.json();
+                        currentUser.color = (colorData.data && colorData.data[0] && colorData.data[0].color) ? colorData.data[0].color : '#a6e3a1';
+                    } catch(e) { currentUser.color = '#a6e3a1'; }
+
+                    // Загружаем инфу о юзере из аукциона для вывода в профиль
+                    let gold = 0; let role = "F";
+                    try {
+                        const aucRes = await fetch(`${FIREBASE_BASE}/auction_data.json`, { cache: 'no-store' });
+                        const aucData = await aucRes.json();
+                        if (aucData && aucData.players) {
+                            window.playersData = {};
+                            aucData.players.forEach(p => { window.playersData[p.user.toLowerCase()] = p; });
+                            const p = window.playersData[currentUser.login.toLowerCase()];
+                            if(p) { gold = p.wallet_gold || 0; role = p.role || "F"; }
+                        }
+                    } catch(e) {}
                     
-                    document.getElementById('nav-auth').innerHTML = `<div class="user-profile"><img src="${currentUser.profile_image_url}"><span>${currentUser.display_name}</span><button class="logout-btn" onclick="logoutTwitch()">Выйти</button></div>`;
+                    document.getElementById('nav-auth').innerHTML = `
+                        <div class="user-profile" style="padding: 6px 15px 6px 6px; border-radius: 30px;">
+                            <img src="${currentUser.profile_image_url}" style="width:40px; height:40px;">
+                            <div style="display:flex; flex-direction:column; justify-content:center;">
+                                <span style="color: ${currentUser.color}; font-size: 16px; font-weight: bold; line-height: 1;">${currentUser.display_name}</span>
+                                <div style="display:flex; align-items:center; gap: 8px; margin-top: 4px;">
+                                    ${getRoleBadge(currentUser.login, role)}
+                                    <span style="color:#ffd700; font-size:13px; font-family:sans-serif; text-shadow: 1px 1px 2px #000;">💰 ${gold}</span>
+                                </div>
+                            </div>
+                            <button class="logout-btn" onclick="logoutTwitch()" style="margin-left:10px;">Выйти</button>
+                        </div>
+                    `;
+
                     if (currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase()) { document.body.classList.add('is-admin'); }
                 }
             } catch (e) { console.error('Ошибка авторизации', e); }
-        }
-
-        // --- ЛОГИКА ОПРЕДЕЛЕНИЯ РОЛЕЙ ИЗ БАЗЫ АУКЦИОНА ---
-        function getUserInfo(displayName) {
-            const lowerName = displayName.toLowerCase();
-            if (lowerName === ADMIN_USERNAME.toLowerCase()) {
-                return { badge: `<span class="role-badge role-streamer">СТРИМЕР</span>`, color: '#cba6f7' };
-            }
-            if (Array.isArray(viewersRolesDB)) {
-                const p = viewersRolesDB.find(x => x.user && x.user.toLowerCase() === lowerName);
-                if (p && p.role) {
-                    const r = p.role.toUpperCase();
-                    if (r === 'SUB' || r === 'SUBSCRIBER') return { badge: `<span class="role-badge role-sub">SUB</span>`, color: '#f3e5ab' };
-                    if (r === 'VIP') return { badge: `<span class="role-badge role-vip">VIP</span>`, color: '#f5c2e7' };
-                }
-            }
-            return { badge: `<span class="role-badge role-follow">FOLLOW</span>`, color: '#a6e3a1' };
         }
 
         function initCharts() {
@@ -481,7 +510,6 @@
                 } else {
                     await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/ratings/${currentUser.id}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, overall, theory, timestamp: Date.now() }) });
                 }
-                
                 closeRatingModal(); showToast("✅ Оценка успешно сохранена!"); await loadAnimeData(); 
             } catch (e) { showToast("❌ Ошибка сохранения!", true); }
             
@@ -546,7 +574,6 @@
                                  ${isMe || isAdminViewer ? `<button class="btn-del" onclick="deleteComment('${c.id}')">Удалить</button>` : ''}
                                </div>`;
 
-                // РЕНДЕР ОЦЕНОК (СТИЛЬ РЗТ)
                 let ratingHtml = '';
                 const userRating = isAuthorAdmin ? (franchiseData[currentSeasonKey].scores || null) : (currentCommunityRatings[authorId] || null);
 
@@ -566,10 +593,9 @@
                     </div>`;
                 }
 
-                // РОЛЬ И ЦВЕТ НИКА
-                const uInfo = getUserInfo(c.displayName);
+                const nameColor = c.userColor || (isAuthorAdmin ? '#cba6f7' : '#a6e3a1');
+                const roleBadge = getRoleBadge(c.displayName);
 
-                // РЕНДЕР ОТВЕТОВ С ШАПКОЙ КАК У ОСНОВНОГО
                 let repliesHtml = '';
                 let toggleRepliesBtn = '';
                 if (c.replies) {
@@ -579,10 +605,10 @@
                     repliesHtml = `<div class="replies-list" id="replies-list-${c.id}">` + replArr.map(rep => {
                         const rd = new Date(rep.timestamp); const rDateStr = `${rd.getDate().toString().padStart(2,'0')}.${(rd.getMonth()+1).toString().padStart(2,'0')} в ${rd.getHours().toString().padStart(2,'0')}:${rd.getMinutes().toString().padStart(2,'0')}`;
                         const isRepAuthorAdmin = rep.displayName.toLowerCase() === ADMIN_USERNAME.toLowerCase();
+                        const repColor = rep.userColor || (isRepAuthorAdmin ? '#cba6f7' : '#a6e3a1');
+                        const repRoleBadge = getRoleBadge(rep.displayName);
                         
-                        const repInfo = getUserInfo(rep.displayName);
                         const isRepMe = currentUser && rep.userId === currentUser.id;
-                        
                         let repActions = `<div class="comment-actions">
                                             <button class="btn-reply" onclick="toggleReplyBox('${c.id}', '${rep.displayName}')">Ответить</button>
                                             ${isRepMe ? `<button class="btn-edit" onclick="editReply('${c.id}', '${rep.rid}')">Изменить</button>` : ''}
@@ -609,19 +635,19 @@
                         }
 
                         return `<div class="reply-item">
-                                    <div class="comment-top">
+                                    <div class="comment-top" style="padding: 0 0 12px 0; border-bottom: 1px solid rgba(40,51,37,0.5); margin-bottom: 12px; background: transparent;">
                                         <div class="comment-author-block">
-                                            <img src="${rep.profileImage}" class="comment-avatar">
+                                            <img src="${rep.profileImage}" class="comment-avatar" style="width: 40px; height: 40px; border-width: 1px;">
                                             <div class="author-details">
-                                                <span class="comment-author" style="color: ${repInfo.color};">${rep.displayName}</span>
-                                                <div>${repInfo.badge}</div>
+                                                <span class="comment-author" style="color: ${repColor}; font-size: 16px;">${rep.displayName}</span>
+                                                <div>${repRoleBadge}</div>
                                             </div>
                                         </div>
                                         ${repRatingHtml}
                                     </div>
-                                    <div class="comment-content-wrap">
-                                        <div class="comment-text">${rep.text}</div>
-                                        <div class="comment-bottom">
+                                    <div class="comment-content-wrap" style="padding: 0;">
+                                        <div class="comment-text" style="font-size: 16px; margin-bottom: 10px;">${rep.text}</div>
+                                        <div class="comment-bottom" style="border-top:none; padding-top:0;">
                                             <span class="comment-date">${rDateStr}</span>
                                             ${repActions}
                                         </div>
@@ -637,8 +663,8 @@
                             <div class="comment-author-block">
                                 <img src="${c.profileImage}" class="comment-avatar">
                                 <div class="author-details">
-                                    <span class="comment-author" style="color: ${uInfo.color};">${c.displayName}</span>
-                                    <div>${uInfo.badge}</div>
+                                    <span class="comment-author" style="color: ${nameColor};">${c.displayName}</span>
+                                    <div>${roleBadge}</div>
                                 </div>
                             </div>
                             ${ratingHtml}
@@ -659,6 +685,11 @@
                     </div>
                 </div>`;
             });
+
+            if (!editingTarget.type) {
+                document.getElementById('comment-text').value = ''; 
+                document.getElementById('send-comment-btn').innerText = "Отправить";
+            }
         }
 
         async function postComment() {
@@ -673,12 +704,11 @@
 
             try {
                 if (editingTarget.type === 'comment') {
-                    // Используем PATCH чтобы обновить ТОЛЬКО ТЕКСТ и не стереть ветку replies
                     await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/comments/${commentId}.json`, { 
                         method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: text }) 
                     });
                 } else {
-                    const commentData = { userId: currentUser.id, displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, text: text, timestamp: Date.now() };
+                    const commentData = { userId: currentUser.id, displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, userColor: currentUser.color, text: text, timestamp: Date.now() };
                     await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/comments/${commentId}.json`, { 
                         method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(commentData) 
                     });
@@ -714,7 +744,7 @@
                     showToast("💬 Ответ изменен!");
                 } else {
                     const replyId = Date.now() + '_' + currentUser.id;
-                    const replyData = { userId: currentUser.id, displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, text: text, timestamp: Date.now() };
+                    const replyData = { userId: currentUser.id, displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, userColor: currentUser.color, text: text, timestamp: Date.now() };
                     await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/comments/${commentId}/replies/${replyId}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(replyData) });
                     showToast("💬 Ответ добавлен!");
                 }
@@ -742,8 +772,7 @@
                     document.getElementById('send-comment-btn').innerText = "Отправить";
                 }
                 
-                showToast("🗑️ Комментарий удален."); 
-                await loadComments();
+                showToast("🗑️ Комментарий удален."); await loadComments();
             } catch(e) { showToast("❌ Ошибка удаления!", true); }
         }
 
@@ -828,8 +857,12 @@
 
                 loadingScreen.innerText = "Загрузка ролей зрителей...";
                 try {
-                    const rolesRes = await fetch(`${FIREBASE_BASE}/${ROLES_DB_BRANCH}.json`, { cache: 'no-store' });
-                    if (rolesRes.ok) { viewersRolesDB = await rolesRes.json() || []; }
+                    const aucRes = await fetch(`${FIREBASE_BASE}/auction_data.json`, { cache: 'no-store' });
+                    const aucData = await aucRes.json();
+                    if (aucData && aucData.players) {
+                        window.playersData = {};
+                        aucData.players.forEach(p => { window.playersData[p.user.toLowerCase()] = p; });
+                    }
                 } catch(e) { console.warn("Не удалось загрузить роли", e); }
 
                 loadingScreen.innerText = "Загрузка базы данных...";
