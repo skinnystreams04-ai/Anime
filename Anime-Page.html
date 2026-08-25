@@ -10,7 +10,6 @@
     <style>
         body { margin: 0; padding: 0 0 20px 0; font-family: 'Neucha', cursive, sans-serif; background-color: #0b0d0a; color: #a4b09c; min-width: 1350px; overflow-x: hidden; }
         
-        /* СКРЫВАЕМ КОЛОНКУ 'Я' ЕСЛИ ЗАШЕЛ АДМИН */
         body.is-admin .me-element { display: none !important; }
 
         .top-nav { background: #0b0d0a; border-bottom: 2px solid #283325; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
@@ -83,7 +82,6 @@
         
         .comments-list { display: flex; flex-direction: column; gap: 15px; }
         
-        /* СТИЛИ МОДАЛЬНОГО ОКНА */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .modal-box { background: linear-gradient(180deg, #101411 0%, #080a08 100%); border: 2px solid #a6e3a1; border-radius: 12px; padding: 30px; width: 750px; box-shadow: 0 0 30px rgba(166, 227, 161, 0.2); position: relative; }
         .modal-title { color: #a6e3a1; font-size: 24px; text-transform: uppercase; margin: 0 0 20px 0; text-align: center; font-weight: bold; letter-spacing: 1px;}
@@ -213,7 +211,7 @@
                         </div>
                     </div>
 
-                    <button class="rate-btn" onclick="openRatingModal()">Оценить тайтл</button>
+                    <button class="rate-btn" id="rate-title-btn" onclick="openRatingModal()">Оценить тайтл</button>
 
                 </div>
             </div>
@@ -227,7 +225,6 @@
             <h2 class="modal-title">Выставить оценку</h2>
             
             <div class="modal-content-wrapper">
-                <!-- Левая часть: ползунки -->
                 <div class="modal-sliders">
                     <div class="input-label">Итоговое впечатление</div>
                     <input type="number" id="modal-overall" min="1" max="10" placeholder="От 1 до 10">
@@ -241,7 +238,6 @@
                     <div class="slider-group"><div class="slider-header"><span>Атмосфера</span><span id="m-atm">5</span></div><input type="range" id="msl-atm" min="1" max="10" value="5" oninput="document.getElementById('m-atm').innerText=this.value; syncModalChart();"></div>
                 </div>
 
-                <!-- Правая часть: живая диаграмма -->
                 <div class="modal-chart-area">
                     <canvas id="modalChart"></canvas>
                 </div>
@@ -262,11 +258,10 @@
         let currentFranchiseId = null;
         let currentSeasonKey = null;
         let franchiseData = {};
-        let currentCommunityRatings = {}; // Храним оценки чата
+        let currentCommunityRatings = {}; 
 
         function loginTwitch() {
-            const authUrl = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=`;
-            window.location.href = authUrl;
+            window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=`;
         }
 
         function logoutTwitch() {
@@ -279,8 +274,7 @@
             let token = localStorage.getItem('twitch_token');
 
             if (hash && hash.includes('access_token')) {
-                const params = new URLSearchParams(hash.substring(1));
-                token = params.get('access_token');
+                token = new URLSearchParams(hash.substring(1)).get('access_token');
                 localStorage.setItem('twitch_token', token);
                 window.history.replaceState(null, null, window.location.pathname); 
             }
@@ -289,8 +283,7 @@
                 try {
                     const res = await fetch('https://api.twitch.tv/helix/users', { headers: { 'Client-ID': TWITCH_CLIENT_ID, 'Authorization': `Bearer ${token}` } });
                     if (res.status === 401) { localStorage.removeItem('twitch_token'); return; }
-                    const data = await res.json();
-                    currentUser = data.data[0];
+                    currentUser = (await res.json()).data[0];
                     
                     document.getElementById('nav-auth').innerHTML = `
                         <div class="user-profile">
@@ -303,15 +296,15 @@
                     if (currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase()) {
                         document.body.classList.add('is-admin');
                     }
+
                 } catch (e) { console.error('Ошибка авторизации', e); }
             }
         }
 
-        // --- ЛОГИКА ЖИВОЙ ДИАГРАММЫ В МОДАЛКЕ ---
         let modalRadarChart = null;
         function syncModalChart() {
             const isStreamer = currentUser && currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
-            const color = isStreamer ? radarColors[0].border : radarColors[2].border; // Фиолетовый для стримера, Зеленый для зрителя
+            const color = isStreamer ? radarColors[0].border : radarColors[2].border; 
             const bg = isStreamer ? radarColors[0].bg : radarColors[2].bg;
 
             if (!modalRadarChart) {
@@ -342,7 +335,6 @@
             const isStreamer = currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
             let existingData = null;
             
-            // Если стример - подтягиваем его оценки, если зритель - его старые оценки из community_db
             if (isStreamer) {
                 existingData = franchiseData[currentSeasonKey].scores;
             } else if (currentCommunityRatings[currentUser.id]) {
@@ -388,17 +380,15 @@
 
             try {
                 if (isStreamer) {
-                    // АДМИН ПИШЕТ В ANIME_DB (Только обновляем scores, не трогая остальное)
                     const patchUrl = `${FIREBASE_BASE}/anime_db/${currentFranchiseId}/${currentSeasonKey}/scores.json`;
                     await fetch(patchUrl, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overall, theory }) });
                 } else {
-                    // ЗРИТЕЛЬ ПИШЕТ В COMMUNITY_DB
                     const putUrl = `${FIREBASE_BASE}/community_db/${currentFranchiseId}/${currentSeasonKey}/ratings/${currentUser.id}.json`;
                     await fetch(putUrl, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, overall, theory, timestamp: Date.now() }) });
                 }
                 
                 closeRatingModal();
-                await loadAnimeData(); // Перезагружаем страницу, чтобы графики обновились
+                await loadAnimeData(); 
             } catch (e) { alert("Ошибка сохранения!"); }
             
             btn.innerText = "СОХРАНИТЬ"; btn.style.pointerEvents = "auto";
@@ -506,7 +496,6 @@
             const anime = franchiseData[seasonKey];
             if (!anime) return;
 
-            // БАЗОВАЯ ИНФА
             document.getElementById('cover-img').src = anime.coverUrl;
             document.getElementById('title-display').innerText = anime.title;
             document.getElementById('studio-display').innerText = anime.info.studio;
@@ -520,7 +509,6 @@
             document.getElementById('synopsis-display').innerText = anime.info.description;
             if(anime.info.genres) { document.getElementById('genres-display').innerHTML = anime.info.genres.map(g => `<span class="genre-badge">${g}</span>`).join(''); }
 
-            // ПОДГРУЖАЕМ ОЦЕНКИ ЗРИТЕЛЕЙ ДЛЯ ЭТОГО СЕЗОНА
             const commUrl = `${FIREBASE_BASE}/community_db/${currentFranchiseId}/${seasonKey}/ratings.json`;
             const commRes = await fetch(commUrl);
             currentCommunityRatings = (await commRes.json()) || {};
@@ -529,7 +517,6 @@
             let chatCount = 0;
             let meData = null;
 
-            // Считаем среднее для "Чата" и находим оценку "Я"
             for (const [userId, r] of Object.entries(currentCommunityRatings)) {
                 chatTotalOvr += r.overall || 0;
                 chatPlot += r.theory.plot || 0; chatVis += r.theory.visuals || 0;
@@ -539,7 +526,6 @@
                 if (currentUser && userId === currentUser.id) { meData = r; }
             }
 
-            // МАТЕМАТИКА ЧАТА
             const chatOvr = chatCount > 0 ? parseFloat((chatTotalOvr / chatCount).toFixed(1)) : 0;
             const tChat = {
                 plot: chatCount > 0 ? parseFloat((chatPlot/chatCount).toFixed(1)) : 0, visuals: chatCount > 0 ? parseFloat((chatVis/chatCount).toFixed(1)) : 0,
@@ -548,44 +534,48 @@
             const chatAvgSum = tChat.plot + tChat.visuals + tChat.music + tChat.world + tChat.atmosphere;
             const chatTheoryAvg = chatAvgSum > 0 ? parseFloat((chatAvgSum / 5).toFixed(1)) : 0;
 
-            // МАТЕМАТИКА ЗРИТЕЛЯ (Я)
             const meOvr = meData ? (meData.overall || 0) : 0;
             const tMe = meData && meData.theory ? meData.theory : {plot:0, visuals:0, music:0, world:0, atmosphere:0};
             const meAvgSum = tMe.plot + tMe.visuals + tMe.music + tMe.world + tMe.atmosphere;
             const meTheoryAvg = meAvgSum > 0 ? parseFloat((meAvgSum / 5).toFixed(1)) : 0;
 
-            // МАТЕМАТИКА СТРИМЕРА
             const strOvr = anime.scores.overall || 0;
             const tStr = anime.scores.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
             const strAvgSum = tStr.plot + tStr.visuals + tStr.music + tStr.world + tStr.atmosphere;
             const strTheoryAvg = strAvgSum > 0 ? parseFloat((strAvgSum / 5).toFixed(1)) : 0;
 
-            // ОБНОВЛЕНИЕ UI СТРИМЕРА
             document.getElementById('streamer-score-val').innerHTML = `${strOvr}<span>/10</span>`;
             document.getElementById('streamer-score-val').style.color = getScoreColor(strOvr);
             document.getElementById('avg-streamer-score').innerText = strTheoryAvg;
             document.getElementById('breakdown-streamer').innerHTML = generateBreakdownHtml(tStr);
 
-            // ОБНОВЛЕНИЕ UI ЧАТА
             document.getElementById('chat-score-val').innerHTML = `${chatOvr}<span>/10</span>`;
             document.getElementById('chat-score-val').style.color = getScoreColor(chatOvr);
             document.getElementById('avg-chat-score').innerText = chatTheoryAvg;
             document.getElementById('breakdown-chat').innerHTML = generateBreakdownHtml(tChat);
 
-            // ОБНОВЛЕНИЕ UI ЗРИТЕЛЯ
             document.getElementById('my-score-display').innerHTML = `${meOvr}<span>/10</span>`;
             document.getElementById('my-score-display').style.color = getScoreColor(meOvr);
             document.getElementById('avg-viewer-score').innerText = meTheoryAvg;
             document.getElementById('breakdown-viewer').innerHTML = generateBreakdownHtml(tMe);
             
-            // ОБНОВЛЕНИЕ ГРАФИКА
-            radarChart.data.datasets[0].data = [tStr.plot, tStr.visuals, tStr.music, tStr.world, tStr.atmosphere]; // Стример
-            radarChart.data.datasets[1].data = [tChat.plot, tChat.visuals, tChat.music, tChat.world, tChat.atmosphere]; // Чат
-            radarChart.data.datasets[2].data = [tMe.plot, tMe.visuals, tMe.music, tMe.world, tMe.atmosphere]; // Я
+            radarChart.data.datasets[0].data = [tStr.plot, tStr.visuals, tStr.music, tStr.world, tStr.atmosphere]; 
+            radarChart.data.datasets[1].data = [tChat.plot, tChat.visuals, tChat.music, tChat.world, tChat.atmosphere]; 
+            radarChart.data.datasets[2].data = [tMe.plot, tMe.visuals, tMe.music, tMe.world, tMe.atmosphere]; 
             radarChart.update();
-        }
 
-        loadAnimeData();
+            // ОБНОВЛЕНИЕ ТЕКСТА КНОПКИ ОЦЕНКИ
+            const rateBtn = document.getElementById('rate-title-btn');
+            if (currentUser) {
+                const isStreamer = currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
+                let hasRated = false;
+                if (isStreamer && strOvr > 0) hasRated = true;
+                if (!isStreamer && meOvr > 0) hasRated = true;
+                rateBtn.innerText = hasRated ? "Изменить оценку" : "Оценить тайтл";
+            } else {
+                rateBtn.innerText = "Оценить тайтл";
+            }
+        }
     </script>
 </body>
 </html>

@@ -10,7 +10,6 @@
     <style>
         body { margin: 0; padding: 0 0 40px 0; font-family: 'Neucha', cursive, sans-serif; background-color: #050605; color: #a4b09c; min-height: 100vh; overflow-x: hidden;}
 
-        /* МАГИЯ СКРЫТИЯ КОЛОНКИ ДЛЯ АДМИНА */
         body.is-admin .me-element { display: none !important; }
 
         .top-nav { background: #0b0d0a; border-bottom: 2px solid #283325; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
@@ -26,7 +25,7 @@
 
         .controls-bar { display: flex; justify-content: flex-start; align-items: center; gap: 20px; padding: 0 40px; margin-bottom: 30px; }
         .search-input, .sort-select { background: rgba(14, 17, 13, 0.8); border: 1px solid #283325; color: #c4d1b8; padding: 10px 15px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 18px; outline: none; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
-        .search-input { width: 300px; }
+        .search-input { width: 250px; }
         .search-input::placeholder { color: #6b7a62; }
         .search-input:focus, .sort-select:focus { border-color: #a6e3a1; box-shadow: 0 0 15px rgba(166, 227, 161, 0.2); }
         .sort-select { cursor: pointer; appearance: none; padding-right: 30px; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23829c73%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 10px top 50%; background-size: 12px auto; }
@@ -96,18 +95,32 @@
         </div>
     </nav>
 
+    <!-- ДВУХУРОВНЕВАЯ ПАНЕЛЬ СОРТИРОВКИ -->
     <div class="controls-bar" style="display: none;" id="controls-bar">
         <input type="text" id="search-input" class="search-input" placeholder="Поиск по названию..." oninput="applyFiltersAndSort()">
+        
         <div style="display: flex; gap: 10px;">
-            <select id="sort-select" class="sort-select" onchange="applyFiltersAndSort()">
-                <option value="rating_streamer">По рейтингу Стримера</option>
-                <option value="rating_me">По рейтингу Я</option>
-                <option value="rating_chat">По рейтингу Чат</option>
-                <option value="az">По алфавиту</option>
+            <!-- ПЕРВЫЙ УРОВЕНЬ: КРИТЕРИЙ -->
+            <select id="sort-select" class="sort-select" onchange="toggleRoleSelect(); applyFiltersAndSort();">
+                <option value="overall">По Итоговой оценке</option>
+                <option value="plot">По Сюжету</option>
+                <option value="visuals">По Визуалу</option>
+                <option value="music">По Музыке</option>
+                <option value="world">По Миру</option>
+                <option value="atmosphere">По Атмосфере</option>
+                <option value="az">По алфавиту (A-Z)</option>
                 <option value="date_watched">По дате просмотра</option>
                 <option value="release_year">По дате выпуска</option>
                 <option value="episodes">По количеству серий</option>
             </select>
+            
+            <!-- ВТОРОЙ УРОВЕНЬ: РОЛЬ (появляется динамически) -->
+            <select id="role-select" class="sort-select" onchange="applyFiltersAndSort()">
+                <option value="streamer">Стример</option>
+                <option value="me" class="me-element">Я</option>
+                <option value="chat">Чат</option>
+            </select>
+
             <button id="sort-dir-btn" class="sort-dir-btn" onclick="toggleSortDir()" title="Изменить направление">↓</button>
         </div>
     </div>
@@ -119,25 +132,23 @@
     <script>
         const TWITCH_CLIENT_ID = 'gko3y2nhxg0ocvte0ru970pbau3eiq';
         const REDIRECT_URI = 'https://skinnystreams04-ai.github.io/Anime/';
-        // НИКНЕЙМ ОБНОВЛЕН
         const ADMIN_USERNAME = 'skinwalker_nozxc'; 
+        const FIREBASE_BASE = 'https://skinwalkerauction-default-rtdb.europe-west1.firebasedatabase.app';
 
-        const dbUrl = "https://skinwalkerauction-default-rtdb.europe-west1.firebasedatabase.app/anime_db.json";
-        Chart.defaults.font.family = "'Neucha', cursive, sans-serif"; Chart.defaults.color = "#829c73";
-        
+        let currentUser = null;
+        let allCharts = {};
+        let globalFranchises = []; 
+        let currentSortDir = 'desc'; 
+
         const radarColors = [
             { bg: 'rgba(203, 166, 247, 0.2)', border: '#cba6f7' }, 
             { bg: 'rgba(184, 168, 123, 0.2)', border: '#b8a87b' }, 
             { bg: 'rgba(166, 227, 161, 0.2)', border: '#a6e3a1' }  
         ];
-        
-        let allCharts = {};
-        let globalFranchises = []; 
-        let currentSortDir = 'desc'; 
+        Chart.defaults.font.family = "'Neucha', cursive, sans-serif"; Chart.defaults.color = "#829c73";
 
         function loginTwitch() {
-            const authUrl = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=`;
-            window.location.href = authUrl;
+            window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=`;
         }
 
         function logoutTwitch() {
@@ -150,64 +161,40 @@
             let token = localStorage.getItem('twitch_token');
 
             if (hash && hash.includes('access_token')) {
-                const params = new URLSearchParams(hash.substring(1));
-                token = params.get('access_token');
+                token = new URLSearchParams(hash.substring(1)).get('access_token');
                 localStorage.setItem('twitch_token', token);
                 window.history.replaceState(null, null, window.location.pathname); 
             }
 
             if (token) {
                 try {
-                    const res = await fetch('https://api.twitch.tv/helix/users', {
-                        headers: { 'Client-ID': TWITCH_CLIENT_ID, 'Authorization': `Bearer ${token}` }
-                    });
-                    
+                    const res = await fetch('https://api.twitch.tv/helix/users', { headers: { 'Client-ID': TWITCH_CLIENT_ID, 'Authorization': `Bearer ${token}` } });
                     if (res.status === 401) { localStorage.removeItem('twitch_token'); return; }
-
-                    const data = await res.json();
-                    const user = data.data[0];
+                    currentUser = (await res.json()).data[0];
                     
                     document.getElementById('nav-auth').innerHTML = `
-                        <div class="user-profile">
-                            <img src="${user.profile_image_url}" alt="Avatar">
-                            <span>${user.display_name}</span>
-                            <button class="logout-btn" onclick="logoutTwitch()">Выйти</button>
-                        </div>
+                        <div class="user-profile"><img src="${currentUser.profile_image_url}"><span>${currentUser.display_name}</span><button class="logout-btn" onclick="logoutTwitch()">Выйти</button></div>
                     `;
 
-                    if (user.login.toLowerCase() === ADMIN_USERNAME.toLowerCase()) {
+                    if (currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase()) {
                         document.getElementById('admin-btn').style.display = 'flex';
-                        // ВЕШАЕМ КЛАСС АДМИНА ДЛЯ СКРЫТИЯ КОЛОНОК "Я"
                         document.body.classList.add('is-admin');
                     }
-
-                } catch (e) { console.error('Ошибка авторизации Twitch', e); }
+                } catch (e) { console.error('Ошибка Твич', e); }
             }
         }
-        checkTwitchAuth();
 
         function getScoreColor(score) {
             const numScore = Number(score);
             if (numScore === 0 || isNaN(numScore)) return '#6b7a62'; 
-            const hue = (numScore / 10) * 120; 
-            return `hsl(${hue}, 80%, 60%)`;
+            return `hsl(${(numScore / 10) * 120}, 80%, 60%)`;
         }
 
-        function highlightChart(animeId, index) {
-            if(!allCharts[animeId]) return;
-            allCharts[animeId].data.datasets.forEach((ds, i) => {
-                if (i !== index) { ds.backgroundColor = 'transparent'; ds.borderColor = 'rgba(255,255,255,0.05)'; ds.borderWidth = 1; }
-                else { ds.backgroundColor = radarColors[i].border + '40'; ds.borderColor = radarColors[i].border; ds.borderWidth = 4; }
-            });
-            allCharts[animeId].update();
-        }
-
-        function resetChart(animeId) {
-            if(!allCharts[animeId]) return;
-            allCharts[animeId].data.datasets.forEach((ds, i) => {
-                ds.backgroundColor = radarColors[i].bg; ds.borderColor = radarColors[i].border; ds.borderWidth = 2;
-            });
-            allCharts[animeId].update();
+        // Логика отображения второго списка сортировки (Роль)
+        function toggleRoleSelect() {
+            const sortVal = document.getElementById('sort-select').value;
+            const needsRole = ['overall', 'plot', 'visuals', 'music', 'world', 'atmosphere'].includes(sortVal);
+            document.getElementById('role-select').style.display = needsRole ? 'block' : 'none';
         }
 
         function toggleSortDir() {
@@ -216,108 +203,148 @@
             applyFiltersAndSort();
         }
 
-        async function loadTrophyRoom() {
-            try {
-                const response = await fetch(dbUrl);
-                const data = await response.json();
-                const room = document.getElementById('trophy-room');
+        const getAvg = (sum, count) => count > 0 ? parseFloat((sum/count).toFixed(1)) : 0;
 
-                if (!data) { room.innerHTML = "<div class='loading' style='color: #a4b09c;'>Коллекция пуста.</div>"; return; }
+        async function initApp() {
+            await checkTwitchAuth(); // Сначала логинимся, чтобы знать кто мы
+
+            try {
+                // ГРУЗИМ СРАЗУ ОБЕ БАЗЫ
+                const [animeRes, commRes] = await Promise.all([
+                    fetch(`${FIREBASE_BASE}/anime_db.json`),
+                    fetch(`${FIREBASE_BASE}/community_db.json`)
+                ]);
+                const data = await animeRes.json();
+                const commData = (await commRes.json()) || {};
+
+                const room = document.getElementById('trophy-room');
+                if (!data) { room.innerHTML = "<div class='loading'>Коллекция пуста.</div>"; return; }
                 
                 globalFranchises = []; 
 
                 for (const [franchiseId, seasonsObj] of Object.entries(data)) {
                     const seasons = Object.entries(seasonsObj).map(([seasonId, sData]) => ({seasonId, ...sData}));
+                    let totalEp = 0;
                     
-                    let totalEp = 0; let sumOverall = 0; let countOverall = 0;
-                    let sumPlot = 0, sumVis = 0, sumMus = 0, sumWor = 0, sumAtm = 0, countTheory = 0;
+                    let streamer = { overall:0, plot:0, vis:0, mus:0, wor:0, atm:0, countOv:0, countTh:0 };
+                    let chat = { overall:0, plot:0, vis:0, mus:0, wor:0, atm:0, count:0 };
+                    let me = { overall:0, plot:0, vis:0, mus:0, wor:0, atm:0, count:0 };
 
                     seasons.forEach(s => {
                         totalEp += parseInt(s.info.episodesTotal) || 0;
-                        if (s.scores && s.scores.overall > 0) { sumOverall += s.scores.overall; countOverall++; }
+                        
+                        // Считаем Стримера
+                        if (s.scores && s.scores.overall > 0) { streamer.overall += s.scores.overall; streamer.countOv++; }
                         if (s.scores && s.scores.theory) {
-                            sumPlot += s.scores.theory.plot || 0; sumVis += s.scores.theory.visuals || 0;
-                            sumMus += s.scores.theory.music || 0; sumWor += s.scores.theory.world || 0;
-                            sumAtm += s.scores.theory.atmosphere || 0; countTheory++;
+                            streamer.plot += s.scores.theory.plot || 0; streamer.vis += s.scores.theory.visuals || 0;
+                            streamer.mus += s.scores.theory.music || 0; streamer.wor += s.scores.theory.world || 0;
+                            streamer.atm += s.scores.theory.atmosphere || 0; streamer.countTh++;
+                        }
+
+                        // Считаем Чата и Себя (Я)
+                        const sComm = commData[franchiseId] && commData[franchiseId][s.seasonId] ? commData[franchiseId][s.seasonId].ratings : null;
+                        if (sComm) {
+                            for (const [uid, r] of Object.entries(sComm)) {
+                                chat.overall += r.overall || 0;
+                                chat.plot += r.theory.plot || 0; chat.vis += r.theory.visuals || 0;
+                                chat.mus += r.theory.music || 0; chat.wor += r.theory.world || 0; chat.atm += r.theory.atmosphere || 0;
+                                chat.count++;
+
+                                if (currentUser && uid === currentUser.id) {
+                                    me.overall += r.overall || 0;
+                                    me.plot += r.theory.plot || 0; me.vis += r.theory.visuals || 0;
+                                    me.mus += r.theory.music || 0; me.wor += r.theory.world || 0; me.atm += r.theory.atmosphere || 0;
+                                    me.count++;
+                                }
+                            }
                         }
                     });
 
-                    const avgOverall = countOverall > 0 ? parseFloat((sumOverall / countOverall).toFixed(1)) : 0;
-                    const avgTheorySum = countTheory > 0 ? ((sumPlot + sumVis + sumMus + sumWor + sumAtm) / countTheory) : 0;
-                    const avgTheory = countTheory > 0 ? parseFloat((avgTheorySum / 5).toFixed(1)) : 0;
+                    // Собираем математику в красивый объект
+                    const scoresObj = {
+                        streamer: {
+                            overall: getAvg(streamer.overall, streamer.countOv),
+                            plot: getAvg(streamer.plot, streamer.countTh), visuals: getAvg(streamer.vis, streamer.countTh),
+                            music: getAvg(streamer.mus, streamer.countTh), world: getAvg(streamer.wor, streamer.countTh), atmosphere: getAvg(streamer.atm, streamer.countTh)
+                        },
+                        chat: {
+                            overall: getAvg(chat.overall, chat.count),
+                            plot: getAvg(chat.plot, chat.count), visuals: getAvg(chat.vis, chat.count),
+                            music: getAvg(chat.mus, chat.count), world: getAvg(chat.wor, chat.count), atmosphere: getAvg(chat.atm, chat.count)
+                        },
+                        me: {
+                            overall: getAvg(me.overall, me.count),
+                            plot: getAvg(me.plot, me.count), visuals: getAvg(me.vis, me.count),
+                            music: getAvg(me.mus, me.count), world: getAvg(me.wor, me.count), atmosphere: getAvg(me.atm, me.count)
+                        }
+                    };
+
+                    // Средние для графиков
+                    scoresObj.streamer.avgTheory = getAvg(scoresObj.streamer.plot + scoresObj.streamer.visuals + scoresObj.streamer.music + scoresObj.streamer.world + scoresObj.streamer.atmosphere, 5);
+                    scoresObj.chat.avgTheory = getAvg(scoresObj.chat.plot + scoresObj.chat.visuals + scoresObj.chat.music + scoresObj.chat.world + scoresObj.chat.atmosphere, 5);
+                    scoresObj.me.avgTheory = getAvg(scoresObj.me.plot + scoresObj.me.visuals + scoresObj.me.music + scoresObj.me.world + scoresObj.me.atmosphere, 5);
 
                     const baseSeason = seasons[0];
-                    const seasonsCount = seasons.length;
-                    const badgeText = seasonsCount === 1 ? baseSeason.seasonTab : `${seasonsCount} СЕЗ`;
-
-                    let watchTime = 0;
-                    if (baseSeason.info.dateWatched) { watchTime = new Date(baseSeason.info.dateWatched).getTime(); }
-
-                    const chatScore = 0; 
-                    const viewerScore = 0;
-
                     globalFranchises.push({
                         id: franchiseId, title: franchiseId.replace(/_/g, ' '), coverUrl: baseSeason.coverUrl,
-                        episodesTotal: totalEp, badgeText: badgeText, overall: avgOverall, avgTheory: avgTheory,
-                        chatScore: chatScore, viewerScore: viewerScore,
-                        releaseYear: parseInt(baseSeason.info.year) || 0, watchTime: watchTime,
-                        theory: {
-                            plot: countTheory > 0 ? sumPlot/countTheory : 0, visuals: countTheory > 0 ? sumVis/countTheory : 0,
-                            music: countTheory > 0 ? sumMus/countTheory : 0, world: countTheory > 0 ? sumWor/countTheory : 0,
-                            atmosphere: countTheory > 0 ? sumAtm/countTheory : 0
-                        }
+                        episodes: totalEp, badgeText: seasons.length === 1 ? baseSeason.seasonTab : `${seasons.length} СЕЗ`,
+                        release_year: parseInt(baseSeason.info.year) || 0, date_watched: baseSeason.info.dateWatched ? new Date(baseSeason.info.dateWatched).getTime() : 0,
+                        az: franchiseId.replace(/_/g, ' ').toLowerCase(),
+                        scores: scoresObj
                     });
                 }
 
                 document.getElementById('controls-bar').style.display = 'flex';
+                toggleRoleSelect();
                 applyFiltersAndSort();
 
-            } catch (error) { console.error(error); document.getElementById('trophy-room').innerHTML = "<div class='loading' style='color: #ff5555;'>Ошибка загрузки.</div>"; }
+            } catch (e) { console.error(e); }
         }
 
         function applyFiltersAndSort() {
             const query = document.getElementById('search-input').value.toLowerCase();
             const sortVal = document.getElementById('sort-select').value;
+            const roleVal = document.getElementById('role-select').value;
             const mult = currentSortDir === 'desc' ? 1 : -1;
+            const needsRole = ['overall', 'plot', 'visuals', 'music', 'world', 'atmosphere'].includes(sortVal);
 
             let filtered = globalFranchises.filter(f => f.title.toLowerCase().includes(query));
 
-            if (sortVal === 'rating_streamer') filtered.sort((a, b) => (b.overall - a.overall) * mult);
-            if (sortVal === 'rating_me') filtered.sort((a, b) => (b.viewerScore - a.viewerScore) * mult);
-            if (sortVal === 'rating_chat') filtered.sort((a, b) => (b.chatScore - a.chatScore) * mult);
-            if (sortVal === 'episodes') filtered.sort((a, b) => (b.episodesTotal - a.episodesTotal) * mult);
-            if (sortVal === 'release_year') filtered.sort((a, b) => (b.releaseYear - a.releaseYear) * mult);
-            if (sortVal === 'date_watched') filtered.sort((a, b) => (b.watchTime - a.watchTime) * mult);
-            if (sortVal === 'az') filtered.sort((a, b) => a.title.localeCompare(b.title) * (mult === 1 ? 1 : -1));
+            filtered.sort((a, b) => {
+                let valA, valB;
+                if (needsRole) {
+                    valA = a.scores[roleVal][sortVal]; valB = b.scores[roleVal][sortVal];
+                } else {
+                    valA = a[sortVal]; valB = b[sortVal];
+                }
+
+                if (typeof valA === 'string') return valA.localeCompare(valB) * (mult === 1 ? 1 : -1);
+                return (valB - valA) * mult;
+            });
 
             renderCards(filtered);
         }
 
-        function renderCards(franchisesArray) {
+        function renderCards(arr) {
             const room = document.getElementById('trophy-room');
-            Object.values(allCharts).forEach(chart => chart.destroy());
-            allCharts = {};
-            room.innerHTML = "";
+            Object.values(allCharts).forEach(chart => chart.destroy()); allCharts = {}; room.innerHTML = "";
+            if (arr.length === 0) { room.innerHTML = "<div class='loading'>Ничего не найдено...</div>"; return; }
 
-            if (franchisesArray.length === 0) { room.innerHTML = "<div class='loading' style='color: #6b7a62;'>По твоему запросу ничего не найдено...</div>"; return; }
-
-            franchisesArray.forEach(f => {
+            arr.forEach(f => {
                 const detailsLink = `Anime-Page.html?id=${encodeURIComponent(f.id)}`;
-                const cOverall = getScoreColor(f.overall); const cTheory = getScoreColor(f.avgTheory);
-                const cChat = getScoreColor(f.chatScore); const cViewer = getScoreColor(f.viewerScore);
+                const s = f.scores;
 
-                // ОБРАТИ ВНИМАНИЕ: ДОБАВЛЕН КЛАСС me-element ДЛЯ БЛОКОВ "Я"
                 const cardHtml = `
                 <div class="card-container" id="card-${f.id}" onmouseleave="this.classList.remove('is-flipped')">
                     <div class="card-inner">
                         <div class="card-face card-front" style="background-image: url('${f.coverUrl}');" onclick="if(!event.target.closest('.flip-btn')) window.location.href='${detailsLink}'">
-                            <div class="ep-badge">${f.badgeText} ${f.episodesTotal}EP</div>
-                            <div class="flip-btn" onmouseenter="document.getElementById('card-${f.id}').classList.add('is-flipped')" title="Критерии"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.13 15.57a10 10 0 1 0 3.1-8.91L2 9M2.5 22v-6h6M21.87 8.43a10 10 0 1 0-3.1 8.91l3.23-2.34"/></svg></div>
+                            <div class="ep-badge">${f.badgeText} ${f.episodes}EP</div>
+                            <div class="flip-btn" onmouseenter="document.getElementById('card-${f.id}').classList.add('is-flipped')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.13 15.57a10 10 0 1 0 3.1-8.91L2 9M2.5 22v-6h6M21.87 8.43a10 10 0 1 0-3.1 8.91l3.23-2.34"/></svg></div>
                             <div class="front-overlay">
                                 <div class="scores-row">
-                                    <div class="score-box"><div class="score-label streamer">Стример</div><div class="main-score" style="color:${cOverall};">${f.overall}<span>/10</span></div></div>
-                                    <div class="score-box me-element"><div class="score-label me">Я</div><div class="main-score" style="color:${cViewer};">${f.viewerScore}<span>/10</span></div></div>
-                                    <div class="score-box"><div class="score-label chat">Чат</div><div class="main-score" style="color:${cChat};">${f.chatScore}<span>/10</span></div></div>
+                                    <div class="score-box"><div class="score-label streamer">Стример</div><div class="main-score" style="color:${getScoreColor(s.streamer.overall)};">${s.streamer.overall}<span>/10</span></div></div>
+                                    <div class="score-box me-element"><div class="score-label me">Я</div><div class="main-score" style="color:${getScoreColor(s.me.overall)};">${s.me.overall}<span>/10</span></div></div>
+                                    <div class="score-box"><div class="score-label chat">Чат</div><div class="main-score" style="color:${getScoreColor(s.chat.overall)};">${s.chat.overall}<span>/10</span></div></div>
                                 </div>
                                 <div class="divider"></div>
                                 <div class="anime-title">${f.title}</div>
@@ -332,9 +359,9 @@
                                 <div class="legend-item" style="color: ${radarColors[1].border};" onmouseover="highlightChart('${f.id}', 1)" onmouseout="resetChart('${f.id}')"><div class="dot" style="background: ${radarColors[1].border};"></div>Чат</div>
                             </div>
                             <div class="theory-container">
-                                <div class="theory-row"><div class="theory-label"><span style="color: #fff; text-shadow: 1px 1px 2px #000;">Стример</span><span style="color: ${cTheory};">${f.avgTheory}/10</span></div><div class="theory-bar-bg"><div class="theory-bar-fill" style="width: ${f.avgTheory * 10}%; background: ${cTheory}; box-shadow: 0 0 8px ${cTheory}99;"></div></div></div>
-                                <div class="theory-row"><div class="theory-label"><span style="color: #fff; text-shadow: 1px 1px 2px #000;">Чат</span><span style="color: ${cChat};">${f.chatScore}/10</span></div><div class="theory-bar-bg"><div class="theory-bar-fill" style="width: ${f.chatScore * 10}%; background: ${cChat};"></div></div></div>
-                                <div class="theory-row me-element"><div class="theory-label"><span style="color: #fff; text-shadow: 1px 1px 2px #000;">Я</span><span style="color: ${cViewer};">${f.viewerScore}/10</span></div><div class="theory-bar-bg"><div class="theory-bar-fill" style="width: ${f.viewerScore * 10}%; background: ${cViewer};"></div></div></div>
+                                <div class="theory-row"><div class="theory-label"><span style="color: #fff;">Стример</span><span style="color: ${getScoreColor(s.streamer.avgTheory)};">${s.streamer.avgTheory}/10</span></div><div class="theory-bar-bg"><div class="theory-bar-fill" style="width: ${s.streamer.avgTheory * 10}%; background: ${getScoreColor(s.streamer.avgTheory)};"></div></div></div>
+                                <div class="theory-row"><div class="theory-label"><span style="color: #fff;">Чат</span><span style="color: ${getScoreColor(s.chat.avgTheory)};">${s.chat.avgTheory}/10</span></div><div class="theory-bar-bg"><div class="theory-bar-fill" style="width: ${s.chat.avgTheory * 10}%; background: ${getScoreColor(s.chat.avgTheory)};"></div></div></div>
+                                <div class="theory-row me-element"><div class="theory-label"><span style="color: #fff;">Я</span><span style="color: ${getScoreColor(s.me.avgTheory)};">${s.me.avgTheory}/10</span></div><div class="theory-bar-bg"><div class="theory-bar-fill" style="width: ${s.me.avgTheory * 10}%; background: ${getScoreColor(s.me.avgTheory)};"></div></div></div>
                             </div>
                             <button onclick="window.location.href='${detailsLink}'" style="margin-top: 10px; width: 100%; background: #222b20; border: 1px solid #4a5c41; color: #a4b09c; padding: 6px; font-family: 'Neucha', cursive; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase;">Медиатека ▶</button>
                         </div>
@@ -343,26 +370,37 @@
                 `;
                 room.insertAdjacentHTML('beforeend', cardHtml);
 
-                const ctx = document.getElementById(`chart-${f.id}`).getContext('2d');
-                allCharts[f.id] = new Chart(ctx, {
+                allCharts[f.id] = new Chart(document.getElementById(`chart-${f.id}`).getContext('2d'), {
                     type: 'radar',
                     data: {
                         labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Атмосфера'],
                         datasets: [
-                            { label: 'Стример', data: [f.theory.plot, f.theory.visuals, f.theory.music, f.theory.world, f.theory.atmosphere], backgroundColor: radarColors[0].bg, borderColor: radarColors[0].border, pointBackgroundColor: radarColors[0].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 },
-                            { label: 'Чат', data: [0, 0, 0, 0, 0], backgroundColor: radarColors[1].bg, borderColor: radarColors[1].border, pointBackgroundColor: radarColors[1].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 },
-                            { label: 'Я', data: [0, 0, 0, 0, 0], backgroundColor: radarColors[2].bg, borderColor: radarColors[2].border, pointBackgroundColor: radarColors[2].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 }
+                            { data: [s.streamer.plot, s.streamer.visuals, s.streamer.music, s.streamer.world, s.streamer.atmosphere], backgroundColor: radarColors[0].bg, borderColor: radarColors[0].border, pointBackgroundColor: radarColors[0].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 },
+                            { data: [s.chat.plot, s.chat.visuals, s.chat.music, s.chat.world, s.chat.atmosphere], backgroundColor: radarColors[1].bg, borderColor: radarColors[1].border, pointBackgroundColor: radarColors[1].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 },
+                            { data: [s.me.plot, s.me.visuals, s.me.music, s.me.world, s.me.atmosphere], backgroundColor: radarColors[2].bg, borderColor: radarColors[2].border, pointBackgroundColor: radarColors[2].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 }
                         ]
                     },
-                    options: { 
-                        responsive: true, maintainAspectRatio: false, 
-                        plugins: { legend: { display: false }, tooltip: { filter: function(item) { return item.raw > 0; }, displayColors: false } }, 
-                        scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: '#283325' }, angleLines: { color: '#283325' }, pointLabels: { font: { size: 10, weight: 'bold' }, color: '#c4d1b8' } } } 
-                    }
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { filter: function(item) { return item.raw > 0; }, displayColors: false } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: '#283325' }, angleLines: { color: '#283325' }, pointLabels: { font: { size: 10, weight: 'bold' }, color: '#c4d1b8' } } } }
                 });
             });
         }
-        loadTrophyRoom();
+        
+        function highlightChart(animeId, index) {
+            if(!allCharts[animeId]) return;
+            allCharts[animeId].data.datasets.forEach((ds, i) => {
+                if (i !== index) { ds.backgroundColor = 'transparent'; ds.borderColor = 'rgba(255,255,255,0.05)'; ds.borderWidth = 1; }
+                else { ds.backgroundColor = radarColors[i].border + '40'; ds.borderColor = radarColors[i].border; ds.borderWidth = 4; }
+            });
+            allCharts[animeId].update();
+        }
+
+        function resetChart(animeId) {
+            if(!allCharts[animeId]) return;
+            allCharts[animeId].data.datasets.forEach((ds, i) => { ds.backgroundColor = radarColors[i].bg; ds.borderColor = radarColors[i].border; ds.borderWidth = 2; });
+            allCharts[animeId].update();
+        }
+
+        initApp();
     </script>
 </body>
 </html>
