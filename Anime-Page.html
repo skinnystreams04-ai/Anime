@@ -54,8 +54,6 @@
         .score-label.streamer { color: #cba6f7; border-bottom-color: rgba(203, 166, 247, 0.3); }
         .score-label.me { color: #a6e3a1; border-bottom-color: rgba(166, 227, 161, 0.3); }
         .score-label.chat { color: #b8a87b; border-bottom-color: rgba(184, 168, 123, 0.3); }
-        
-        /* ОТСТУПЫ ДЛЯ ЦИФР УВЕЛИЧЕНЫ */
         .main-score { font-size: 32px; font-weight: bold; line-height: 1; letter-spacing: 2px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 4px #000; text-align: center; }
         .main-score span { font-size: 14px; color: #c4d1b8; text-shadow: none; letter-spacing: normal; }
 
@@ -65,7 +63,7 @@
         .legend-col { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.2s; padding: 5px; border-radius: 6px; flex: 1; }
         .legend-col:hover { background: rgba(255,255,255,0.05); transform: scale(1.02); }
         .legend-title { display: flex; align-items: center; gap: 5px; font-size: 14px; font-weight: bold; text-transform: uppercase; text-shadow: 1px 1px 2px #000; margin-bottom: 6px;}
-        .legend-score { font-size: 22px; font-weight: bold; text-shadow: 1px 1px 2px #000; margin-bottom: 5px;}
+        .legend-score { font-size: 22px; font-weight: bold; text-shadow: 1px 1px 2px #000; margin-bottom: 5px; transition: color 0.3s;}
         .dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid #0b0d0a; }
 
         .legend-breakdown { width: 100%; display: flex; flex-direction: column; gap: 5px; border-top: 1px dashed rgba(74, 92, 65, 0.6); padding-top: 8px; margin-top: 5px;}
@@ -75,25 +73,45 @@
         .rate-btn { width: 100%; background: rgba(166, 227, 161, 0.1); border: 1px solid #a6e3a1; color: #a6e3a1; padding: 12px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 20px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; margin-top: 15px; box-shadow: 0 0 10px rgba(166, 227, 161, 0.1); }
         .rate-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 20px rgba(166, 227, 161, 0.5); }
 
+        /* ОБНОВЛЕННЫЕ СТИЛИ КОММЕНТАРИЕВ И ОТВЕТОВ */
         .comment-input-area { background: rgba(0,0,0,0.3); border: 1px solid #283325; border-radius: 8px; padding: 15px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .comment-textarea { width: 100%; background: #121612; border: 1px solid #4a5c41; color: #c4d1b8; border-radius: 6px; padding: 10px; font-family: 'Neucha', cursive; font-size: 16px; outline: none; transition: 0.2s; resize: vertical; min-height: 60px; box-sizing: border-box; }
         .comment-textarea:focus { border-color: #a6e3a1; box-shadow: 0 0 10px rgba(166, 227, 161, 0.2); }
         .send-btn { align-self: flex-end; background: #1a2618; border: 1px solid #a6e3a1; color: #a6e3a1; padding: 8px 20px; font-family: 'Neucha', cursive; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; text-transform: uppercase; }
         .send-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 15px rgba(166, 227, 161, 0.4); }
         
-        .comments-list { display: flex; flex-direction: column; gap: 15px; }
-        .comment-item { display: flex; gap: 15px; background: rgba(14, 17, 13, 0.5); padding: 15px; border-radius: 8px; border: 1px solid #283325; }
+        .comments-list { display: flex; flex-direction: column; gap: 20px; }
+        .comment-wrapper { display: flex; flex-direction: column; gap: 10px; }
+        .comment-item { position: relative; display: flex; gap: 15px; background: rgba(14, 17, 13, 0.5); padding: 15px; border-radius: 8px; border: 1px solid #283325; }
         .comment-avatar { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #4a5c41; }
-        .comment-body { flex: 1; }
+        .comment-body { flex: 1; padding-right: 80px; } /* Место под оценки справа */
         .comment-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
         .comment-author { font-family: sans-serif; font-weight: bold; color: #a6e3a1; font-size: 14px; }
         .comment-date { font-size: 12px; color: #6b7a62; }
-        .comment-text { font-size: 15px; color: #c4d1b8; line-height: 1.4; word-break: break-word; white-space: pre-wrap; }
-        .comment-actions { margin-top: 10px; display: flex; gap: 10px; }
-        .comment-actions button { background: transparent; border: none; cursor: pointer; font-family: 'Neucha', cursive; font-size: 14px; text-transform: uppercase; transition: 0.2s; }
-        .comment-actions .btn-edit { color: #829c73; } .comment-actions .btn-edit:hover { color: #a6e3a1; }
-        .comment-actions .btn-del { color: #ff5555; } .comment-actions .btn-del:hover { text-shadow: 0 0 5px rgba(255,85,85,0.5); }
+        .comment-text { font-size: 15px; color: #c4d1b8; line-height: 1.4; word-break: break-word; white-space: pre-wrap; margin-bottom: 10px; }
         
+        .comment-actions { display: flex; gap: 12px; align-items: center; }
+        .comment-actions button { background: transparent; border: none; cursor: pointer; font-family: 'Neucha', cursive; font-size: 13px; text-transform: uppercase; transition: 0.2s; padding: 0; font-weight: bold; }
+        .btn-reply { color: #a4b09c; } .btn-reply:hover { color: #a6e3a1; }
+        .btn-edit { color: #829c73; } .btn-edit:hover { color: #cba6f7; }
+        .btn-del { color: #ff5555; } .btn-del:hover { text-shadow: 0 0 5px rgba(255,85,85,0.5); }
+
+        /* ВЕТКИ ОТВЕТОВ */
+        .replies-list { display: flex; flex-direction: column; gap: 10px; margin-left: 55px; border-left: 2px solid #283325; padding-left: 15px; }
+        .reply-item { display: flex; gap: 12px; background: rgba(11, 13, 10, 0.6); padding: 10px 15px; border-radius: 8px; border: 1px solid rgba(40, 51, 37, 0.5); }
+        .reply-avatar { width: 30px; height: 30px; border-radius: 50%; border: 1px solid #4a5c41; }
+        .reply-input-wrapper { display: none; margin-left: 55px; margin-top: 5px; flex-direction: column; gap: 8px; }
+
+        /* ОЦЕНКИ В КОММЕНТАРИЯХ (СТИЛЬ РЗТ) */
+        .comment-top-right { position: absolute; top: 15px; right: 15px; display: flex; flex-direction: column; align-items: flex-end; }
+        .cr-overall { font-size: 26px; font-weight: bold; line-height: 1; text-shadow: 1px 1px 2px #000; font-family: sans-serif; letter-spacing: -1px; }
+        .cr-theory { display: flex; gap: 5px; font-family: sans-serif; font-size: 13px; font-weight: bold; margin-top: 5px; }
+        .cr-theory span { position: relative; cursor: help; text-shadow: 1px 1px 1px #000; transition: transform 0.2s; padding: 2px; }
+        .cr-theory span:hover { transform: scale(1.2); z-index: 10; }
+        /* Красивый Тултип */
+        .cr-theory span::after { content: attr(data-title); position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%); background: #121612; color: #c4d1b8; padding: 4px 8px; border-radius: 4px; font-size: 12px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s; border: 1px solid #4a5c41; font-weight: normal; font-family: 'Neucha', cursive; letter-spacing: 1px; }
+        .cr-theory span:hover::after { opacity: 1; }
+
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .modal-box { background: linear-gradient(180deg, #101411 0%, #080a08 100%); border: 2px solid #a6e3a1; border-radius: 12px; padding: 30px; width: 750px; box-shadow: 0 0 30px rgba(166, 227, 161, 0.2); position: relative; }
         .modal-title { color: #a6e3a1; font-size: 24px; text-transform: uppercase; margin: 0 0 20px 0; text-align: center; font-weight: bold; letter-spacing: 1px;}
@@ -172,7 +190,7 @@
                 <div class="widget-header"><div class="widget-title">Комментарии</div></div>
                 <div class="widget-content">
                     <div class="comment-input-area">
-                        <textarea id="comment-text" class="comment-textarea" placeholder="Напиши, что думаешь об этом сезоне..."></textarea>
+                        <textarea id="comment-text" class="comment-textarea" placeholder="Напиши свою рецензию на этот сезон..."></textarea>
                         <button class="send-btn" id="send-comment-btn" onclick="postComment()">Отправить</button>
                     </div>
                     <div class="comments-list" id="comments-list">
@@ -286,9 +304,7 @@
             { bg: 'rgba(166, 227, 161, 0.2)', border: '#a6e3a1' }  
         ];
 
-        if (typeof Chart !== 'undefined') {
-            Chart.defaults.font.family = "'Neucha', cursive, sans-serif"; Chart.defaults.color = "#829c73";
-        }
+        if (typeof Chart !== 'undefined') { Chart.defaults.font.family = "'Neucha', cursive, sans-serif"; Chart.defaults.color = "#829c73"; }
 
         const safeNum = (v) => Number(v) || 0;
         const calcTheoryAvg = (t) => {
@@ -297,10 +313,7 @@
             return sum > 0 ? parseFloat((sum / 5).toFixed(1)) : 0;
         };
 
-        // ПРИНУДИТЕЛЬНОЕ ОБНОВЛЕНИЕ ПРИ ВОЗВРАТЕ НА СТРАНИЦУ
-        window.addEventListener('pageshow', (event) => {
-            if (event.persisted) { loadAnimeData(); }
-        });
+        window.addEventListener('pageshow', (event) => { if (event.persisted) { loadAnimeData(); } });
 
         function showToast(msg, isError = false) {
             const toast = document.getElementById('toast');
@@ -427,6 +440,27 @@
             } catch(e) { console.error(e); }
         }
 
+        function toggleReplyBox(commentId) {
+            const box = document.getElementById(`reply-box-${commentId}`);
+            box.style.display = box.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        async function postReply(commentId) {
+            if (!currentUser) { showToast("Сначала войди через Twitch!", true); return; }
+            const inputEl = document.getElementById(`reply-text-${commentId}`);
+            const text = inputEl.value.trim();
+            if (!text) return;
+
+            const replyId = Date.now() + '_' + currentUser.id;
+            const replyData = { userId: currentUser.id, displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, text: text, timestamp: Date.now() };
+
+            try {
+                const res = await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/comments/${commentId}/replies/${replyId}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(replyData) });
+                if (!res.ok) throw new Error("Server error");
+                showToast("💬 Ответ добавлен!"); inputEl.value = ''; toggleReplyBox(commentId); await loadComments();
+            } catch(e) { showToast("❌ Ошибка при отправке ответа!", true); }
+        }
+
         function renderComments() {
             const list = document.getElementById('comments-list'); list.innerHTML = '';
             const arr = Object.entries(currentComments).map(([id, data]) => ({id, ...data})).sort((a,b) => b.timestamp - a.timestamp);
@@ -435,16 +469,64 @@
 
             arr.forEach(c => {
                 const isMe = currentUser && currentUser.id === c.id;
-                const isStreamer = currentUser && currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
+                const isAdminViewer = currentUser && currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
                 const d = new Date(c.timestamp);
                 const dateStr = `${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')} в ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
                 
-                let actions = '';
-                if (isMe || isStreamer) {
-                    actions = `<div class="comment-actions">${isMe ? `<button class="btn-edit" onclick="editComment('${c.id}')">Изменить</button>` : ''}<button class="btn-del" onclick="deleteComment('${c.id}')">Удалить</button></div>`;
+                let actions = `<div class="comment-actions">
+                                 <button class="btn-reply" onclick="toggleReplyBox('${c.id}')">Ответить</button>
+                                 ${isMe ? `<button class="btn-edit" onclick="editComment('${c.id}')">Изменить</button>` : ''}
+                                 ${isMe || isAdminViewer ? `<button class="btn-del" onclick="deleteComment('${c.id}')">Удалить</button>` : ''}
+                               </div>`;
+
+                // РЕНДЕР ОЦЕНОК В СТИЛЕ РЗТ
+                let ratingHtml = '';
+                const isAuthorAdmin = c.displayName.toLowerCase() === ADMIN_USERNAME.toLowerCase();
+                const userRating = isAuthorAdmin ? (franchiseData[currentSeasonKey].scores || null) : (currentCommunityRatings[c.id] || null);
+
+                if (userRating && userRating.overall > 0) {
+                    const ovr = userRating.overall;
+                    const t = userRating.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
+                    ratingHtml = `
+                    <div class="comment-top-right">
+                        <div class="cr-overall" style="color:${getScoreColor(ovr)}">${ovr}</div>
+                        <div class="cr-theory">
+                            <span style="color:${getScoreColor(t.plot)}" data-title="Сюжет: ${t.plot}">${t.plot}</span>
+                            <span style="color:${getScoreColor(t.visuals)}" data-title="Визуал: ${t.visuals}">${t.visuals}</span>
+                            <span style="color:${getScoreColor(t.music)}" data-title="Музыка: ${t.music}">${t.music}</span>
+                            <span style="color:${getScoreColor(t.world)}" data-title="Мир: ${t.world}">${t.world}</span>
+                            <span style="color:${getScoreColor(t.atmosphere)}" data-title="Атмосфера: ${t.atmosphere}">${t.atmosphere}</span>
+                        </div>
+                    </div>`;
                 }
 
-                list.innerHTML += `<div class="comment-item"><img src="${c.profileImage}" class="comment-avatar"><div class="comment-body"><div class="comment-header"><div class="comment-author">${c.displayName}</div><div class="comment-date">${dateStr}</div></div><div class="comment-text">${c.text}</div>${actions}</div></div>`;
+                // РЕНДЕР ОТВЕТОВ
+                let repliesHtml = '';
+                if (c.replies) {
+                    const replArr = Object.entries(c.replies).map(([rid, rdata]) => ({rid, ...rdata})).sort((a,b)=>a.timestamp - b.timestamp);
+                    repliesHtml = `<div class="replies-list">` + replArr.map(rep => {
+                        const rd = new Date(rep.timestamp); const rDateStr = `${rd.getDate().toString().padStart(2,'0')}.${(rd.getMonth()+1).toString().padStart(2,'0')} в ${rd.getHours().toString().padStart(2,'0')}:${rd.getMinutes().toString().padStart(2,'0')}`;
+                        return `<div class="reply-item"><img src="${rep.profileImage}" class="reply-avatar"><div class="comment-body" style="padding-right:0;"><div class="comment-header"><div class="comment-author">${rep.displayName}</div><div class="comment-date">${rDateStr}</div></div><div class="comment-text" style="margin-bottom:0; font-size:14px;">${rep.text}</div></div></div>`;
+                    }).join('') + `</div>`;
+                }
+
+                list.innerHTML += `
+                <div class="comment-wrapper">
+                    <div class="comment-item">
+                        <img src="${c.profileImage}" class="comment-avatar">
+                        <div class="comment-body">
+                            <div class="comment-header"><div class="comment-author">${c.displayName}</div><div class="comment-date">${dateStr}</div></div>
+                            <div class="comment-text">${c.text}</div>
+                            ${actions}
+                        </div>
+                        ${ratingHtml}
+                    </div>
+                    ${repliesHtml}
+                    <div class="reply-input-wrapper" id="reply-box-${c.id}">
+                        <textarea id="reply-text-${c.id}" class="comment-textarea" style="min-height: 40px;" placeholder="Написать ответ..."></textarea>
+                        <button class="send-btn" style="padding: 6px 15px; font-size: 14px;" onclick="postReply('${c.id}')">Отправить ответ</button>
+                    </div>
+                </div>`;
             });
 
             if (currentUser && currentComments[currentUser.id]) {
@@ -455,16 +537,16 @@
         }
 
         async function postComment() {
-            if (!currentUser) { alert("Сначала нужно войти через Twitch!"); return; }
+            if (!currentUser) { showToast("Сначала войди через Twitch!", true); return; }
             const text = document.getElementById('comment-text').value.trim();
             if (!text) return;
 
             const btn = document.getElementById('send-comment-btn');
             btn.innerText = "ОТПРАВКА..."; btn.style.pointerEvents = "none";
             try {
-                const res = await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/comments/${currentUser.id}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, text: text, timestamp: Date.now() }) });
+                const res = await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/comments/${currentUser.id}.json`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, text: text, timestamp: Date.now() }) });
                 if (!res.ok) throw new Error("Server error");
-                showToast("💬 Комментарий добавлен!"); await loadComments();
+                showToast("💬 Рецензия добавлена!"); await loadComments();
             } catch(e) { showToast("❌ Ошибка при отправке!", true); }
             btn.style.pointerEvents = "auto";
         }
@@ -577,8 +659,7 @@
             document.getElementById('synopsis-display').innerText = anime.info.description;
             if(anime.info.genres) { document.getElementById('genres-display').innerHTML = anime.info.genres.map(g => `<span class="genre-badge">${g}</span>`).join(''); }
 
-            await loadComments(); 
-
+            // Вытягиваем оценки ЧАТА
             const commRes = await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(seasonKey)}/ratings.json`, { cache: 'no-store' });
             if (!commRes.ok) throw new Error(`Ошибка загрузки оценок: HTTP ${commRes.status}`);
             currentCommunityRatings = (await commRes.json()) || {};
@@ -608,14 +689,18 @@
             const tStr = strScores.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
             const strTheoryAvg = calcTheoryAvg(tStr);
 
+            // Окрашиваем средние баллы СТАТИСТИКИ (обновлено)
             document.getElementById('streamer-score-val').innerHTML = `${strOvr}<span> / 10</span>`; document.getElementById('streamer-score-val').style.color = getScoreColor(strOvr);
-            document.getElementById('avg-streamer-score').innerText = strTheoryAvg; document.getElementById('breakdown-streamer').innerHTML = generateBreakdownHtml(tStr);
+            document.getElementById('avg-streamer-score').innerText = strTheoryAvg; document.getElementById('avg-streamer-score').style.color = getScoreColor(strTheoryAvg);
+            document.getElementById('breakdown-streamer').innerHTML = generateBreakdownHtml(tStr);
 
             document.getElementById('chat-score-val').innerHTML = `${chatOvr}<span> / 10</span>`; document.getElementById('chat-score-val').style.color = getScoreColor(chatOvr);
-            document.getElementById('avg-chat-score').innerText = chatTheoryAvg; document.getElementById('breakdown-chat').innerHTML = generateBreakdownHtml(tChat);
+            document.getElementById('avg-chat-score').innerText = chatTheoryAvg; document.getElementById('avg-chat-score').style.color = getScoreColor(chatTheoryAvg);
+            document.getElementById('breakdown-chat').innerHTML = generateBreakdownHtml(tChat);
 
             document.getElementById('my-score-display').innerHTML = `${meOvr}<span> / 10</span>`; document.getElementById('my-score-display').style.color = getScoreColor(meOvr);
-            document.getElementById('avg-viewer-score').innerText = meTheoryAvg; document.getElementById('breakdown-viewer').innerHTML = generateBreakdownHtml(tMe);
+            document.getElementById('avg-viewer-score').innerText = meTheoryAvg; document.getElementById('avg-viewer-score').style.color = getScoreColor(meTheoryAvg);
+            document.getElementById('breakdown-viewer').innerHTML = generateBreakdownHtml(tMe);
             
             if (radarChart) {
                 radarChart.data.datasets[0].data = [safeNum(tStr.plot), safeNum(tStr.visuals), safeNum(tStr.music), safeNum(tStr.world), safeNum(tStr.atmosphere)]; 
@@ -630,6 +715,9 @@
                 let hasRated = (isStreamer && strOvr > 0) || (!isStreamer && meOvr > 0);
                 rateBtn.innerText = hasRated ? "Изменить оценку" : "Оценить тайтл";
             } else { rateBtn.innerText = "Оценить тайтл"; }
+
+            // Рендерим комменты с оценками после загрузки всех данных!
+            await loadComments(); 
         }
 
         window.onload = loadAnimeData;
