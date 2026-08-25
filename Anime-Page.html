@@ -18,12 +18,12 @@
         .nav-auth .twitch-btn { background: #6441a5; color: white; padding: 8px 16px; border-radius: 6px; font-family: sans-serif; font-size: 14px; font-weight: bold; cursor: pointer; border: 1px solid #4a307a; transition: 0.2s; }
         .nav-auth .twitch-btn:hover { background: #7d5bbe; box-shadow: 0 0 15px rgba(100, 65, 165, 0.6); }
         
-        /* СТИЛИ РОЛЕЙ ДЛЯ ДЕТАЛЬНОЙ СТРАНИЦЫ И ПРОФИЛЯ */
+        /* ЧИСТЫЕ СТИЛИ РОЛЕЙ */
         .role-badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-family: sans-serif; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
         .role-streamer { background: linear-gradient(45deg, #6441a5, #cba6f7); color: #fff; box-shadow: 0 0 10px rgba(203, 166, 247, 0.4); }
         .role-sub { background: linear-gradient(45deg, #d4af37, #f3e5ab); color: #121612; box-shadow: 0 0 10px rgba(212, 175, 55, 0.4); }
         .role-vip { background: linear-gradient(45deg, #e05e85, #f5c2e7); color: #fff; box-shadow: 0 0 10px rgba(245, 194, 231, 0.4); }
-        .role-follow { background: linear-gradient(45deg, #283325, #4a5c41); color: #a6e3a1; }
+        .role-f { background: linear-gradient(45deg, #283325, #4a5c41); color: #a6e3a1; }
 
         .user-profile { display: flex; align-items: center; gap: 15px; background: rgba(14, 17, 13, 0.8); padding: 8px 20px 8px 8px; border-radius: 30px; border: 1px solid #283325; box-shadow: 0 4px 15px rgba(0,0,0,0.5);}
         .user-profile img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid #4a5c41; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); }
@@ -81,12 +81,14 @@
         .rate-btn { width: 100%; background: rgba(166, 227, 161, 0.1); border: 1px solid #a6e3a1; color: #a6e3a1; padding: 12px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 20px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; margin-top: 15px; box-shadow: 0 0 10px rgba(166, 227, 161, 0.1); }
         .rate-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 20px rgba(166, 227, 161, 0.5); }
 
+        /* ВВОД КОММЕНТАРИЯ */
         .comment-input-area { background: rgba(0,0,0,0.3); border: 1px solid #283325; border-radius: 12px; padding: 25px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
         .comment-textarea { width: 100%; background: #121612; border: 1px solid #4a5c41; color: #c4d1b8; border-radius: 8px; padding: 15px; font-family: 'Neucha', cursive; font-size: 18px; outline: none; transition: 0.2s; resize: vertical; min-height: 100px; box-sizing: border-box; }
         .comment-textarea:focus { border-color: #a6e3a1; box-shadow: 0 0 15px rgba(166, 227, 161, 0.2); }
         .send-btn { align-self: flex-end; background: #1a2618; border: 1px solid #a6e3a1; color: #a6e3a1; padding: 10px 30px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px;}
         .send-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 15px rgba(166, 227, 161, 0.4); }
         
+        /* ВЕТКИ И КОММЕНТАРИИ */
         .comments-list { display: flex; flex-direction: column; gap: 30px; }
         .comment-wrapper { display: flex; flex-direction: column; gap: 15px; }
         
@@ -327,6 +329,9 @@
         
         let editingTarget = { type: null, id: null, parentId: null }; 
 
+        // ГЛОБАЛЬНАЯ БАЗА ПОЛЬЗОВАТЕЛЕЙ ИЗ НОВОЙ ВЕТКИ
+        window.globalUsersDB = {};
+
         const radarColors = [
             { bg: 'rgba(203, 166, 247, 0.2)', border: '#cba6f7' }, 
             { bg: 'rgba(184, 168, 123, 0.2)', border: '#b8a87b' }, 
@@ -355,21 +360,29 @@
         function loginTwitch() { window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=`; }
         function logoutTwitch() { try { localStorage.removeItem('twitch_token'); } catch(e){} location.reload(); }
 
-        // ЗАГРУЗКА ИНФЫ ИЗ БАЗЫ АУКЦИОНА ДЛЯ РОЛЕЙ И ЗОЛОТА
-        function getUserInfo(displayName) {
-            const lowerName = displayName.toLowerCase();
-            if (lowerName === ADMIN_USERNAME.toLowerCase()) return { badge: `<span class="role-badge role-streamer">СТРИМЕР</span>`, color: '#cba6f7', gold: 0, tickets: 0 };
+        // ЧИСТАЯ ФУНКЦИЯ ПОЛУЧЕНИЯ ДАННЫХ ПОЛЬЗОВАТЕЛЯ ИЗ НОВОЙ БАЗЫ (БЕЗ ХАРДКОДА СТРИМЕРА ДЛЯ РОЛЕЙ)
+        function getUserInfo(username, fallbackTwitchColor) {
+            const defaultColor = fallbackTwitchColor || '#a6e3a1';
+            const lowerName = username.toLowerCase();
+            const dbUser = window.globalUsersDB[lowerName];
+
+            let r = "F"; let g = 0; let t = 0; let c = defaultColor;
             
-            let r = "F"; let g = 0; let t = 0;
-            if (window.playersData && window.playersData[lowerName]) {
-                r = window.playersData[lowerName].role || "F";
-                g = window.playersData[lowerName].wallet_gold || 0;
-                t = window.playersData[lowerName].wallet_tickets || 0;
+            // Если есть в базе — берем оттуда
+            if (dbUser) {
+                if (dbUser.role) r = dbUser.role.toUpperCase();
+                if (dbUser.wallet_gold) g = dbUser.wallet_gold;
+                if (dbUser.wallet_tickets) t = dbUser.wallet_tickets;
+                if (dbUser.color && dbUser.color.trim() !== "") c = dbUser.color;
             }
 
-            if (r === 'SUB' || r === 'SUBSCRIBER') return { badge: `<span class="role-badge role-sub">SUB</span>`, color: '#f3e5ab', gold: g, tickets: t };
-            if (r === 'VIP') return { badge: `<span class="role-badge role-vip">VIP</span>`, color: '#f5c2e7', gold: g, tickets: t };
-            return { badge: `<span class="role-badge role-follow">FOLLOW</span>`, color: '#a6e3a1', gold: g, tickets: t };
+            // Генерируем HTML бейджа строго по роли
+            let badgeHtml = `<span class="role-badge role-f">FOLLOW</span>`;
+            if (r === 'SUB' || r === 'SUBSCRIBER') badgeHtml = `<span class="role-badge role-sub">SUB</span>`;
+            else if (r === 'VIP') badgeHtml = `<span class="role-badge role-vip">VIP</span>`;
+            else if (r !== 'F') badgeHtml = `<span class="role-badge role-f">${r}</span>`;
+
+            return { role: r, gold: g, tickets: t, color: c, badge: badgeHtml };
         }
 
         async function checkTwitchAuth() {
@@ -389,22 +402,21 @@
                     if (res.status === 401) { try { localStorage.removeItem('twitch_token'); } catch(e){} return; }
                     currentUser = (await res.json()).data[0];
 
-                    // Достаем цвет ника
+                    let twitchColor = null;
                     try {
                         const colorRes = await fetch(`https://api.twitch.tv/helix/chat/color?user_id=${currentUser.id}`, { headers: { 'Client-ID': TWITCH_CLIENT_ID, 'Authorization': `Bearer ${token}` } });
                         const colorData = await colorRes.json();
-                        currentUser.color = (colorData.data && colorData.data[0] && colorData.data[0].color) ? colorData.data[0].color : null;
+                        twitchColor = (colorData.data && colorData.data[0] && colorData.data[0].color) ? colorData.data[0].color : null;
                     } catch(e) {}
                     
-                    const uInfo = getUserInfo(currentUser.login);
-                    const userColor = currentUser.color || uInfo.color;
+                    const uInfo = getUserInfo(currentUser.login, twitchColor);
                     
                     document.getElementById('nav-auth').innerHTML = `
                         <div class="user-profile" style="padding: 6px 20px 6px 6px; border-radius: 30px; display: flex; gap: 15px; align-items: center;">
-                            <img src="${currentUser.profile_image_url}">
+                            <img src="${currentUser.profile_image_url}" style="width:40px; height:40px; border-radius:50%; border:2px solid #4a5c41;">
                             <div style="display: flex; flex-direction: column; gap: 5px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between;">
-                                    <span style="color: ${userColor}; font-size: 18px; font-weight: bold; text-shadow: 1px 1px 2px #000;">${currentUser.display_name}</span>
+                                    <span style="color: ${uInfo.color}; font-size: 18px; font-weight: bold; text-shadow: 1px 1px 2px #000;">${currentUser.display_name}</span>
                                     <button class="logout-btn" onclick="logoutTwitch()" style="margin-left: 15px;">Выйти</button>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 10px;">
@@ -420,7 +432,10 @@
                         </div>
                     `;
 
-                    if (currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase()) { document.body.classList.add('is-admin'); }
+                    if (currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase()) {
+                        document.getElementById('admin-btn').style.display = 'flex';
+                        document.body.classList.add('is-admin');
+                    }
                 }
             } catch (e) { console.error('Ошибка авторизации', e); }
         }
@@ -494,11 +509,14 @@
 
             const isStreamer = currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
             try {
+                let res;
                 if (isStreamer) {
-                    await fetch(`${FIREBASE_BASE}/anime_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/scores.json`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overall, theory }) });
+                    res = await fetch(`${FIREBASE_BASE}/anime_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/scores.json`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overall, theory }) });
                 } else {
-                    await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/ratings/${currentUser.id}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, overall, theory, timestamp: Date.now() }) });
+                    res = await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/ratings/${currentUser.id}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, overall, theory, timestamp: Date.now() }) });
                 }
+                
+                if (!res.ok) throw new Error("Server error");
                 closeRatingModal(); showToast("✅ Оценка успешно сохранена!"); await loadAnimeData(); 
             } catch (e) { showToast("❌ Ошибка сохранения!", true); }
             
@@ -582,8 +600,8 @@
                     </div>`;
                 }
 
-                const uInfo = getUserInfo(c.displayName);
-                const nameColor = c.userColor || uInfo.color;
+                // ПОЛУЧАЕМ ЧИСТУЮ ИНФУ ДЛЯ КОММЕНТАРИЯ
+                const uInfo = getUserInfo(c.displayName, c.userColor);
 
                 let repliesHtml = '';
                 let toggleRepliesBtn = '';
@@ -595,8 +613,7 @@
                         const rd = new Date(rep.timestamp); const rDateStr = `${rd.getDate().toString().padStart(2,'0')}.${(rd.getMonth()+1).toString().padStart(2,'0')} в ${rd.getHours().toString().padStart(2,'0')}:${rd.getMinutes().toString().padStart(2,'0')}`;
                         const isRepAuthorAdmin = rep.displayName.toLowerCase() === ADMIN_USERNAME.toLowerCase();
                         
-                        const repInfo = getUserInfo(rep.displayName);
-                        const repColor = rep.userColor || repInfo.color;
+                        const repInfo = getUserInfo(rep.displayName, rep.userColor);
                         const isRepMe = currentUser && rep.userId === currentUser.id;
                         
                         let repActions = `<div class="comment-actions">
@@ -629,7 +646,7 @@
                                         <div class="comment-author-block">
                                             <img src="${rep.profileImage}" class="comment-avatar" style="width: 40px; height: 40px; border-width: 1px;">
                                             <div class="author-details">
-                                                <span class="comment-author" style="color: ${repColor}; font-size: 16px;">${rep.displayName}</span>
+                                                <span class="comment-author" style="color: ${repInfo.color}; font-size: 16px;">${rep.displayName}</span>
                                                 <div>${repInfo.badge}</div>
                                             </div>
                                         </div>
@@ -653,7 +670,7 @@
                             <div class="comment-author-block">
                                 <img src="${c.profileImage}" class="comment-avatar">
                                 <div class="author-details">
-                                    <span class="comment-author" style="color: ${nameColor};">${c.displayName}</span>
+                                    <span class="comment-author" style="color: ${uInfo.color};">${c.displayName}</span>
                                     <div>${uInfo.badge}</div>
                                 </div>
                             </div>
@@ -838,13 +855,9 @@
                 loadingScreen.innerText = "Авторизация Twitch...";
                 
                 try {
-                    const rolesRes = await fetch(`${FIREBASE_BASE}/auction_data.json`, { cache: 'no-store' });
-                    const aucData = await rolesRes.json();
-                    if (aucData && aucData.players) {
-                        window.playersData = {};
-                        aucData.players.forEach(p => { window.playersData[p.user.toLowerCase()] = p; });
-                    }
-                } catch(e) { console.warn("Не удалось загрузить роли", e); }
+                    const dbRes = await fetch(`${FIREBASE_BASE}/global_users.json`, { cache: 'no-store' });
+                    if (dbRes.ok) { window.globalUsersDB = (await dbRes.json()) || {}; }
+                } catch(e) { console.warn("Не удалось загрузить базу пользователей", e); }
 
                 try { await checkTwitchAuth(); } catch(e) { console.warn(e); }
                 
