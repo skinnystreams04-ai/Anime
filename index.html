@@ -204,9 +204,10 @@
             await checkTwitchAuth(); 
 
             try {
+                // ОТКЛЮЧЕНО КЕШИРОВАНИЕ ЧТОБЫ ОЦЕНКИ ОБНОВЛЯЛИСЬ СРАЗУ
                 const [animeRes, commRes] = await Promise.all([
-                    fetch(`${FIREBASE_BASE}/anime_db.json`),
-                    fetch(`${FIREBASE_BASE}/community_db.json`)
+                    fetch(`${FIREBASE_BASE}/anime_db.json`, { cache: 'no-store' }),
+                    fetch(`${FIREBASE_BASE}/community_db.json`, { cache: 'no-store' })
                 ]);
                 const data = await animeRes.json();
                 const commData = (await commRes.json()) || {};
@@ -227,28 +228,29 @@
                     seasons.forEach(s => {
                         totalEp += parseInt(s.info.episodesTotal) || 0;
                         
-                        if (s.scores && s.scores.overall > 0) { streamer.overall += s.scores.overall; streamer.countOv++; }
+                        // МАТЕМАТИКА С ЖЕСТКОЙ КОНВЕРТАЦИЕЙ Number()
+                        if (s.scores && Number(s.scores.overall) > 0) { streamer.overall += Number(s.scores.overall); streamer.countOv++; }
                         if (s.scores && s.scores.theory) {
-                            streamer.plot += s.scores.theory.plot || 0; streamer.vis += s.scores.theory.visuals || 0;
-                            streamer.mus += s.scores.theory.music || 0; streamer.wor += s.scores.theory.world || 0;
-                            streamer.atm += s.scores.theory.atmosphere || 0; streamer.countTh++;
+                            streamer.plot += Number(s.scores.theory.plot) || 0; streamer.vis += Number(s.scores.theory.visuals) || 0;
+                            streamer.mus += Number(s.scores.theory.music) || 0; streamer.wor += Number(s.scores.theory.world) || 0;
+                            streamer.atm += Number(s.scores.theory.atmosphere) || 0; streamer.countTh++;
                         }
 
                         const sComm = commData[franchiseId] && commData[franchiseId][s.seasonId] ? commData[franchiseId][s.seasonId].ratings : null;
                         if (sComm) {
                             for (const [uid, r] of Object.entries(sComm)) {
-                                chat.overall += r.overall || 0;
+                                chat.overall += Number(r.overall) || 0;
                                 if (r.theory) {
-                                    chat.plot += r.theory.plot || 0; chat.vis += r.theory.visuals || 0;
-                                    chat.mus += r.theory.music || 0; chat.wor += r.theory.world || 0; chat.atm += r.theory.atmosphere || 0;
+                                    chat.plot += Number(r.theory.plot) || 0; chat.vis += Number(r.theory.visuals) || 0;
+                                    chat.mus += Number(r.theory.music) || 0; chat.wor += Number(r.theory.world) || 0; chat.atm += Number(r.theory.atmosphere) || 0;
                                 }
                                 chat.count++;
 
                                 if (currentUser && uid === currentUser.id) {
-                                    me.overall += r.overall || 0;
+                                    me.overall += Number(r.overall) || 0;
                                     if (r.theory) {
-                                        me.plot += r.theory.plot || 0; me.vis += r.theory.visuals || 0;
-                                        me.mus += r.theory.music || 0; me.wor += r.theory.world || 0; me.atm += r.theory.atmosphere || 0;
+                                        me.plot += Number(r.theory.plot) || 0; me.vis += Number(r.theory.visuals) || 0;
+                                        me.mus += Number(r.theory.music) || 0; me.wor += Number(r.theory.world) || 0; me.atm += Number(r.theory.atmosphere) || 0;
                                     }
                                     me.count++;
                                 }

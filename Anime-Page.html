@@ -73,7 +73,6 @@
         .rate-btn { width: 100%; background: rgba(166, 227, 161, 0.1); border: 1px solid #a6e3a1; color: #a6e3a1; padding: 12px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 20px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; margin-top: 15px; box-shadow: 0 0 10px rgba(166, 227, 161, 0.1); }
         .rate-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 20px rgba(166, 227, 161, 0.5); }
 
-        /* ПОЛЕ КОММЕНТАРИЕВ */
         .comment-input-area { background: rgba(0,0,0,0.3); border: 1px solid #283325; border-radius: 8px; padding: 15px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
         .comment-textarea { width: 100%; background: #121612; border: 1px solid #4a5c41; color: #c4d1b8; border-radius: 6px; padding: 10px; font-family: 'Neucha', cursive; font-size: 16px; outline: none; transition: 0.2s; resize: vertical; min-height: 60px; box-sizing: border-box; }
         .comment-textarea:focus { border-color: #a6e3a1; box-shadow: 0 0 10px rgba(166, 227, 161, 0.2); }
@@ -114,11 +113,19 @@
         .modal-box input[type=range]::-webkit-slider-thumb { height: 18px; width: 18px; border-radius: 50%; background: #a6e3a1; cursor: pointer; -webkit-appearance: none; margin-top: -7px; box-shadow: 0 0 10px rgba(166, 227, 161, 0.5); }
 
         .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b0d0a; z-index: 9999; display: flex; justify-content: center; align-items: center; color: #a6e3a1; font-size: 24px; flex-direction: column; text-align: center; padding: 20px; }
+
+        /* ВСПЛЫВАЮЩЕЕ УВЕДОМЛЕНИЕ */
+        #toast { position: fixed; bottom: 30px; right: 30px; background: #a6e3a1; color: #121612; padding: 15px 25px; border-radius: 8px; font-weight: bold; font-size: 18px; box-shadow: 0 5px 20px rgba(166, 227, 161, 0.4); transform: translateY(100px); opacity: 0; transition: 0.3s; z-index: 2000; font-family: sans-serif;}
+        #toast.show { transform: translateY(0); opacity: 1; }
+        #toast.error { background: #ff5555; color: white; box-shadow: 0 5px 20px rgba(255, 85, 85, 0.4); }
     </style>
 </head>
 <body>
 
     <div class="loading-screen" id="loading-screen">Загрузка данных из архива...</div>
+
+    <!-- TOAST (Уведомление) -->
+    <div id="toast">✅ Оценка успешно сохранена!</div>
 
     <nav class="top-nav" id="top-nav" style="display: none;">
         <a href="index.html" class="nav-logo">Skinwalker Аниме</a>
@@ -229,6 +236,7 @@
         </div>
     </div>
 
+    <!-- МОДАЛЬНОЕ ОКНО ОЦЕНКИ -->
     <div id="rating-modal" class="modal-overlay" style="display: none;">
         <div class="modal-box">
             <div class="close-btn" onclick="closeRatingModal()">×</div>
@@ -247,7 +255,10 @@
                     <div class="slider-group"><div class="slider-header"><span>Мир</span><span id="m-wor">5</span></div><input type="range" id="msl-wor" min="1" max="10" value="5" oninput="document.getElementById('m-wor').innerText=this.value; syncModalChart();"></div>
                     <div class="slider-group"><div class="slider-header"><span>Атмосфера</span><span id="m-atm">5</span></div><input type="range" id="msl-atm" min="1" max="10" value="5" oninput="document.getElementById('m-atm').innerText=this.value; syncModalChart();"></div>
                 </div>
-                <div class="modal-chart-area"><canvas id="modalChart"></canvas></div>
+
+                <div class="modal-chart-area">
+                    <canvas id="modalChart"></canvas>
+                </div>
             </div>
 
             <button class="rate-btn" id="save-rate-btn" onclick="saveUserRating()">Сохранить</button>
@@ -278,6 +289,14 @@
 
         if (typeof Chart !== 'undefined') {
             Chart.defaults.font.family = "'Neucha', cursive, sans-serif"; Chart.defaults.color = "#829c73";
+        }
+
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.innerText = msg;
+            if (isError) toast.classList.add('error'); else toast.classList.remove('error');
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
         function loginTwitch() {
@@ -388,19 +407,26 @@
 
             const isStreamer = currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
             try {
+                let res;
                 if (isStreamer) {
-                    await fetch(`${FIREBASE_BASE}/anime_db/${currentFranchiseId}/${currentSeasonKey}/scores.json`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overall, theory }) });
+                    res = await fetch(`${FIREBASE_BASE}/anime_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/scores.json`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overall, theory }) });
                 } else {
-                    await fetch(`${FIREBASE_BASE}/community_db/${currentFranchiseId}/${currentSeasonKey}/ratings/${currentUser.id}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, overall, theory, timestamp: Date.now() }) });
+                    res = await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/ratings/${currentUser.id}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, overall, theory, timestamp: Date.now() }) });
                 }
-                closeRatingModal(); await loadAnimeData(); 
-            } catch (e) { alert("Ошибка сохранения!"); }
+                
+                if (!res.ok) throw new Error("Server error");
+                
+                closeRatingModal();
+                showToast("✅ Оценка успешно сохранена!");
+                await loadAnimeData(); 
+            } catch (e) { showToast("❌ Ошибка сохранения!", true); }
+            
             btn.innerText = "СОХРАНИТЬ"; btn.style.pointerEvents = "auto";
         }
 
         async function loadComments() {
             try {
-                const res = await fetch(`${FIREBASE_BASE}/community_db/${currentFranchiseId}/${currentSeasonKey}/comments.json`);
+                const res = await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/comments.json`, { cache: 'no-store' });
                 currentComments = (await res.json()) || {};
                 renderComments();
             } catch(e) { console.error(e); }
@@ -447,19 +473,26 @@
             const btn = document.getElementById('send-comment-btn');
             btn.innerText = "ОТПРАВКА..."; btn.style.pointerEvents = "none";
             try {
-                await fetch(`${FIREBASE_BASE}/community_db/${currentFranchiseId}/${currentSeasonKey}/comments/${currentUser.id}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, text: text, timestamp: Date.now() }) });
+                const res = await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/comments/${currentUser.id}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, text: text, timestamp: Date.now() }) });
+                if (!res.ok) throw new Error("Server error");
+                
+                showToast("💬 Комментарий добавлен!");
                 await loadComments();
-            } catch(e) { alert("Ошибка при отправке!"); }
+            } catch(e) { showToast("❌ Ошибка при отправке!", true); }
+            
             btn.style.pointerEvents = "auto";
         }
 
         async function deleteComment(userId) {
             if (!confirm("Точно удалить этот комментарий?")) return;
             try {
-                await fetch(`${FIREBASE_BASE}/community_db/${currentFranchiseId}/${currentSeasonKey}/comments/${userId}.json`, { method: 'DELETE' });
+                const res = await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/comments/${userId}.json`, { method: 'DELETE' });
+                if (!res.ok) throw new Error("Server error");
+                
                 if (currentUser && userId === currentUser.id) document.getElementById('comment-text').value = '';
+                showToast("🗑️ Комментарий удален.");
                 await loadComments();
-            } catch(e) { alert("Ошибка удаления!"); }
+            } catch(e) { showToast("❌ Ошибка удаления!", true); }
         }
 
         function editComment(userId) {
@@ -504,7 +537,8 @@
             if(!currentFranchiseId) { document.getElementById('loading-screen').innerHTML = "ОШИБКА: Франшиза не выбрана!"; return; }
 
             try {
-                const res = await fetch(`${FIREBASE_BASE}/anime_db/${currentFranchiseId}.json`);
+                // ОТКЛЮЧЕНО КЕШИРОВАНИЕ ДЛЯ МГНОВЕННОГО ОБНОВЛЕНИЯ
+                const res = await fetch(`${FIREBASE_BASE}/anime_db/${encodeURIComponent(currentFranchiseId)}.json`, { cache: 'no-store' });
                 if (!res.ok) throw new Error("HTTP " + res.status);
                 franchiseData = await res.json();
                 
@@ -555,19 +589,21 @@
             document.getElementById('synopsis-display').innerText = anime.info.description;
             if(anime.info.genres) { document.getElementById('genres-display').innerHTML = anime.info.genres.map(g => `<span class="genre-badge">${g}</span>`).join(''); }
 
-            await loadComments(); // Загружаем комменты!
+            await loadComments(); 
 
-            const commRes = await fetch(`${FIREBASE_BASE}/community_db/${currentFranchiseId}/${seasonKey}/ratings.json`);
+            // ОТКЛЮЧЕНО КЕШИРОВАНИЕ БАЗЫ ОЦЕНОК КОМЬЮНИТИ
+            const commRes = await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(seasonKey)}/ratings.json`, { cache: 'no-store' });
             currentCommunityRatings = (await commRes.json()) || {};
 
             let chatTotalOvr = 0, chatPlot = 0, chatVis = 0, chatMus = 0, chatWor = 0, chatAtm = 0, chatCount = 0;
             let meData = null;
 
             for (const [userId, r] of Object.entries(currentCommunityRatings)) {
-                chatTotalOvr += r.overall || 0;
+                // МАТЕМАТИКА С ЖЕСТКОЙ КОНВЕРТАЦИЕЙ Number()
+                chatTotalOvr += Number(r.overall) || 0;
                 if (r.theory) {
-                    chatPlot += r.theory.plot || 0; chatVis += r.theory.visuals || 0;
-                    chatMus += r.theory.music || 0; chatWor += r.theory.world || 0; chatAtm += r.theory.atmosphere || 0;
+                    chatPlot += Number(r.theory.plot) || 0; chatVis += Number(r.theory.visuals) || 0;
+                    chatMus += Number(r.theory.music) || 0; chatWor += Number(r.theory.world) || 0; chatAtm += Number(r.theory.atmosphere) || 0;
                 }
                 chatCount++;
                 if (currentUser && userId === currentUser.id) { meData = r; }
@@ -578,13 +614,13 @@
             const chatAvgSum = tChat.plot + tChat.visuals + tChat.music + tChat.world + tChat.atmosphere;
             const chatTheoryAvg = chatAvgSum > 0 ? parseFloat((chatAvgSum / 5).toFixed(1)) : 0;
 
-            const meOvr = meData ? (meData.overall || 0) : 0;
+            const meOvr = meData ? (Number(meData.overall) || 0) : 0;
             const tMe = meData && meData.theory ? meData.theory : {plot:0, visuals:0, music:0, world:0, atmosphere:0};
-            const meTheoryAvg = (tMe.plot + tMe.visuals + tMe.music + tMe.world + tMe.atmosphere) > 0 ? parseFloat(((tMe.plot + tMe.visuals + tMe.music + tMe.world + tMe.atmosphere) / 5).toFixed(1)) : 0;
+            const meTheoryAvg = (Number(tMe.plot) + Number(tMe.visuals) + Number(tMe.music) + Number(tMe.world) + Number(tMe.atmosphere)) > 0 ? parseFloat(((Number(tMe.plot) + Number(tMe.visuals) + Number(tMe.music) + Number(tMe.world) + Number(tMe.atmosphere)) / 5).toFixed(1)) : 0;
 
-            const strScores = anime.scores || {}; const strOvr = strScores.overall || 0;
+            const strScores = anime.scores || {}; const strOvr = Number(strScores.overall) || 0;
             const tStr = strScores.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
-            const strTheoryAvg = (tStr.plot + tStr.visuals + tStr.music + tStr.world + tStr.atmosphere) > 0 ? parseFloat(((tStr.plot + tStr.visuals + tStr.music + tStr.world + tStr.atmosphere) / 5).toFixed(1)) : 0;
+            const strTheoryAvg = (Number(tStr.plot) + Number(tStr.visuals) + Number(tStr.music) + Number(tStr.world) + Number(tStr.atmosphere)) > 0 ? parseFloat(((Number(tStr.plot) + Number(tStr.visuals) + Number(tStr.music) + Number(tStr.world) + Number(tStr.atmosphere)) / 5).toFixed(1)) : 0;
 
             document.getElementById('streamer-score-val').innerHTML = `${strOvr}<span>/10</span>`; document.getElementById('streamer-score-val').style.color = getScoreColor(strOvr);
             document.getElementById('avg-streamer-score').innerText = strTheoryAvg; document.getElementById('breakdown-streamer').innerHTML = generateBreakdownHtml(tStr);
@@ -609,8 +645,6 @@
                 rateBtn.innerText = hasRated ? "Изменить оценку" : "Оценить тайтл";
             } else { rateBtn.innerText = "Оценить тайтл"; }
         }
-
-        loadAnimeData();
     </script>
 </body>
 </html>
