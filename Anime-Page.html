@@ -59,7 +59,7 @@
 
         .chart-wrapper { width: 100%; height: 240px; margin-bottom: 10px; }
         
-        /* Таблица критериев БЕЗ РАМОК И ФОНА */
+        /* Таблица критериев */
         .interactive-legend { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
         .legend-col { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.2s; padding: 5px; border-radius: 6px; flex: 1; }
         .legend-col:hover { background: rgba(255,255,255,0.05); transform: scale(1.02); }
@@ -74,6 +74,39 @@
         /* КНОПКА ОЦЕНИТЬ */
         .rate-btn { width: 100%; background: rgba(166, 227, 161, 0.1); border: 1px solid #a6e3a1; color: #a6e3a1; padding: 12px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 20px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; margin-top: 15px; box-shadow: 0 0 10px rgba(166, 227, 161, 0.1); }
         .rate-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 20px rgba(166, 227, 161, 0.5); }
+
+        /* --- СТИЛИ КОММЕНТАРИЕВ --- */
+        .comment-input-area { background: rgba(0,0,0,0.3); border: 1px solid #283325; border-radius: 8px; padding: 15px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+        .comment-textarea { width: 100%; background: #121612; border: 1px solid #4a5c41; color: #c4d1b8; border-radius: 6px; padding: 10px; font-family: 'Neucha', cursive; font-size: 16px; outline: none; transition: 0.2s; resize: vertical; min-height: 60px; box-sizing: border-box; }
+        .comment-textarea:focus { border-color: #a6e3a1; box-shadow: 0 0 10px rgba(166, 227, 161, 0.2); }
+        .send-btn { align-self: flex-end; background: #1a2618; border: 1px solid #a6e3a1; color: #a6e3a1; padding: 8px 20px; font-family: 'Neucha', cursive; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; text-transform: uppercase; }
+        .send-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 15px rgba(166, 227, 161, 0.4); }
+        
+        .comments-list { display: flex; flex-direction: column; gap: 15px; }
+        .comment-item { display: flex; gap: 15px; background: rgba(14, 17, 13, 0.5); padding: 15px; border-radius: 8px; border: 1px solid #283325; }
+        .comment-avatar { width: 40px; height: 40px; border-radius: 50%; border: 1px solid #4a5c41; }
+        .comment-body { flex: 1; }
+        .comment-header { display: flex; justify-content: space-between; margin-bottom: 5px; }
+        .comment-author { font-family: sans-serif; font-weight: bold; color: #a6e3a1; font-size: 14px; }
+        .comment-date { font-size: 12px; color: #6b7a62; }
+        .comment-text { font-size: 15px; color: #c4d1b8; line-height: 1.4; word-break: break-word; }
+
+        /* --- СТИЛИ МОДАЛЬНОГО ОКНА --- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .modal-box { background: linear-gradient(180deg, #101411 0%, #080a08 100%); border: 2px solid #a6e3a1; border-radius: 12px; padding: 30px; width: 450px; box-shadow: 0 0 30px rgba(166, 227, 161, 0.2); position: relative; }
+        .modal-title { color: #a6e3a1; font-size: 24px; text-transform: uppercase; margin: 0 0 20px 0; text-align: center; font-weight: bold; letter-spacing: 1px;}
+        .close-btn { position: absolute; top: 15px; right: 20px; color: #829c73; font-size: 28px; cursor: pointer; transition: 0.2s; font-family: sans-serif; line-height: 1; }
+        .close-btn:hover { color: #ff5555; transform: scale(1.1); }
+        
+        .modal-box .input-label { color: #829c73; font-size: 15px; text-transform: uppercase; font-weight: bold; display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;}
+        .modal-box input[type="number"] { width: 100%; background: #121612; border: 1px solid #4a5c41; color: #c4d1b8; border-radius: 6px; padding: 10px; font-family: 'Neucha', cursive; font-size: 18px; outline: none; transition: 0.2s; box-sizing: border-box; margin-bottom: 20px; text-align: center;}
+        .modal-box input:focus { border-color: #a6e3a1; box-shadow: 0 0 10px rgba(166, 227, 161, 0.2); }
+        
+        .slider-group { margin-bottom: 15px; }
+        .slider-header { display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 5px; color: #c4d1b8; font-weight: bold;}
+        .modal-box input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
+        .modal-box input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: #121612; border-radius: 3px; border: 1px solid #283325; }
+        .modal-box input[type=range]::-webkit-slider-thumb { height: 18px; width: 18px; border-radius: 50%; background: #a6e3a1; cursor: pointer; -webkit-appearance: none; margin-top: -7px; box-shadow: 0 0 10px rgba(166, 227, 161, 0.5); }
 
         .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b0d0a; z-index: 9999; display: flex; justify-content: center; align-items: center; color: #a6e3a1; font-size: 24px; flex-direction: column; }
     </style>
@@ -114,7 +147,7 @@
             <div class="widget-base">
                 <div class="widget-header"><div class="widget-title">Медиатека</div></div>
                 <div class="widget-content">
-                    <div class="player-nav"><div class="season-tabs"><button class="season-btn active" id="active-season-tab">1 Сезон</button></div></div>
+                    <div class="player-nav"><div class="season-tabs" id="season-tabs-container"></div></div>
                     <div class="custom-player" id="player-view">▶ Плеер ожидает видеоряд</div>
                 </div>
             </div>
@@ -128,8 +161,17 @@
 
             <div class="widget-base" style="flex: 1;">
                 <div class="widget-header"><div class="widget-title">Комментарии</div></div>
-                <div class="widget-content" style="display: flex; justify-content: center; align-items: center; color: #4a5c41; font-size: 18px; min-height: 150px;">
-                    Здесь скоро появятся отзывы зрителей...
+                <div class="widget-content">
+                    <!-- Поле ввода комментария -->
+                    <div class="comment-input-area">
+                        <textarea id="comment-text" class="comment-textarea" placeholder="Напиши, что думаешь об этом сезоне..."></textarea>
+                        <button class="send-btn" onclick="postComment()">Отправить</button>
+                    </div>
+                    
+                    <!-- Лента комментариев (пока заглушка для вида) -->
+                    <div class="comments-list" id="comments-list">
+                        <div style="color: #6b7a62; text-align: center; padding: 20px;">Загрузка комментариев...</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -140,19 +182,18 @@
                 <div class="widget-header"><div class="widget-title">Статистика</div></div>
                 <div class="widget-content" style="display: flex; flex-direction: column;">
                     
-                    <!-- Итоговая оценка -->
                     <div style="color: #829c73; font-size: 16px; text-transform: uppercase; margin-bottom: 10px; text-align: center; font-weight: bold; letter-spacing: 1px;">Итоговая оценка</div>
                     
                     <div class="scores-row">
-                        <div class="score-box" onmouseover="highlightChart(0)" onmouseout="resetChart()">
+                        <div class="score-box streamer-element" onmouseover="highlightChart(0)" onmouseout="resetChart()">
                             <div class="score-label streamer">Стример</div>
                             <div class="main-score" id="streamer-score-val">0<span>/10</span></div>
                         </div>
-                        <div class="score-box" onmouseover="highlightChart(2)" onmouseout="resetChart()">
+                        <div class="score-box me-element" onmouseover="highlightChart(2)" onmouseout="resetChart()">
                             <div class="score-label me">Моя</div>
                             <div class="main-score" id="my-score-display" style="color: #6b7a62;">0<span>/10</span></div>
                         </div>
-                        <div class="score-box" onmouseover="highlightChart(1)" onmouseout="resetChart()">
+                        <div class="score-box chat-element" onmouseover="highlightChart(1)" onmouseout="resetChart()">
                             <div class="score-label chat">Чат</div>
                             <div class="main-score" id="chat-score-val" style="color: #6b7a62;">0<span>/10</span></div>
                         </div>
@@ -160,41 +201,67 @@
 
                     <div style="border-top: 1px dashed #283325; margin: 5px 0 15px 0;"></div>
 
-                    <!-- Анализ критериев -->
                     <div style="color: #829c73; font-size: 16px; text-transform: uppercase; margin-bottom: 15px; text-align: center; font-weight: bold; letter-spacing: 1px;">Анализ критериев</div>
                     
                     <div class="chart-wrapper"><canvas id="detailsChart"></canvas></div>
                     
                     <div class="interactive-legend">
-                        <div class="legend-col" onmouseover="highlightChart(0)" onmouseout="resetChart()">
+                        <div class="legend-col streamer-element" onmouseover="highlightChart(0)" onmouseout="resetChart()">
                             <div class="legend-title" style="color: #cba6f7;"><div class="dot" style="background: #cba6f7;"></div>Стример</div>
                             <div class="legend-score" id="avg-streamer-score">0</div>
                             <div class="legend-breakdown" id="breakdown-streamer"></div>
                         </div>
-                        <div class="legend-col" onmouseover="highlightChart(2)" onmouseout="resetChart()">
+                        <div class="legend-col me-element" onmouseover="highlightChart(2)" onmouseout="resetChart()">
                             <div class="legend-title" style="color: #a6e3a1;"><div class="dot" style="background: #a6e3a1;"></div>Я</div>
                             <div class="legend-score" id="avg-viewer-score" style="color: #6b7a62;">0</div>
                             <div class="legend-breakdown" id="breakdown-viewer"></div>
                         </div>
-                        <div class="legend-col" onmouseover="highlightChart(1)" onmouseout="resetChart()">
+                        <div class="legend-col chat-element" onmouseover="highlightChart(1)" onmouseout="resetChart()">
                             <div class="legend-title" style="color: #b8a87b;"><div class="dot" style="background: #b8a87b;"></div>Чат</div>
                             <div class="legend-score" id="avg-chat-score" style="color: #6b7a62;">0</div>
                             <div class="legend-breakdown" id="breakdown-chat"></div>
                         </div>
                     </div>
 
-                    <!-- КНОПКА ОЦЕНИТЬ -->
-                    <button class="rate-btn" onclick="alert('Скоро мы прикрутим сюда крутое меню для оценки тайтла!')">Оценить тайтл</button>
+                    <button class="rate-btn" onclick="openRatingModal()">Оценить тайтл</button>
 
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- МОДАЛЬНОЕ ОКНО ОЦЕНКИ -->
+    <div id="rating-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-box">
+            <div class="close-btn" onclick="closeRatingModal()">×</div>
+            <h2 class="modal-title">Выставить оценку</h2>
+            
+            <div class="input-label">Итоговое впечатление</div>
+            <input type="number" id="modal-overall" min="1" max="10" placeholder="От 1 до 10">
+
+            <div style="border-top: 1px dashed #283325; margin: 15px 0;"></div>
+
+            <div class="slider-group"><div class="slider-header"><span>Сюжет</span><span id="m-plot">5</span></div><input type="range" id="msl-plot" min="1" max="10" value="5" oninput="document.getElementById('m-plot').innerText=this.value"></div>
+            <div class="slider-group"><div class="slider-header"><span>Визуал</span><span id="m-vis">5</span></div><input type="range" id="msl-vis" min="1" max="10" value="5" oninput="document.getElementById('m-vis').innerText=this.value"></div>
+            <div class="slider-group"><div class="slider-header"><span>Музыка</span><span id="m-mus">5</span></div><input type="range" id="msl-mus" min="1" max="10" value="5" oninput="document.getElementById('m-mus').innerText=this.value"></div>
+            <div class="slider-group"><div class="slider-header"><span>Мир</span><span id="m-wor">5</span></div><input type="range" id="msl-wor" min="1" max="10" value="5" oninput="document.getElementById('m-wor').innerText=this.value"></div>
+            <div class="slider-group"><div class="slider-header"><span>Атмосфера</span><span id="m-atm">5</span></div><input type="range" id="msl-atm" min="1" max="10" value="5" oninput="document.getElementById('m-atm').innerText=this.value"></div>
+
+            <button class="rate-btn" onclick="saveUserRating()">Сохранить</button>
+        </div>
+    </div>
+
     <script>
         const TWITCH_CLIENT_ID = 'gko3y2nhxg0ocvte0ru970pbau3eiq';
         const REDIRECT_URI = 'https://skinnystreams04-ai.github.io/Anime/';
-        
+        const ADMIN_USERNAME = 'skinnystreams04'; 
+
+        // Глобальные переменные для авторизации и БД
+        let currentUser = null;
+        let currentFranchiseId = null;
+        let currentSeasonKey = null;
+        let franchiseData = {};
+
         function loginTwitch() {
             const authUrl = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=`;
             window.location.href = authUrl;
@@ -212,24 +279,51 @@
                     const res = await fetch('https://api.twitch.tv/helix/users', {
                         headers: { 'Client-ID': TWITCH_CLIENT_ID, 'Authorization': `Bearer ${token}` }
                     });
-                    
                     if (res.status === 401) { localStorage.removeItem('twitch_token'); return; }
-
                     const data = await res.json();
-                    const user = data.data[0];
+                    currentUser = data.data[0];
                     
                     document.getElementById('nav-auth').innerHTML = `
                         <div class="user-profile">
-                            <img src="${user.profile_image_url}" alt="Avatar">
-                            <span>${user.display_name}</span>
+                            <img src="${currentUser.profile_image_url}" alt="Avatar">
+                            <span>${currentUser.display_name}</span>
                             <button class="logout-btn" onclick="logoutTwitch()">Выйти</button>
                         </div>
                     `;
-                } catch (e) { console.error('Ошибка авторизации Twitch', e); }
+                    
+                    // ЕСЛИ ЗАШЕЛ СТРИМЕР -> СКРЫВАЕМ КОЛОНКУ "Я" ЧТОБЫ НЕ БЫЛО ДУБЛЕЙ
+                    if (currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase()) {
+                        document.querySelectorAll('.me-element').forEach(el => el.style.display = 'none');
+                    }
+
+                } catch (e) { console.error('Ошибка авторизации', e); }
             }
         }
-        checkTwitchAuth();
 
+        // --- ЛОГИКА МОДАЛЬНОГО ОКНА ---
+        function openRatingModal() {
+            if (!currentUser) { alert("Сначала нужно войти через Twitch!"); return; }
+            // Модалка просто открывается, подгрузка старых значений будет реализована в следующем шаге
+            document.getElementById('rating-modal').style.display = 'flex';
+        }
+
+        function closeRatingModal() {
+            document.getElementById('rating-modal').style.display = 'none';
+        }
+
+        function saveUserRating() {
+            alert("Скоро оценки полетят прямо в базу!");
+            closeRatingModal();
+        }
+
+        function postComment() {
+            if (!currentUser) { alert("Войди через Twitch, чтобы оставить отзыв!"); return; }
+            const text = document.getElementById('comment-text').value;
+            if (!text.trim()) return;
+            alert("Коммент готов к отправке: " + text);
+        }
+
+        // --- ГРАФИКИ И UI ---
         function getScoreColor(score) {
             const numScore = Number(score);
             if (numScore === 0 || isNaN(numScore)) return '#6b7a62'; 
@@ -258,10 +352,7 @@
             },
             options: { 
                 responsive: true, maintainAspectRatio: false, 
-                plugins: { 
-                    legend: { display: false },
-                    tooltip: { filter: function(item) { return item.raw > 0; } }
-                }, 
+                plugins: { legend: { display: false }, tooltip: { filter: function(item) { return item.raw > 0; } } }, 
                 scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: '#283325' }, angleLines: { color: '#283325' }, pointLabels: { font: { size: 13, weight: 'bold' }, color: '#c4d1b8' } } } 
             }
         });
@@ -292,14 +383,14 @@
             `;
         }
 
-        let franchiseData = {};
-
         async function loadAnimeData() {
+            await checkTwitchAuth(); // Сначала проверяем авторизацию!
+            
             const urlParams = new URLSearchParams(window.location.search);
-            const franchiseId = urlParams.get('id');
-            if(!franchiseId) { document.getElementById('loading-screen').innerHTML = "ОШИБКА: Франшиза не выбрана!"; return; }
+            currentFranchiseId = urlParams.get('id');
+            if(!currentFranchiseId) { document.getElementById('loading-screen').innerHTML = "ОШИБКА: Франшиза не выбрана!"; return; }
 
-            const dbUrl = `https://skinwalkerauction-default-rtdb.europe-west1.firebasedatabase.app/anime_db/${franchiseId}.json`;
+            const dbUrl = `https://skinwalkerauction-default-rtdb.europe-west1.firebasedatabase.app/anime_db/${currentFranchiseId}.json`;
             try {
                 const res = await fetch(dbUrl);
                 franchiseData = await res.json();
@@ -307,7 +398,7 @@
                 if (!franchiseData) { document.getElementById('loading-screen').innerHTML = "ОШИБКА: Данные не найдены!"; return; }
 
                 const seasonKeys = Object.keys(franchiseData);
-                const tabsContainer = document.querySelector('.season-tabs');
+                const tabsContainer = document.getElementById('season-tabs-container');
                 tabsContainer.innerHTML = ''; 
                 
                 seasonKeys.forEach((key, index) => {
@@ -331,6 +422,7 @@
         }
 
         function renderSeasonData(seasonKey) {
+            currentSeasonKey = seasonKey;
             const anime = franchiseData[seasonKey];
             if (!anime) return;
 
@@ -348,11 +440,9 @@
             } else { document.getElementById('date-display').innerText = "В процессе..."; }
 
             document.getElementById('synopsis-display').innerText = anime.info.description;
+            if(anime.info.genres) { document.getElementById('genres-display').innerHTML = anime.info.genres.map(g => `<span class="genre-badge">${g}</span>`).join(''); }
 
-            if(anime.info.genres) {
-                document.getElementById('genres-display').innerHTML = anime.info.genres.map(g => `<span class="genre-badge">${g}</span>`).join('');
-            }
-
+            // Обновляем Стримера
             const overall = anime.scores.overall || 0;
             const cOverall = getScoreColor(overall);
             const elOverall = document.getElementById('streamer-score-val');

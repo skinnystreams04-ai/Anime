@@ -16,11 +16,19 @@
 
         .col-search { width: 350px; } .col-preview { width: 350px; } .col-edit { flex: 1; }
 
+        /* ПЕРЕКЛЮЧАТЕЛЬ РЕЖИМОВ */
+        .mode-tabs { display: flex; gap: 10px; margin-bottom: 15px; border-bottom: 2px solid #283325; padding-bottom: 10px; }
+        .mode-btn { flex: 1; background: rgba(0,0,0,0.4); border: 1px solid #4a5c41; color: #a4b09c; padding: 8px; font-family: 'Neucha', cursive; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; text-transform: uppercase; }
+        .mode-btn:hover { background: #161a15; color: #c4d1b8; border-color: #829c73; }
+        .mode-btn.active { background: rgba(166, 227, 161, 0.15); border-color: #a6e3a1; color: #a6e3a1; box-shadow: 0 0 10px rgba(166, 227, 161, 0.2); }
+
         .input-group { display: flex; flex-direction: column; gap: 5px; margin-bottom: 10px; position: relative; }
         .input-label { color: #829c73; font-size: 15px; text-transform: uppercase; font-weight: bold; display: flex; justify-content: space-between; align-items: center;}
         
-        input[type="text"], input[type="number"], input[type="date"], textarea { background: #121612; border: 1px solid #4a5c41; color: #c4d1b8; border-radius: 6px; padding: 10px; font-family: 'Neucha', cursive; font-size: 16px; outline: none; transition: 0.2s; }
-        input:focus, textarea:focus { border-color: #a6e3a1; box-shadow: 0 0 10px rgba(166, 227, 161, 0.2); }
+        input[type="text"], input[type="number"], input[type="date"], textarea, select { background: #121612; border: 1px solid #4a5c41; color: #c4d1b8; border-radius: 6px; padding: 10px; font-family: 'Neucha', cursive; font-size: 16px; outline: none; transition: 0.2s; }
+        input:focus, textarea:focus, select:focus { border-color: #a6e3a1; box-shadow: 0 0 10px rgba(166, 227, 161, 0.2); }
+        select { cursor: pointer; appearance: none; padding-right: 30px; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23829c73%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 10px top 50%; background-size: 12px auto; }
+        select option { background: #0b0d0a; color: #c4d1b8; }
 
         .autocomplete-dropdown { position: absolute; top: 100%; left: 0; width: 100%; background: #121612; border: 1px solid #4a5c41; border-radius: 6px; z-index: 100; margin-top: 5px; max-height: 350px; overflow-y: auto; display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.8); }
         .ac-item { display: flex; gap: 10px; padding: 10px; border-bottom: 1px solid #283325; cursor: pointer; transition: 0.2s; }
@@ -68,21 +76,42 @@
             <div class="widget-base">
                 <div class="widget-header">1. Поиск и Структура</div>
                 <div class="widget-content">
-                    <div class="input-group">
-                        <span class="input-label">Начни печатать название:</span>
-                        <input type="text" id="search-query" placeholder="Например: Cyberpunk" oninput="liveSearch()" autocomplete="off">
-                        <div id="autocomplete-results" class="autocomplete-dropdown"></div>
+                    
+                    <div class="mode-tabs">
+                        <button class="mode-btn active" id="btn-mode-new" onclick="switchMode('new')">Новый тайтл</button>
+                        <button class="mode-btn" id="btn-mode-edit" onclick="switchMode('edit')">Редактировать</button>
+                    </div>
+
+                    <!-- РЕЖИМ: ДОБАВЛЕНИЕ НОВОГО -->
+                    <div id="block-new">
+                        <div class="input-group">
+                            <span class="input-label">Поиск в AniList:</span>
+                            <input type="text" id="search-query" placeholder="Например: Cyberpunk" oninput="liveSearch()" autocomplete="off">
+                            <div id="autocomplete-results" class="autocomplete-dropdown"></div>
+                        </div>
+                    </div>
+
+                    <!-- РЕЖИМ: РЕДАКТИРОВАНИЕ БАЗЫ -->
+                    <div id="block-edit" style="display: none;">
+                        <div class="input-group">
+                            <span class="input-label" style="color: #f5c2e7;">Выбери Франшизу:</span>
+                            <select id="db-select-franchise" onchange="loadSeasonsList()"><option value="">Загрузка...</option></select>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-label" style="color: #f5c2e7;">Выбери Сезон:</span>
+                            <select id="db-select-season" onchange="fillFormFromDb()"><option value="">Сначала выбери франшизу</option></select>
+                        </div>
                     </div>
                     
                     <div style="border-top: 1px dashed #283325; margin: 10px 0;"></div>
                     
                     <div class="input-group">
-                        <span class="input-label" style="color:#cba6f7;">Папка Франшизы (Напр: Beastars)</span>
-                        <input type="text" id="db-franchise" placeholder="Общее название для всех сезонов" style="border-color: #cba6f7;">
+                        <span class="input-label" style="color:#cba6f7;">Папка Франшизы</span>
+                        <input type="text" id="db-franchise" placeholder="Общее название (Напр: BEASTARS)" style="border-color: #cba6f7;">
                     </div>
 
                     <div class="input-group">
-                        <span class="input-label" style="color:#a6e3a1;">Название Вкладки/Сезона</span>
+                        <span class="input-label" style="color:#a6e3a1;">Название Сезона</span>
                         <input type="text" id="season-name" value="1 Сезон" style="border-color: #a6e3a1;">
                     </div>
                 </div>
@@ -97,7 +126,11 @@
                     <div id="preview-no-img" class="preview-cover" style="display:flex;">Ожидание...</div>
                     <div id="preview-title" class="preview-title">Название</div>
                     <div class="preview-tags" id="preview-genres"><div class="tag">Жанр</div></div>
-                    <input type="hidden" id="db-img-url"><input type="hidden" id="db-studio"><input type="hidden" id="db-year"><input type="hidden" id="db-format"><input type="hidden" id="db-rating"><input type="hidden" id="db-desc">
+                    <input type="hidden" id="db-img-url"><input type="hidden" id="db-studio"><input type="hidden" id="db-year"><input type="hidden" id="db-format"><input type="hidden" id="db-rating">
+                    <div class="input-group" style="width: 100%; margin-top: 15px;">
+                        <span class="input-label">Описание сюжета (можно ред.):</span>
+                        <textarea id="db-desc" rows="4"></textarea>
+                    </div>
                 </div>
             </div>
         </div>
@@ -124,7 +157,6 @@
                     </div>
                     
                     <div class="form-grid disabled-block" id="theory-block">
-                        <!-- МИНИМАЛЬНОЕ ЗНАЧЕНИЕ ИЗМЕНЕНО НА 1 -->
                         <div class="slider-group"><div class="slider-header"><span>Сюжет</span><span id="v-plot">5</span></div><input type="range" id="sl-plot" min="1" max="10" value="5" oninput="document.getElementById('v-plot').innerText=this.value"></div>
                         <div class="slider-group"><div class="slider-header"><span>Визуал</span><span id="v-vis">5</span></div><input type="range" id="sl-vis" min="1" max="10" value="5" oninput="document.getElementById('v-vis').innerText=this.value"></div>
                         <div class="slider-group"><div class="slider-header"><span>Музыка</span><span id="v-mus">5</span></div><input type="range" id="sl-mus" min="1" max="10" value="5" oninput="document.getElementById('v-mus').innerText=this.value"></div>
@@ -141,20 +173,114 @@
     <div id="toast">✅ Сезон успешно отправлен в базу!</div>
 
     <script>
-        // СЛОВАРЬ ПЕРЕВОДА ЖАНРОВ
-        const genreDict = {
-            "Action": "Экшен", "Adventure": "Приключения", "Comedy": "Комедия", "Drama": "Драма", 
-            "Ecchi": "Этти", "Fantasy": "Фэнтези", "Horror": "Ужасы", "Mahou Shoujo": "Махо-сёдзё", 
-            "Mecha": "Меха", "Music": "Музыка", "Mystery": "Детектив", "Psychological": "Психологическое", 
-            "Romance": "Романтика", "Sci-Fi": "Фантастика", "Slice of Life": "Повседневность", 
-            "Sports": "Спорт", "Supernatural": "Сверхъестественное", "Thriller": "Триллер"
-        };
+        const genreDict = { "Action": "Экшен", "Adventure": "Приключения", "Comedy": "Комедия", "Drama": "Драма", "Ecchi": "Этти", "Fantasy": "Фэнтези", "Horror": "Ужасы", "Mahou Shoujo": "Махо-сёдзё", "Mecha": "Меха", "Music": "Музыка", "Mystery": "Детектив", "Psychological": "Психологическое", "Romance": "Романтика", "Sci-Fi": "Фантастика", "Slice of Life": "Повседневность", "Sports": "Спорт", "Supernatural": "Сверхъестественное", "Thriller": "Триллер" };
+        
+        const FIREBASE_DB_URL = "https://skinwalkerauction-default-rtdb.europe-west1.firebasedatabase.app/anime_db.json";
+        let fullDatabaseData = {}; // Храним всю базу для режима редактирования
 
         function toggleBlock(blockId, isChecked) {
             const block = document.getElementById(blockId);
             if(isChecked) { block.classList.remove('disabled-block'); if(block.tagName === 'INPUT') block.disabled = false; } 
             else { block.classList.add('disabled-block'); if(block.tagName === 'INPUT') { block.disabled = true; block.value = ''; } }
         }
+
+        // --- ЛОГИКА РЕЖИМОВ (НОВЫЙ / РЕДАКТИРОВАНИЕ) ---
+        async function switchMode(mode) {
+            document.getElementById('btn-mode-new').classList.remove('active');
+            document.getElementById('btn-mode-edit').classList.remove('active');
+            
+            if (mode === 'new') {
+                document.getElementById('btn-mode-new').classList.add('active');
+                document.getElementById('block-new').style.display = 'block';
+                document.getElementById('block-edit').style.display = 'none';
+            } else {
+                document.getElementById('btn-mode-edit').classList.add('active');
+                document.getElementById('block-new').style.display = 'none';
+                document.getElementById('block-edit').style.display = 'block';
+                await loadDatabaseList();
+            }
+        }
+
+        async function loadDatabaseList() {
+            try {
+                const res = await fetch(FIREBASE_DB_URL);
+                fullDatabaseData = await res.json() || {};
+                
+                const selectFr = document.getElementById('db-select-franchise');
+                selectFr.innerHTML = '<option value="">-- Выбери франшизу --</option>';
+                
+                Object.keys(fullDatabaseData).forEach(frKey => {
+                    selectFr.innerHTML += `<option value="${frKey}">${frKey.replace(/_/g, ' ')}</option>`;
+                });
+            } catch(e) { console.error("Ошибка загрузки базы", e); }
+        }
+
+        function loadSeasonsList() {
+            const frKey = document.getElementById('db-select-franchise').value;
+            const selectSeason = document.getElementById('db-select-season');
+            
+            if(!frKey) { selectSeason.innerHTML = '<option value="">Сначала выбери франшизу</option>'; return; }
+            
+            selectSeason.innerHTML = '<option value="">-- Выбери сезон --</option>';
+            Object.keys(fullDatabaseData[frKey]).forEach(seasonKey => {
+                selectSeason.innerHTML += `<option value="${seasonKey}">${seasonKey.replace(/_/g, ' ')}</option>`;
+            });
+        }
+
+        function fillFormFromDb() {
+            const frKey = document.getElementById('db-select-franchise').value;
+            const seasonKey = document.getElementById('db-select-season').value;
+            if(!frKey || !seasonKey) return;
+
+            const anime = fullDatabaseData[frKey][seasonKey];
+
+            document.getElementById('db-franchise').value = frKey.replace(/_/g, ' ');
+            document.getElementById('season-name').value = anime.seasonTab;
+            
+            document.getElementById('preview-no-img').style.display = 'none'; 
+            document.getElementById('preview-img').style.display = 'block';
+            document.getElementById('preview-img').src = anime.coverUrl;
+            document.getElementById('db-img-url').value = anime.coverUrl;
+            
+            document.getElementById('preview-title').innerText = anime.title;
+            document.getElementById('db-studio').value = anime.info.studio || '';
+            document.getElementById('db-year').value = anime.info.year || '';
+            document.getElementById('db-format').value = anime.info.format || '';
+            document.getElementById('db-rating').value = anime.info.rating || '';
+            document.getElementById('db-desc').value = anime.info.description || '';
+
+            if(anime.info.genres) {
+                document.getElementById('preview-genres').innerHTML = anime.info.genres.map(g => `<div class="tag">${g}</div>`).join('');
+            }
+
+            document.getElementById('ep-total').value = anime.info.episodesTotal || '';
+            document.getElementById('ep-watched').value = anime.info.episodesWatched || '';
+            document.getElementById('watch-date').value = anime.info.dateWatched || '';
+
+            if (anime.scores && anime.scores.overall > 0) {
+                document.getElementById('toggle-overall').checked = true;
+                toggleBlock('score-overall', true);
+                document.getElementById('score-overall').value = anime.scores.overall;
+            } else {
+                document.getElementById('toggle-overall').checked = false;
+                toggleBlock('score-overall', false);
+            }
+
+            if (anime.scores && anime.scores.theory && anime.scores.theory.plot > 0) {
+                document.getElementById('toggle-theory').checked = true;
+                toggleBlock('theory-block', true);
+                const t = anime.scores.theory;
+                document.getElementById('sl-plot').value = t.plot; document.getElementById('v-plot').innerText = t.plot;
+                document.getElementById('sl-vis').value = t.visuals; document.getElementById('v-vis').innerText = t.visuals;
+                document.getElementById('sl-mus').value = t.music; document.getElementById('v-mus').innerText = t.music;
+                document.getElementById('sl-wor').value = t.world; document.getElementById('v-wor').innerText = t.world;
+                document.getElementById('sl-atm').value = t.atmosphere; document.getElementById('v-atm').innerText = t.atmosphere;
+            } else {
+                document.getElementById('toggle-theory').checked = false;
+                toggleBlock('theory-block', false);
+            }
+        }
+        // -----------------------------------------------------
 
         let typingTimer; const dropdown = document.getElementById('autocomplete-results');
         document.addEventListener('click', (e) => { if (!document.getElementById('search-query').contains(e.target) && !dropdown.contains(e.target)) { dropdown.style.display = 'none'; } });
@@ -196,13 +322,9 @@
                 document.getElementById('preview-no-img').style.display = 'none'; document.getElementById('preview-img').style.display = 'block';
                 document.getElementById('preview-img').src = imgUrl; document.getElementById('preview-title').innerText = anime.title.english || anime.title.romaji;
 
-                // ПЕРЕВОД ЖАНРОВ
                 let genresHtml = ""; 
                 if(anime.genres) {
-                    anime.genres.forEach(g => { 
-                        const ruG = genreDict[g] || g; // Берем из словаря, если нет - оставляем оригинал
-                        genresHtml += `<div class="tag">${ruG}</div>`; 
-                    });
+                    anime.genres.forEach(g => { const ruG = genreDict[g] || g; genresHtml += `<div class="tag">${ruG}</div>`; });
                 }
                 document.getElementById('preview-genres').innerHTML = genresHtml;
 
@@ -213,7 +335,7 @@
                 document.getElementById('db-rating').value = anime.isAdult ? "18+" : "13+";
                 
                 let desc = anime.description || "Описания нет."; desc = desc.replace(/<[^>]*>?/gm, ''); 
-                document.getElementById('db-desc').value = "Переводим на русский язык...";
+                document.getElementById('db-desc').value = "Переводим...";
 
                 try {
                     const transUrl = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ru&dt=t&q=${encodeURIComponent(desc)}`;
@@ -222,7 +344,7 @@
                     document.getElementById('db-desc').value = ruDesc;
                 } catch(e) { document.getElementById('db-desc').value = desc; }
 
-                let totalEp = anime.episodes || 1; document.getElementById('ep-total').value = totalEp; document.getElementById('ep-watched').value = 0;
+                document.getElementById('ep-total').value = anime.episodes || 1; document.getElementById('ep-watched').value = 0;
             } catch(e) { console.error(e); }
         }
 
@@ -236,9 +358,7 @@
             let seasonKey = document.getElementById('season-name').value.trim();
             franchiseKey = franchiseKey.replace(/[.#$\[\]]/g, "_"); seasonKey = seasonKey.replace(/[.#$\[\]]/g, "_");
 
-            if(!franchiseKey || !seasonKey) {
-                alert("Укажите Франшизу и Сезон!"); btn.innerText = "Сохранить в базу"; btn.style.pointerEvents = "auto"; return;
-            }
+            if(!franchiseKey || !seasonKey) { alert("Укажите Франшизу и Сезон!"); btn.innerText = "Сохранить в базу"; btn.style.pointerEvents = "auto"; return; }
 
             const animeData = {
                 title: document.getElementById('preview-title').innerText, seasonTab: seasonKey, coverUrl: document.getElementById('db-img-url').value,
@@ -257,10 +377,11 @@
                 }, addedAt: Date.now() 
             };
 
-            const dbUrl = `https://skinwalkerauction-default-rtdb.europe-west1.firebasedatabase.app/anime_db/${franchiseKey}/${seasonKey}.json`;
+            // ИСПОЛЬЗУЕМ МЕТОД PATCH: Он обновит информацию аниме, но НЕ ТРОНЕТ ветку с комментариями пользователей, если она там будет.
+            const targetUrl = `https://skinwalkerauction-default-rtdb.europe-west1.firebasedatabase.app/anime_db/${franchiseKey}/${seasonKey}.json`;
 
             try {
-                const response = await fetch(dbUrl, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(animeData) });
+                const response = await fetch(targetUrl, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(animeData) });
                 if (response.ok) {
                     const toast = document.getElementById('toast'); toast.classList.add('show'); setTimeout(() => { toast.classList.remove('show'); }, 3000);
                     btn.innerText = "Сохранить в базу"; btn.style.pointerEvents = "auto";
