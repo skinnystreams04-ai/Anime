@@ -17,9 +17,11 @@
         
         .nav-auth .twitch-btn { background: #6441a5; color: white; padding: 8px 16px; border-radius: 6px; font-family: sans-serif; font-size: 14px; font-weight: bold; cursor: pointer; border: 1px solid #4a307a; transition: 0.2s; }
         .nav-auth .twitch-btn:hover { background: #7d5bbe; box-shadow: 0 0 15px rgba(100, 65, 165, 0.6); }
-        .user-profile { display: flex; align-items: center; gap: 12px; color: #c4d1b8; font-weight: bold; font-family: sans-serif; font-size: 15px; background: rgba(14, 17, 13, 0.8); padding: 4px 15px 4px 4px; border-radius: 20px; border: 1px solid #283325;}
-        .user-profile img { width: 36px; height: 36px; border-radius: 50%; border: 2px solid #6441a5; box-shadow: 0 0 10px rgba(100, 65, 165, 0.5); }
-        .logout-btn { background: transparent; border: none; color: #ff5555; cursor: pointer; font-size: 12px; margin-left: 5px; font-family: sans-serif; text-transform: uppercase; font-weight: bold; transition: 0.2s;}
+        
+        /* БАЗОВЫЙ ПРОФИЛЬ ДЛЯ ГЛАВНОЙ */
+        .user-profile { display: flex; align-items: center; gap: 15px; background: rgba(14, 17, 13, 0.8); padding: 6px 20px 6px 6px; border-radius: 30px; border: 1px solid #283325; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .user-profile img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #4a5c41; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); }
+        .logout-btn { background: transparent; border: none; color: #ff5555; cursor: pointer; font-size: 12px; font-family: sans-serif; text-transform: uppercase; font-weight: bold; transition: 0.2s; padding: 0; margin-left: 5px; }
         .logout-btn:hover { text-shadow: 0 0 8px rgba(255, 85, 85, 0.8); }
 
         .controls-bar { display: flex; justify-content: flex-start; align-items: center; gap: 20px; padding: 0 40px; margin-bottom: 30px; }
@@ -34,7 +36,6 @@
         .sort-dir-btn:hover { border-color: #a6e3a1; box-shadow: 0 0 15px rgba(166, 227, 161, 0.2); }
 
         .trophy-room { display: flex; justify-content: flex-start; align-items: flex-start; flex-wrap: wrap; gap: 40px; padding: 0 40px; }
-
         .card-container { width: 320px; height: 480px; perspective: 1000px; }
         .card-inner { width: 100%; height: 100%; position: relative; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
         .card-container.is-flipped .card-inner { transform: rotateY(180deg); }
@@ -58,7 +59,6 @@
         .score-label.me { color: #a6e3a1; border-bottom-color: rgba(166, 227, 161, 0.3); }
         .score-label.chat { color: #b8a87b; border-bottom-color: rgba(184, 168, 123, 0.3); }
 
-        /* ОТСТУПЫ ДЛЯ ЦИФР УВЕЛИЧЕНЫ */
         .main-score { font-size: 30px; font-weight: bold; line-height: 1; letter-spacing: 2px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 4px #000; text-align: center; }
         .main-score span { font-size: 13px; color: #c4d1b8; text-shadow: none; letter-spacing: normal; }
 
@@ -81,6 +81,7 @@
         .theory-bar-fill { height: 100%; border-radius: 3px; }
         
         .loading { font-size: 24px; color: #829c73; text-align: center; margin-top: 50px; width: 100%; }
+        
         .secret-admin-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 40px; height: 40px; background: rgba(11, 13, 10, 0.3); border: 1px solid #283325; color: #4a5c41; border-radius: 50%; justify-content: center; align-items: center; cursor: pointer; z-index: 9999; transition: 0.3s; opacity: 0.2; font-size: 18px; }
         .secret-admin-btn:hover { opacity: 1; background: #1a2618; color: #a6e3a1; border-color: #a6e3a1; box-shadow: 0 0 10px rgba(166,227,161,0.3); }
     </style>
@@ -96,7 +97,6 @@
 
     <div class="controls-bar" style="display: none;" id="controls-bar">
         <input type="text" id="search-input" class="search-input" placeholder="Поиск по названию..." oninput="applyFiltersAndSort()">
-        
         <div style="display: flex; gap: 10px;">
             <select id="sort-select" class="sort-select" onchange="toggleRoleSelect(); applyFiltersAndSort();">
                 <option value="overall">По Итоговой оценке</option>
@@ -110,13 +110,11 @@
                 <option value="release_year">По дате выпуска</option>
                 <option value="episodes">По количеству серий</option>
             </select>
-            
             <select id="role-select" class="sort-select" onchange="applyFiltersAndSort()">
                 <option value="streamer">Стример</option>
                 <option value="me" class="me-element">Я</option>
                 <option value="chat">Чат</option>
             </select>
-
             <button id="sort-dir-btn" class="sort-dir-btn" onclick="toggleSortDir()" title="Изменить направление">↓</button>
         </div>
     </div>
@@ -141,24 +139,14 @@
             { bg: 'rgba(166, 227, 161, 0.2)', border: '#a6e3a1' }  
         ];
         
-        if (typeof Chart !== 'undefined') {
-            Chart.defaults.font.family = "'Neucha', cursive, sans-serif"; Chart.defaults.color = "#829c73";
-        }
+        if (typeof Chart !== 'undefined') { Chart.defaults.font.family = "'Neucha', cursive, sans-serif"; Chart.defaults.color = "#829c73"; }
 
-        // ПРИНУДИТЕЛЬНОЕ ОБНОВЛЕНИЕ ПРИ ВОЗВРАТЕ НА СТРАНИЦУ
-        window.addEventListener('pageshow', (event) => {
-            if (event.persisted) { initApp(); }
-        });
+        window.addEventListener('pageshow', (event) => { if (event.persisted) { initApp(); } });
 
-        function loginTwitch() {
-            window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=`;
-        }
+        function loginTwitch() { window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=`; }
+        function logoutTwitch() { try { localStorage.removeItem('twitch_token'); } catch(e){} location.reload(); }
 
-        function logoutTwitch() {
-            try { localStorage.removeItem('twitch_token'); } catch(e){}
-            location.reload();
-        }
-
+        // ЗАГРУЗКА БАЗОВОГО ПРОФИЛЯ (ДЛЯ ГЛАВНОЙ СТРАНИЦЫ)
         async function checkTwitchAuth() {
             try {
                 const hash = window.location.hash;
@@ -175,9 +163,21 @@
                     const res = await fetch('https://api.twitch.tv/helix/users', { headers: { 'Client-ID': TWITCH_CLIENT_ID, 'Authorization': `Bearer ${token}` } });
                     if (res.status === 401) { try { localStorage.removeItem('twitch_token'); } catch(e){} return; }
                     currentUser = (await res.json()).data[0];
+
+                    // Достаем цвет ника
+                    let nameColor = '#a6e3a1';
+                    try {
+                        const colorRes = await fetch(`https://api.twitch.tv/helix/chat/color?user_id=${currentUser.id}`, { headers: { 'Client-ID': TWITCH_CLIENT_ID, 'Authorization': `Bearer ${token}` } });
+                        const colorData = await colorRes.json();
+                        if (colorData.data && colorData.data[0] && colorData.data[0].color) nameColor = colorData.data[0].color;
+                    } catch(e) {}
                     
                     document.getElementById('nav-auth').innerHTML = `
-                        <div class="user-profile"><img src="${currentUser.profile_image_url}"><span>${currentUser.display_name}</span><button class="logout-btn" onclick="logoutTwitch()">Выйти</button></div>
+                        <div class="user-profile">
+                            <img src="${currentUser.profile_image_url}">
+                            <span style="color: ${nameColor}; font-size: 18px; font-weight: bold; text-shadow: 1px 1px 2px #000;">${currentUser.display_name}</span>
+                            <button class="logout-btn" onclick="logoutTwitch()">Выйти</button>
+                        </div>
                     `;
 
                     if (currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase()) {
@@ -185,12 +185,11 @@
                         document.body.classList.add('is-admin');
                     }
                 }
-            } catch (e) { console.error('Ошибка Твич', e); }
+            } catch (e) { console.error('Ошибка авторизации', e); }
         }
 
         function getScoreColor(score) {
-            const numScore = Number(score);
-            if (numScore === 0 || isNaN(numScore)) return '#6b7a62'; 
+            const numScore = Number(score); if (numScore === 0 || isNaN(numScore)) return '#6b7a62'; 
             return `hsl(${(numScore / 10) * 120}, 80%, 60%)`;
         }
 
@@ -289,7 +288,7 @@
                     const baseSeason = seasons[0];
                     globalFranchises.push({
                         id: franchiseId, title: franchiseId.replace(/_/g, ' '), coverUrl: baseSeason.coverUrl,
-                        episodes: totalEp, badgeText: `${seasons.length}S ${totalEp}EP`, // ФОРМАТИРОВАНИЕ S EP
+                        episodes: totalEp, badgeText: `${seasons.length}S ${totalEp}EP`,
                         release_year: parseInt(baseSeason.info.year) || 0, date_watched: baseSeason.info.dateWatched ? new Date(baseSeason.info.dateWatched).getTime() : 0,
                         az: franchiseId.replace(/_/g, ' ').toLowerCase(),
                         scores: scoresObj
@@ -336,7 +335,6 @@
                 const detailsLink = `Anime-Page.html?id=${encodeURIComponent(f.id)}`;
                 const s = f.scores;
 
-                // ПРОБЕЛЫ ВОКРУГ / 10 ДОБАВЛЕНЫ
                 const cardHtml = `
                 <div class="card-container" id="card-${f.id}" onmouseleave="this.classList.remove('is-flipped')">
                     <div class="card-inner">
@@ -384,7 +382,6 @@
                                 { data: [s.me.plot, s.me.visuals, s.me.music, s.me.world, s.me.atmosphere], backgroundColor: radarColors[2].bg, borderColor: radarColors[2].border, pointBackgroundColor: radarColors[2].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 }
                             ]
                         },
-                        // РАЗМЕР ШРИФТА УВЕЛИЧЕН С 10 ДО 12
                         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { filter: function(item) { return item.raw > 0; }, displayColors: false } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: '#283325' }, angleLines: { color: '#283325' }, pointLabels: { font: { size: 12, weight: 'bold' }, color: '#c4d1b8' } } } }
                     });
                 }
