@@ -18,12 +18,11 @@
         .nav-auth .twitch-btn { background: #6441a5; color: white; padding: 8px 16px; border-radius: 6px; font-family: sans-serif; font-size: 14px; font-weight: bold; cursor: pointer; border: 1px solid #4a307a; transition: 0.2s; }
         .nav-auth .twitch-btn:hover { background: #7d5bbe; box-shadow: 0 0 15px rgba(100, 65, 165, 0.6); }
         
-        /* ЧИСТЫЕ СТИЛИ РОЛЕЙ */
-        .role-badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-family: sans-serif; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-        .role-streamer { background: linear-gradient(45deg, #6441a5, #cba6f7); color: #fff; box-shadow: 0 0 10px rgba(203, 166, 247, 0.4); }
-        .role-sub { background: linear-gradient(45deg, #d4af37, #f3e5ab); color: #121612; box-shadow: 0 0 10px rgba(212, 175, 55, 0.4); }
-        .role-vip { background: linear-gradient(45deg, #e05e85, #f5c2e7); color: #fff; box-shadow: 0 0 10px rgba(245, 194, 231, 0.4); }
-        .role-f { background: linear-gradient(45deg, #283325, #4a5c41); color: #a6e3a1; }
+        /* === НОВЫЕ ЦВЕТА РОЛЕЙ === */
+        .role-badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-family: sans-serif; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 2px 5px rgba(0,0,0,0.5); width: fit-content;}
+        .role-sub { background: #6441a5; color: #fff; border: 1px solid #4a307a; } /* Фиолетовый */
+        .role-vip { background: #e05e85; color: #fff; border: 1px solid #b83d63; } /* Розовый */
+        .role-f { background: #333333; color: #a4b09c; border: 1px solid #222; } /* Серый */
 
         .user-profile { display: flex; align-items: center; gap: 15px; background: rgba(14, 17, 13, 0.8); padding: 8px 20px 8px 8px; border-radius: 30px; border: 1px solid #283325; box-shadow: 0 4px 15px rgba(0,0,0,0.5);}
         .user-profile img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid #4a5c41; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); }
@@ -81,66 +80,72 @@
         .rate-btn { width: 100%; background: rgba(166, 227, 161, 0.1); border: 1px solid #a6e3a1; color: #a6e3a1; padding: 12px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 20px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; margin-top: 15px; box-shadow: 0 0 10px rgba(166, 227, 161, 0.1); }
         .rate-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 20px rgba(166, 227, 161, 0.5); }
 
-        /* ВВОД КОММЕНТАРИЯ */
+        /* === ВВОД КОММЕНТАРИЯ === */
         .comment-input-area { background: rgba(0,0,0,0.3); border: 1px solid #283325; border-radius: 12px; padding: 25px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
         .comment-textarea { width: 100%; background: #121612; border: 1px solid #4a5c41; color: #c4d1b8; border-radius: 8px; padding: 15px; font-family: 'Neucha', cursive; font-size: 18px; outline: none; transition: 0.2s; resize: vertical; min-height: 100px; box-sizing: border-box; }
         .comment-textarea:focus { border-color: #a6e3a1; box-shadow: 0 0 15px rgba(166, 227, 161, 0.2); }
         .send-btn { align-self: flex-end; background: #1a2618; border: 1px solid #a6e3a1; color: #a6e3a1; padding: 10px 30px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px;}
         .send-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 15px rgba(166, 227, 161, 0.4); }
         
-        /* ВЕТКИ И КОММЕНТАРИИ */
-        .comments-list { display: flex; flex-direction: column; gap: 30px; }
+        /* === ВЕТКИ И КОММЕНТАРИИ (РОВНЫЙ ДИЗАЙН) === */
+        .comments-list { display: flex; flex-direction: column; gap: 25px; }
         .comment-wrapper { display: flex; flex-direction: column; gap: 15px; }
         
-        .comment-item { display: flex; flex-direction: column; background: rgba(14, 17, 13, 0.4); border-radius: 12px; border: 1px solid #283325; overflow: hidden; }
+        /* Общая карточка для любого коммента и ответа */
+        .comment-card { display: flex; flex-direction: column; background: rgba(14, 17, 13, 0.4); border-radius: 12px; border: 1px solid #283325; padding: 20px; box-sizing: border-box; }
+        .reply-card { background: rgba(11, 13, 10, 0.6); padding: 15px; } /* Ответ чуть темнее и компактнее */
+
+        /* ШАПКА КАРТОЧКИ */
+        .comment-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
         
-        .comment-top { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(90deg, rgba(26, 34, 24, 0.6) 0%, rgba(11, 13, 10, 0.8) 100%); padding: 15px 25px; border-bottom: 2px solid #283325; border-radius: 12px 12px 0 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .comment-author-block { display: flex; align-items: center; gap: 15px; }
-        .comment-avatar { width: 55px; height: 55px; border-radius: 50%; border: 2px solid #4a5c41; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
-        .author-details { display: flex; flex-direction: column; gap: 6px; }
+        .comment-author-info { display: flex; align-items: center; gap: 15px; }
+        .comment-avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #4a5c41; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .reply-card .comment-avatar { width: 40px; height: 40px; border-width: 1px; }
         
-        .comment-author { font-family: sans-serif; font-weight: bold; font-size: 20px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+        .comment-name-role { display: flex; flex-direction: column; gap: 5px; align-items: flex-start; justify-content: center; }
+        .comment-author { font-family: sans-serif; font-weight: bold; font-size: 18px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
+        .reply-card .comment-author { font-size: 16px; }
+
+        /* ОЦЕНКИ СПРАВА В ШАПКЕ */
+        .comment-rating-block { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; }
         
-        .comment-rating-block { display: flex; flex-direction: column; align-items: flex-end; }
+        .cr-overall { font-size: 40px; font-weight: bold; line-height: 1; font-family: sans-serif; letter-spacing: -1px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+        .reply-card .cr-overall { font-size: 32px; }
+        
+        .cr-theory { display: flex; gap: 8px; font-family: sans-serif; font-size: 14px; font-weight: bold; margin-top: 5px; }
+        .reply-card .cr-theory { font-size: 12px; gap: 6px; }
+
+        /* ТУЛТИПЫ */
         .tooltip-element { position: relative; cursor: help; text-shadow: 1px 1px 1px #000; transition: transform 0.2s; padding: 2px; display: inline-block; }
         .tooltip-element:hover { transform: scale(1.1); z-index: 50; }
-        .tooltip-element::after { content: attr(data-title); position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%); background: #121612; color: #c4d1b8; padding: 6px 10px; border-radius: 6px; font-size: 13px; white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity 0.2s; border: 1px solid #4a5c41; font-weight: normal; font-family: 'Neucha', cursive; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0,0,0,0.8); z-index: 100;}
-        .tooltip-element:hover::after { opacity: 1; visibility: visible; }
-        
-        .cr-theory span:nth-last-child(1)::after, .cr-theory span:nth-last-child(2)::after { left: auto; right: -10px; transform: none; }
-        .cr-overall::after { left: auto; right: 0; transform: none; }
+        .tooltip-element::after { content: attr(data-title); position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%); background: #121612; color: #c4d1b8; padding: 6px 10px; border-radius: 6px; font-size: 13px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s; border: 1px solid #4a5c41; font-weight: normal; font-family: 'Neucha', cursive; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0,0,0,0.8); z-index: 100;}
+        .tooltip-element:hover::after { opacity: 1; }
+        /* Фикс: чтобы крайние правые тултипы открывались влево и не обрезались экраном */
+        .cr-theory span:nth-last-child(1)::after, .cr-theory span:nth-last-child(2)::after, .cr-overall::after { left: auto; right: 0; transform: none; }
 
-        .cr-overall { font-size: 42px; font-weight: bold; line-height: 1; font-family: sans-serif; letter-spacing: -1px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
-        .cr-theory { display: flex; gap: 10px; font-family: sans-serif; font-size: 15px; font-weight: bold; margin-top: 8px; }
-
-        .comment-content-wrap { padding: 20px 25px; display: flex; flex-direction: column; gap: 15px; }
-        .comment-text { font-size: 18px; color: #c4d1b8; line-height: 1.6; word-break: break-word; white-space: pre-wrap; }
+        /* ТЕКСТ И ПОДВАЛ */
+        .comment-text { font-size: 18px; color: #c4d1b8; line-height: 1.6; word-break: break-word; white-space: pre-wrap; margin-bottom: 15px; }
+        .reply-card .comment-text { font-size: 16px; margin-bottom: 10px; }
         
-        .comment-bottom { display: flex; flex-direction: column; gap: 10px; border-top: 1px dashed rgba(74, 92, 65, 0.4); padding-top: 15px;}
-        .comment-date { font-size: 13px; color: #6b7a62; font-family: sans-serif; font-style: italic;}
+        .comment-footer { display: flex; flex-direction: column; gap: 10px; border-top: 1px dashed rgba(74, 92, 65, 0.4); padding-top: 15px; }
+        .reply-card .comment-footer { padding-top: 10px; }
+        
+        .comment-date { font-size: 13px; color: #6b7a62; font-family: sans-serif; font-style: italic; }
         .comment-actions { display: flex; gap: 20px; align-items: center; }
         .comment-actions button { background: transparent; border: none; cursor: pointer; font-family: 'Neucha', cursive; font-size: 15px; text-transform: uppercase; transition: 0.2s; padding: 0; font-weight: bold; letter-spacing: 1px; }
         .btn-reply { color: #a4b09c; } .btn-reply:hover { color: #a6e3a1; }
         .btn-edit { color: #829c73; } .btn-edit:hover { color: #cba6f7; }
         .btn-del { color: #ff5555; } .btn-del:hover { text-shadow: 0 0 5px rgba(255,85,85,0.5); }
 
-        .toggle-replies-btn { background: transparent; border: none; color: #829c73; font-family: 'Neucha', cursive; font-size: 17px; font-weight: bold; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; gap: 8px; margin-left: 25px; transition: 0.2s; width: fit-content; }
+        /* СКРЫТЬ/ПОКАЗАТЬ ОТВЕТЫ */
+        .toggle-replies-btn { background: transparent; border: none; color: #829c73; font-family: 'Neucha', cursive; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; gap: 8px; margin-left: 10px; transition: 0.2s; width: fit-content; }
         .toggle-replies-btn:hover { color: #a6e3a1; }
 
-        .replies-list { display: flex; flex-direction: column; gap: 15px; margin-left: 60px; border-left: 2px solid #283325; padding-left: 20px; display: none; }
-        
-        .reply-item { display: flex; flex-direction: column; background: rgba(11, 13, 10, 0.6); border-radius: 12px; border: 1px solid rgba(40, 51, 37, 0.5); overflow: hidden;}
-        .reply-item .comment-top { padding: 12px 20px; border-radius: 12px 12px 0 0; background: linear-gradient(90deg, rgba(26, 34, 24, 0.4) 0%, rgba(11, 13, 10, 0.6) 100%); border-bottom: 1px solid rgba(40,51,37,0.5); }
-        .reply-item .comment-avatar { width: 45px; height: 45px; }
-        .reply-item .comment-author { font-size: 18px; }
-        .reply-item .cr-overall { font-size: 32px; }
-        .reply-item .cr-theory { font-size: 14px; gap: 8px; margin-top: 5px; }
-        .reply-item .comment-content-wrap { padding: 15px 20px; gap: 10px; }
-        .reply-item .comment-text { font-size: 17px; margin-bottom: 5px; }
-        .reply-item .comment-actions button { font-size: 14px; }
+        /* СПИСОК ОТВЕТОВ */
+        .replies-list { display: flex; flex-direction: column; gap: 15px; margin-left: 40px; border-left: 2px solid #283325; padding-left: 20px; display: none; }
+        .reply-input-wrapper { display: none; margin-left: 40px; margin-top: 5px; flex-direction: column; gap: 10px; }
 
-        .reply-input-wrapper { display: none; margin-left: 60px; margin-top: 5px; flex-direction: column; gap: 10px; }
-
+        /* МОДАЛЬНЫЕ ОКНА И UI */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .modal-box { background: linear-gradient(180deg, #101411 0%, #080a08 100%); border: 2px solid #a6e3a1; border-radius: 12px; padding: 30px; width: 750px; box-shadow: 0 0 30px rgba(166, 227, 161, 0.2); position: relative; }
         .modal-title { color: #a6e3a1; font-size: 24px; text-transform: uppercase; margin: 0 0 20px 0; text-align: center; font-weight: bold; letter-spacing: 1px;}
@@ -315,7 +320,6 @@
         const TWITCH_CLIENT_ID = 'gko3y2nhxg0ocvte0ru970pbau3eiq';
         const REDIRECT_URI = 'https://skinnystreams04-ai.github.io/Anime/';
         const ADMIN_USERNAME = 'skinwalker_nozxc'; 
-
         const FIREBASE_BASE = 'https://skinwalkerauction-default-rtdb.europe-west1.firebasedatabase.app';
 
         let currentUser = null;
@@ -329,7 +333,7 @@
         
         let editingTarget = { type: null, id: null, parentId: null }; 
 
-        // ГЛОБАЛЬНАЯ БАЗА ПОЛЬЗОВАТЕЛЕЙ ИЗ НОВОЙ ВЕТКИ
+        // ИСКЛЮЧИТЕЛЬНО НОВАЯ БАЗА РОЛЕЙ
         window.globalUsersDB = {};
 
         const radarColors = [
@@ -360,15 +364,13 @@
         function loginTwitch() { window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=`; }
         function logoutTwitch() { try { localStorage.removeItem('twitch_token'); } catch(e){} location.reload(); }
 
-        // ЧИСТАЯ ФУНКЦИЯ ПОЛУЧЕНИЯ ДАННЫХ ПОЛЬЗОВАТЕЛЯ ИЗ НОВОЙ БАЗЫ (БЕЗ ХАРДКОДА СТРИМЕРА ДЛЯ РОЛЕЙ)
+        // ЧИСТАЯ ФУНКЦИЯ БЕЗ ХАРДКОДА СТРИМЕРА ДЛЯ РОЛЕЙ И ЦВЕТОВ
         function getUserInfo(username, fallbackTwitchColor) {
-            const defaultColor = fallbackTwitchColor || '#a6e3a1';
             const lowerName = username.toLowerCase();
-            const dbUser = window.globalUsersDB[lowerName];
+            const dbUser = window.globalUsersDB[lowerName]; 
 
-            let r = "F"; let g = 0; let t = 0; let c = defaultColor;
+            let r = "F"; let g = 0; let t = 0; let c = fallbackTwitchColor || '#a4b09c';
             
-            // Если есть в базе — берем оттуда
             if (dbUser) {
                 if (dbUser.role) r = dbUser.role.toUpperCase();
                 if (dbUser.wallet_gold) g = dbUser.wallet_gold;
@@ -376,7 +378,6 @@
                 if (dbUser.color && dbUser.color.trim() !== "") c = dbUser.color;
             }
 
-            // Генерируем HTML бейджа строго по роли
             let badgeHtml = `<span class="role-badge role-f">FOLLOW</span>`;
             if (r === 'SUB' || r === 'SUBSCRIBER') badgeHtml = `<span class="role-badge role-sub">SUB</span>`;
             else if (r === 'VIP') badgeHtml = `<span class="role-badge role-vip">VIP</span>`;
@@ -402,22 +403,21 @@
                     if (res.status === 401) { try { localStorage.removeItem('twitch_token'); } catch(e){} return; }
                     currentUser = (await res.json()).data[0];
 
-                    let twitchColor = null;
                     try {
                         const colorRes = await fetch(`https://api.twitch.tv/helix/chat/color?user_id=${currentUser.id}`, { headers: { 'Client-ID': TWITCH_CLIENT_ID, 'Authorization': `Bearer ${token}` } });
                         const colorData = await colorRes.json();
-                        twitchColor = (colorData.data && colorData.data[0] && colorData.data[0].color) ? colorData.data[0].color : null;
+                        currentUser.color = (colorData.data && colorData.data[0] && colorData.data[0].color) ? colorData.data[0].color : null;
                     } catch(e) {}
                     
-                    const uInfo = getUserInfo(currentUser.login, twitchColor);
+                    const uInfo = getUserInfo(currentUser.login, currentUser.color);
                     
                     document.getElementById('nav-auth').innerHTML = `
-                        <div class="user-profile" style="padding: 6px 20px 6px 6px; border-radius: 30px; display: flex; gap: 15px; align-items: center;">
-                            <img src="${currentUser.profile_image_url}" style="width:40px; height:40px; border-radius:50%; border:2px solid #4a5c41;">
+                        <div class="user-profile">
+                            <img src="${currentUser.profile_image_url}">
                             <div style="display: flex; flex-direction: column; gap: 5px;">
                                 <div style="display: flex; align-items: center; justify-content: space-between;">
                                     <span style="color: ${uInfo.color}; font-size: 18px; font-weight: bold; text-shadow: 1px 1px 2px #000;">${currentUser.display_name}</span>
-                                    <button class="logout-btn" onclick="logoutTwitch()" style="margin-left: 15px;">Выйти</button>
+                                    <button class="logout-btn" onclick="logoutTwitch()">Выйти</button>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 10px;">
                                     ${uInfo.badge}
@@ -432,6 +432,7 @@
                         </div>
                     `;
 
+                    // Оставляем только скрытие админской кнопки шестеренки
                     if (currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase()) {
                         document.getElementById('admin-btn').style.display = 'flex';
                         document.body.classList.add('is-admin');
@@ -459,6 +460,7 @@
 
         function syncModalChart() {
             if (typeof Chart === 'undefined') return;
+            // Цвет графика при оценке берем условно зеленым для всех зрителей и фиолетовым для админа (для красоты UI)
             const isStreamer = currentUser && currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
             const color = isStreamer ? radarColors[0].border : radarColors[2].border; 
             const bg = isStreamer ? radarColors[0].bg : radarColors[2].bg;
@@ -509,14 +511,11 @@
 
             const isStreamer = currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
             try {
-                let res;
                 if (isStreamer) {
-                    res = await fetch(`${FIREBASE_BASE}/anime_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/scores.json`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overall, theory }) });
+                    await fetch(`${FIREBASE_BASE}/anime_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/scores.json`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overall, theory }) });
                 } else {
-                    res = await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/ratings/${currentUser.id}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, overall, theory, timestamp: Date.now() }) });
+                    await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/ratings/${currentUser.id}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, overall, theory, timestamp: Date.now() }) });
                 }
-                
-                if (!res.ok) throw new Error("Server error");
                 closeRatingModal(); showToast("✅ Оценка успешно сохранена!"); await loadAnimeData(); 
             } catch (e) { showToast("❌ Ошибка сохранения!", true); }
             
@@ -560,6 +559,64 @@
             textarea.focus();
         }
 
+        // УНИВЕРСАЛЬНЫЙ РЕНДЕР КОММЕНТОВ И ОТВЕТОВ В ЕДИНОМ СТИЛЕ
+        function createCommentCard(c, isReply = false, parentId = null) {
+            const authorId = c.userId || c.id;
+            const isMe = currentUser && authorId === currentUser.id;
+            const isAdminViewer = currentUser && currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
+            
+            const d = new Date(c.timestamp);
+            const dateStr = `${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')} в ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+            
+            const uInfo = getUserInfo(c.displayName, c.userColor);
+
+            let actions = `<div class="comment-actions">
+                                <button class="btn-reply" onclick="toggleReplyBox('${parentId || c.id}', '${isReply ? c.displayName : ''}')">Ответить</button>
+                                ${isMe ? `<button class="btn-edit" onclick="${isReply ? `editReply('${parentId}', '${c.rid}')` : `editComment('${c.id}')`}">Изменить</button>` : ''}
+                                ${isMe || isAdminViewer ? `<button class="btn-del" onclick="${isReply ? `deleteReply('${parentId}', '${c.rid}')` : `deleteComment('${c.id}')`}">Удалить</button>` : ''}
+                            </div>`;
+
+            let ratingHtml = '';
+            // Проверка оценки: если админ - берем из anime_db, если зритель - из community_db
+            const isAuthorAdmin = c.displayName.toLowerCase() === ADMIN_USERNAME.toLowerCase();
+            const userRating = isAuthorAdmin ? (franchiseData[currentSeasonKey].scores || null) : (currentCommunityRatings[authorId] || null);
+
+            if (userRating && userRating.overall > 0) {
+                const ovr = userRating.overall;
+                const t = userRating.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
+                ratingHtml = `
+                <div class="comment-rating-block">
+                    <div class="cr-overall tooltip-element" data-title="Итоговая оценка" style="color:${getScoreColor(ovr)}">${ovr}</div>
+                    <div class="cr-theory">
+                        <span class="tooltip-element" style="color:${getScoreColor(t.plot)}" data-title="Сюжет: ${t.plot}">${t.plot}</span>
+                        <span class="tooltip-element" style="color:${getScoreColor(t.visuals)}" data-title="Визуал: ${t.visuals}">${t.visuals}</span>
+                        <span class="tooltip-element" style="color:${getScoreColor(t.music)}" data-title="Музыка: ${t.music}">${t.music}</span>
+                        <span class="tooltip-element" style="color:${getScoreColor(t.world)}" data-title="Мир: ${t.world}">${t.world}</span>
+                        <span class="tooltip-element" style="color:${getScoreColor(t.atmosphere)}" data-title="Атмосфера: ${t.atmosphere}">${t.atmosphere}</span>
+                    </div>
+                </div>`;
+            }
+
+            return `
+            <div class="comment-card ${isReply ? 'reply-card' : ''}">
+                <div class="comment-header">
+                    <div class="comment-author-info">
+                        <img src="${c.profileImage}" class="comment-avatar">
+                        <div class="comment-name-role">
+                            <span class="comment-author" style="color: ${uInfo.color};">${c.displayName}</span>
+                            <div>${uInfo.badge}</div>
+                        </div>
+                    </div>
+                    ${ratingHtml}
+                </div>
+                <div class="comment-text">${c.text}</div>
+                <div class="comment-footer">
+                    <span class="comment-date">${dateStr}</span>
+                    ${actions}
+                </div>
+            </div>`;
+        }
+
         function renderComments() {
             const list = document.getElementById('comments-list'); list.innerHTML = '';
             const arr = Object.entries(currentComments).map(([id, data]) => ({id, ...data})).sort((a,b) => b.timestamp - a.timestamp);
@@ -567,123 +624,20 @@
             if (arr.length === 0) { list.innerHTML = '<div style="color: #6b7a62; text-align: center; padding: 20px; font-size: 18px;">Пока нет рецензий. Будь первым!</div>'; return; }
 
             arr.forEach(c => {
-                const authorId = c.userId || c.id;
-                const isMe = currentUser && authorId === currentUser.id;
-                const isAdminViewer = currentUser && currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
-                const isAuthorAdmin = c.displayName.toLowerCase() === ADMIN_USERNAME.toLowerCase();
-                
-                const d = new Date(c.timestamp);
-                const dateStr = `${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')} в ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
-                
-                let actions = `<div class="comment-actions">
-                                 <button class="btn-reply" onclick="toggleReplyBox('${c.id}')">Ответить</button>
-                                 ${isMe ? `<button class="btn-edit" onclick="editComment('${c.id}')">Изменить</button>` : ''}
-                                 ${isMe || isAdminViewer ? `<button class="btn-del" onclick="deleteComment('${c.id}')">Удалить</button>` : ''}
-                               </div>`;
-
-                let ratingHtml = '';
-                const userRating = isAuthorAdmin ? (franchiseData[currentSeasonKey].scores || null) : (currentCommunityRatings[authorId] || null);
-
-                if (userRating && userRating.overall > 0) {
-                    const ovr = userRating.overall;
-                    const t = userRating.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
-                    ratingHtml = `
-                    <div class="comment-rating-block">
-                        <div class="cr-overall tooltip-element" data-title="Итоговая оценка" style="color:${getScoreColor(ovr)}">${ovr}</div>
-                        <div class="cr-theory">
-                            <span class="tooltip-element" style="color:${getScoreColor(t.plot)}" data-title="Сюжет: ${t.plot}">${t.plot}</span>
-                            <span class="tooltip-element" style="color:${getScoreColor(t.visuals)}" data-title="Визуал: ${t.visuals}">${t.visuals}</span>
-                            <span class="tooltip-element" style="color:${getScoreColor(t.music)}" data-title="Музыка: ${t.music}">${t.music}</span>
-                            <span class="tooltip-element" style="color:${getScoreColor(t.world)}" data-title="Мир: ${t.world}">${t.world}</span>
-                            <span class="tooltip-element" style="color:${getScoreColor(t.atmosphere)}" data-title="Атмосфера: ${t.atmosphere}">${t.atmosphere}</span>
-                        </div>
-                    </div>`;
-                }
-
-                // ПОЛУЧАЕМ ЧИСТУЮ ИНФУ ДЛЯ КОММЕНТАРИЯ
-                const uInfo = getUserInfo(c.displayName, c.userColor);
+                const mainCommentHtml = createCommentCard(c);
 
                 let repliesHtml = '';
                 let toggleRepliesBtn = '';
                 if (c.replies) {
-                    const replArr = Object.entries(c.replies).map(([rid, rdata]) => ({rid, ...rdata})).sort((a,b)=>a.timestamp - b.timestamp);
+                    const replArr = Object.entries(c.replies).map(([rid, rdata]) => ({rid: rid, ...rdata})).sort((a,b)=>a.timestamp - b.timestamp);
                     toggleRepliesBtn = `<button class="toggle-replies-btn" id="toggle-btn-${c.id}" data-count="${replArr.length}" onclick="toggleRepliesList('${c.id}')">▼ Показать ответы (${replArr.length})</button>`;
                     
-                    repliesHtml = `<div class="replies-list" id="replies-list-${c.id}">` + replArr.map(rep => {
-                        const rd = new Date(rep.timestamp); const rDateStr = `${rd.getDate().toString().padStart(2,'0')}.${(rd.getMonth()+1).toString().padStart(2,'0')} в ${rd.getHours().toString().padStart(2,'0')}:${rd.getMinutes().toString().padStart(2,'0')}`;
-                        const isRepAuthorAdmin = rep.displayName.toLowerCase() === ADMIN_USERNAME.toLowerCase();
-                        
-                        const repInfo = getUserInfo(rep.displayName, rep.userColor);
-                        const isRepMe = currentUser && rep.userId === currentUser.id;
-                        
-                        let repActions = `<div class="comment-actions">
-                                            <button class="btn-reply" onclick="toggleReplyBox('${c.id}', '${rep.displayName}')">Ответить</button>
-                                            ${isRepMe ? `<button class="btn-edit" onclick="editReply('${c.id}', '${rep.rid}')">Изменить</button>` : ''}
-                                            ${isRepMe || isAdminViewer ? `<button class="btn-del" onclick="deleteReply('${c.id}', '${rep.rid}')">Удалить</button>` : ''}
-                                          </div>`;
-
-                        let repRatingHtml = '';
-                        const repUserRating = isRepAuthorAdmin ? (franchiseData[currentSeasonKey].scores || null) : (currentCommunityRatings[rep.userId] || null);
-
-                        if (repUserRating && repUserRating.overall > 0) {
-                            const ovr = repUserRating.overall;
-                            const t = repUserRating.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
-                            repRatingHtml = `
-                            <div class="comment-rating-block">
-                                <div class="cr-overall tooltip-element" data-title="Итоговая оценка" style="font-size: 32px; color:${getScoreColor(ovr)}">${ovr}</div>
-                                <div class="cr-theory" style="font-size: 13px; margin-top: 5px;">
-                                    <span class="tooltip-element" style="color:${getScoreColor(t.plot)}" data-title="Сюжет: ${t.plot}">${t.plot}</span>
-                                    <span class="tooltip-element" style="color:${getScoreColor(t.visuals)}" data-title="Визуал: ${t.visuals}">${t.visuals}</span>
-                                    <span class="tooltip-element" style="color:${getScoreColor(t.music)}" data-title="Музыка: ${t.music}">${t.music}</span>
-                                    <span class="tooltip-element" style="color:${getScoreColor(t.world)}" data-title="Мир: ${t.world}">${t.world}</span>
-                                    <span class="tooltip-element" style="color:${getScoreColor(t.atmosphere)}" data-title="Атмосфера: ${t.atmosphere}">${t.atmosphere}</span>
-                                </div>
-                            </div>`;
-                        }
-
-                        return `<div class="reply-item">
-                                    <div class="comment-top" style="padding: 0 0 12px 0; border-bottom: 1px solid rgba(40,51,37,0.5); margin-bottom: 12px; background: transparent;">
-                                        <div class="comment-author-block">
-                                            <img src="${rep.profileImage}" class="comment-avatar" style="width: 40px; height: 40px; border-width: 1px;">
-                                            <div class="author-details">
-                                                <span class="comment-author" style="color: ${repInfo.color}; font-size: 16px;">${rep.displayName}</span>
-                                                <div>${repInfo.badge}</div>
-                                            </div>
-                                        </div>
-                                        ${repRatingHtml}
-                                    </div>
-                                    <div class="comment-content-wrap" style="padding: 0;">
-                                        <div class="comment-text" style="font-size: 16px; margin-bottom: 10px;">${rep.text}</div>
-                                        <div class="comment-bottom" style="border-top:none; padding-top:0;">
-                                            <span class="comment-date">${rDateStr}</span>
-                                            ${repActions}
-                                        </div>
-                                    </div>
-                                </div>`;
-                    }).join('') + `</div>`;
+                    repliesHtml = `<div class="replies-list" id="replies-list-${c.id}">` + replArr.map(rep => createCommentCard(rep, true, c.id)).join('') + `</div>`;
                 }
 
                 list.innerHTML += `
                 <div class="comment-wrapper">
-                    <div class="comment-item">
-                        <div class="comment-top">
-                            <div class="comment-author-block">
-                                <img src="${c.profileImage}" class="comment-avatar">
-                                <div class="author-details">
-                                    <span class="comment-author" style="color: ${uInfo.color};">${c.displayName}</span>
-                                    <div>${uInfo.badge}</div>
-                                </div>
-                            </div>
-                            ${ratingHtml}
-                        </div>
-                        <div class="comment-content-wrap">
-                            <div class="comment-text">${c.text}</div>
-                            <div class="comment-bottom">
-                                <span class="comment-date">${dateStr}</span>
-                                ${actions}
-                            </div>
-                        </div>
-                    </div>
+                    ${mainCommentHtml}
                     ${toggleRepliesBtn}
                     ${repliesHtml}
                     <div class="reply-input-wrapper" id="reply-box-${c.id}">
