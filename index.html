@@ -34,6 +34,7 @@
         .sort-dir-btn:hover { border-color: #a6e3a1; box-shadow: 0 0 15px rgba(166, 227, 161, 0.2); }
 
         .trophy-room { display: flex; justify-content: flex-start; align-items: flex-start; flex-wrap: wrap; gap: 40px; padding: 0 40px; }
+
         .card-container { width: 320px; height: 480px; perspective: 1000px; }
         .card-inner { width: 100%; height: 100%; position: relative; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
         .card-container.is-flipped .card-inner { transform: rotateY(180deg); }
@@ -56,8 +57,10 @@
         .score-label.streamer { color: #cba6f7; border-bottom-color: rgba(203, 166, 247, 0.3); }
         .score-label.me { color: #a6e3a1; border-bottom-color: rgba(166, 227, 161, 0.3); }
         .score-label.chat { color: #b8a87b; border-bottom-color: rgba(184, 168, 123, 0.3); }
-        .main-score { font-size: 30px; font-weight: bold; line-height: 1; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 4px #000; text-align: center; }
-        .main-score span { font-size: 13px; color: #c4d1b8; text-shadow: none; }
+
+        /* ОТСТУПЫ ДЛЯ ЦИФР УВЕЛИЧЕНЫ */
+        .main-score { font-size: 30px; font-weight: bold; line-height: 1; letter-spacing: 2px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 4px #000; text-align: center; }
+        .main-score span { font-size: 13px; color: #c4d1b8; text-shadow: none; letter-spacing: normal; }
 
         .divider { border-top: 1px dashed #4a5c41; margin: 8px 0 12px 0; }
         .anime-title { color: #c4d1b8; font-size: 17px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; text-align: center; text-shadow: 2px 2px 5px #000; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; width: 100%; line-height: 1.2; }
@@ -142,6 +145,11 @@
             Chart.defaults.font.family = "'Neucha', cursive, sans-serif"; Chart.defaults.color = "#829c73";
         }
 
+        // ПРИНУДИТЕЛЬНОЕ ОБНОВЛЕНИЕ ПРИ ВОЗВРАТЕ НА СТРАНИЦУ
+        window.addEventListener('pageshow', (event) => {
+            if (event.persisted) { initApp(); }
+        });
+
         function loginTwitch() {
             window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=`;
         }
@@ -204,7 +212,6 @@
             await checkTwitchAuth(); 
 
             try {
-                // ОТКЛЮЧЕНО КЕШИРОВАНИЕ ЧТОБЫ ОЦЕНКИ ОБНОВЛЯЛИСЬ СРАЗУ
                 const [animeRes, commRes] = await Promise.all([
                     fetch(`${FIREBASE_BASE}/anime_db.json`, { cache: 'no-store' }),
                     fetch(`${FIREBASE_BASE}/community_db.json`, { cache: 'no-store' })
@@ -228,7 +235,6 @@
                     seasons.forEach(s => {
                         totalEp += parseInt(s.info.episodesTotal) || 0;
                         
-                        // МАТЕМАТИКА С ЖЕСТКОЙ КОНВЕРТАЦИЕЙ Number()
                         if (s.scores && Number(s.scores.overall) > 0) { streamer.overall += Number(s.scores.overall); streamer.countOv++; }
                         if (s.scores && s.scores.theory) {
                             streamer.plot += Number(s.scores.theory.plot) || 0; streamer.vis += Number(s.scores.theory.visuals) || 0;
@@ -283,7 +289,7 @@
                     const baseSeason = seasons[0];
                     globalFranchises.push({
                         id: franchiseId, title: franchiseId.replace(/_/g, ' '), coverUrl: baseSeason.coverUrl,
-                        episodes: totalEp, badgeText: seasons.length === 1 ? baseSeason.seasonTab : `${seasons.length} СЕЗ`,
+                        episodes: totalEp, badgeText: `${seasons.length}S ${totalEp}EP`, // ФОРМАТИРОВАНИЕ S EP
                         release_year: parseInt(baseSeason.info.year) || 0, date_watched: baseSeason.info.dateWatched ? new Date(baseSeason.info.dateWatched).getTime() : 0,
                         az: franchiseId.replace(/_/g, ' ').toLowerCase(),
                         scores: scoresObj
@@ -330,17 +336,18 @@
                 const detailsLink = `Anime-Page.html?id=${encodeURIComponent(f.id)}`;
                 const s = f.scores;
 
+                // ПРОБЕЛЫ ВОКРУГ / 10 ДОБАВЛЕНЫ
                 const cardHtml = `
                 <div class="card-container" id="card-${f.id}" onmouseleave="this.classList.remove('is-flipped')">
                     <div class="card-inner">
                         <div class="card-face card-front" style="background-image: url('${f.coverUrl}');" onclick="if(!event.target.closest('.flip-btn')) window.location.href='${detailsLink}'">
-                            <div class="ep-badge">${f.badgeText} ${f.episodes}EP</div>
+                            <div class="ep-badge">${f.badgeText}</div>
                             <div class="flip-btn" onmouseenter="document.getElementById('card-${f.id}').classList.add('is-flipped')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.13 15.57a10 10 0 1 0 3.1-8.91L2 9M2.5 22v-6h6M21.87 8.43a10 10 0 1 0-3.1 8.91l3.23-2.34"/></svg></div>
                             <div class="front-overlay">
                                 <div class="scores-row">
-                                    <div class="score-box"><div class="score-label streamer">Стример</div><div class="main-score" style="color:${getScoreColor(s.streamer.overall)};">${s.streamer.overall}<span>/10</span></div></div>
-                                    <div class="score-box me-element"><div class="score-label me">Я</div><div class="main-score" style="color:${getScoreColor(s.me.overall)};">${s.me.overall}<span>/10</span></div></div>
-                                    <div class="score-box"><div class="score-label chat">Чат</div><div class="main-score" style="color:${getScoreColor(s.chat.overall)};">${s.chat.overall}<span>/10</span></div></div>
+                                    <div class="score-box"><div class="score-label streamer">Стример</div><div class="main-score" style="color:${getScoreColor(s.streamer.overall)};">${s.streamer.overall}<span> / 10</span></div></div>
+                                    <div class="score-box me-element"><div class="score-label me">Я</div><div class="main-score" style="color:${getScoreColor(s.me.overall)};">${s.me.overall}<span> / 10</span></div></div>
+                                    <div class="score-box"><div class="score-label chat">Чат</div><div class="main-score" style="color:${getScoreColor(s.chat.overall)};">${s.chat.overall}<span> / 10</span></div></div>
                                 </div>
                                 <div class="divider"></div>
                                 <div class="anime-title">${f.title}</div>
@@ -377,7 +384,8 @@
                                 { data: [s.me.plot, s.me.visuals, s.me.music, s.me.world, s.me.atmosphere], backgroundColor: radarColors[2].bg, borderColor: radarColors[2].border, pointBackgroundColor: radarColors[2].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 }
                             ]
                         },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { filter: function(item) { return item.raw > 0; }, displayColors: false } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: '#283325' }, angleLines: { color: '#283325' }, pointLabels: { font: { size: 10, weight: 'bold' }, color: '#c4d1b8' } } } }
+                        // РАЗМЕР ШРИФТА УВЕЛИЧЕН С 10 ДО 12
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { filter: function(item) { return item.raw > 0; }, displayColors: false } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: '#283325' }, angleLines: { color: '#283325' }, pointLabels: { font: { size: 12, weight: 'bold' }, color: '#c4d1b8' } } } }
                     });
                 }
             });
