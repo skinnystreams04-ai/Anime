@@ -18,9 +18,13 @@
         .nav-auth .twitch-btn { background: #6441a5; color: white; padding: 8px 16px; border-radius: 6px; font-family: sans-serif; font-size: 14px; font-weight: bold; cursor: pointer; border: 1px solid #4a307a; transition: 0.2s; }
         .nav-auth .twitch-btn:hover { background: #7d5bbe; box-shadow: 0 0 15px rgba(100, 65, 165, 0.6); }
         
-        /* БАЗОВЫЙ ПРОФИЛЬ ДЛЯ ГЛАВНОЙ */
-        .user-profile { display: flex; align-items: center; gap: 15px; background: rgba(14, 17, 13, 0.8); padding: 6px 20px 6px 6px; border-radius: 30px; border: 1px solid #283325; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
-        .user-profile img { width: 40px; height: 40px; border-radius: 50%; border: 2px solid #4a5c41; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); }
+        /* СТИЛИ РОЛЕЙ ДЛЯ ГЛАВНОЙ СТРАНИЦЫ */
+        .role-badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-family: sans-serif; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
+        .role-streamer { background: linear-gradient(45deg, #6441a5, #cba6f7); color: #fff; box-shadow: 0 0 10px rgba(203, 166, 247, 0.4); }
+        .role-sub { background: linear-gradient(45deg, #d4af37, #f3e5ab); color: #121612; box-shadow: 0 0 10px rgba(212, 175, 55, 0.4); }
+        .role-vip { background: linear-gradient(45deg, #e05e85, #f5c2e7); color: #fff; box-shadow: 0 0 10px rgba(245, 194, 231, 0.4); }
+        .role-follow { background: linear-gradient(45deg, #283325, #4a5c41); color: #a6e3a1; }
+
         .logout-btn { background: transparent; border: none; color: #ff5555; cursor: pointer; font-size: 12px; font-family: sans-serif; text-transform: uppercase; font-weight: bold; transition: 0.2s; padding: 0; margin-left: 5px; }
         .logout-btn:hover { text-shadow: 0 0 8px rgba(255, 85, 85, 0.8); }
 
@@ -81,7 +85,6 @@
         .theory-bar-fill { height: 100%; border-radius: 3px; }
         
         .loading { font-size: 24px; color: #829c73; text-align: center; margin-top: 50px; width: 100%; }
-        
         .secret-admin-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 40px; height: 40px; background: rgba(11, 13, 10, 0.3); border: 1px solid #283325; color: #4a5c41; border-radius: 50%; justify-content: center; align-items: center; cursor: pointer; z-index: 9999; transition: 0.3s; opacity: 0.2; font-size: 18px; }
         .secret-admin-btn:hover { opacity: 1; background: #1a2618; color: #a6e3a1; border-color: #a6e3a1; box-shadow: 0 0 10px rgba(166,227,161,0.3); }
     </style>
@@ -97,6 +100,7 @@
 
     <div class="controls-bar" style="display: none;" id="controls-bar">
         <input type="text" id="search-input" class="search-input" placeholder="Поиск по названию..." oninput="applyFiltersAndSort()">
+        
         <div style="display: flex; gap: 10px;">
             <select id="sort-select" class="sort-select" onchange="toggleRoleSelect(); applyFiltersAndSort();">
                 <option value="overall">По Итоговой оценке</option>
@@ -110,11 +114,13 @@
                 <option value="release_year">По дате выпуска</option>
                 <option value="episodes">По количеству серий</option>
             </select>
+            
             <select id="role-select" class="sort-select" onchange="applyFiltersAndSort()">
                 <option value="streamer">Стример</option>
                 <option value="me" class="me-element">Я</option>
                 <option value="chat">Чат</option>
             </select>
+
             <button id="sort-dir-btn" class="sort-dir-btn" onclick="toggleSortDir()" title="Изменить направление">↓</button>
         </div>
     </div>
@@ -139,14 +145,39 @@
             { bg: 'rgba(166, 227, 161, 0.2)', border: '#a6e3a1' }  
         ];
         
-        if (typeof Chart !== 'undefined') { Chart.defaults.font.family = "'Neucha', cursive, sans-serif"; Chart.defaults.color = "#829c73"; }
+        if (typeof Chart !== 'undefined') {
+            Chart.defaults.font.family = "'Neucha', cursive, sans-serif"; Chart.defaults.color = "#829c73";
+        }
 
         window.addEventListener('pageshow', (event) => { if (event.persisted) { initApp(); } });
 
-        function loginTwitch() { window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=`; }
-        function logoutTwitch() { try { localStorage.removeItem('twitch_token'); } catch(e){} location.reload(); }
+        function loginTwitch() {
+            window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=`;
+        }
 
-        // ЗАГРУЗКА БАЗОВОГО ПРОФИЛЯ (ДЛЯ ГЛАВНОЙ СТРАНИЦЫ)
+        function logoutTwitch() {
+            try { localStorage.removeItem('twitch_token'); } catch(e){}
+            location.reload();
+        }
+
+        // ЗАГРУЗКА ИНФЫ ИЗ БАЗЫ АУКЦИОНА ДЛЯ РОЛЕЙ И ЗОЛОТА
+        function getUserInfo(displayName) {
+            const lowerName = displayName.toLowerCase();
+            if (lowerName === ADMIN_USERNAME.toLowerCase()) return { badge: `<span class="role-badge role-streamer">СТРИМЕР</span>`, color: '#cba6f7', gold: 0, tickets: 0 };
+            
+            let r = "F"; let g = 0; let t = 0;
+            if (window.playersData && window.playersData[lowerName]) {
+                r = window.playersData[lowerName].role || "F";
+                g = window.playersData[lowerName].wallet_gold || 0;
+                t = window.playersData[lowerName].wallet_tickets || 0;
+            }
+
+            if (r === 'SUB' || r === 'SUBSCRIBER') return { badge: `<span class="role-badge role-sub">SUB</span>`, color: '#f3e5ab', gold: g, tickets: t };
+            if (r === 'VIP') return { badge: `<span class="role-badge role-vip">VIP</span>`, color: '#f5c2e7', gold: g, tickets: t };
+            return { badge: `<span class="role-badge role-follow">FOLLOW</span>`, color: '#a6e3a1', gold: g, tickets: t };
+        }
+
+        // ОБНОВЛЕННАЯ АВТОРИЗАЦИЯ
         async function checkTwitchAuth() {
             try {
                 const hash = window.location.hash;
@@ -165,18 +196,33 @@
                     currentUser = (await res.json()).data[0];
 
                     // Достаем цвет ника
-                    let nameColor = '#a6e3a1';
                     try {
                         const colorRes = await fetch(`https://api.twitch.tv/helix/chat/color?user_id=${currentUser.id}`, { headers: { 'Client-ID': TWITCH_CLIENT_ID, 'Authorization': `Bearer ${token}` } });
                         const colorData = await colorRes.json();
-                        if (colorData.data && colorData.data[0] && colorData.data[0].color) nameColor = colorData.data[0].color;
+                        currentUser.color = (colorData.data && colorData.data[0] && colorData.data[0].color) ? colorData.data[0].color : null;
                     } catch(e) {}
                     
+                    const uInfo = getUserInfo(currentUser.login);
+                    const userColor = currentUser.color || uInfo.color;
+                    
                     document.getElementById('nav-auth').innerHTML = `
-                        <div class="user-profile">
+                        <div class="user-profile" style="padding: 6px 20px 6px 6px; border-radius: 30px; display: flex; gap: 15px; align-items: center;">
                             <img src="${currentUser.profile_image_url}">
-                            <span style="color: ${nameColor}; font-size: 18px; font-weight: bold; text-shadow: 1px 1px 2px #000;">${currentUser.display_name}</span>
-                            <button class="logout-btn" onclick="logoutTwitch()">Выйти</button>
+                            <div style="display: flex; flex-direction: column; gap: 5px;">
+                                <div style="display: flex; align-items: center; justify-content: space-between;">
+                                    <span style="color: ${userColor}; font-size: 18px; font-weight: bold; text-shadow: 1px 1px 2px #000;">${currentUser.display_name}</span>
+                                    <button class="logout-btn" onclick="logoutTwitch()" style="margin-left: 15px;">Выйти</button>
+                                </div>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    ${uInfo.badge}
+                                    <div style="display: flex; align-items: center; gap: 4px; font-family: sans-serif; font-weight: bold; color: #ffd700; text-shadow: 1px 1px 2px #000;">
+                                        <img src="icons/BILET_GOLD.png" style="width: 16px; height: 16px; border: none; box-shadow: none; border-radius: 0;"> ${uInfo.gold}
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 4px; font-family: sans-serif; font-weight: bold; color: #a6e3a1; text-shadow: 1px 1px 2px #000;">
+                                        <img src="icons/BILET.png" style="width: 16px; height: 16px; border: none; box-shadow: none; border-radius: 0;"> ${uInfo.tickets}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     `;
 
@@ -189,7 +235,8 @@
         }
 
         function getScoreColor(score) {
-            const numScore = Number(score); if (numScore === 0 || isNaN(numScore)) return '#6b7a62'; 
+            const numScore = Number(score);
+            if (numScore === 0 || isNaN(numScore)) return '#6b7a62'; 
             return `hsl(${(numScore / 10) * 120}, 80%, 60%)`;
         }
 
@@ -207,7 +254,17 @@
 
         const getAvg = (sum, count) => count > 0 ? parseFloat((sum/count).toFixed(1)) : 0;
 
+        // ИСПРАВЛЕННЫЙ INIT APP С ПОДГРУЗКОЙ РОЛЕЙ
         async function initApp() {
+            try {
+                const rolesRes = await fetch(`${FIREBASE_BASE}/auction_data.json`, { cache: 'no-store' });
+                const aucData = await rolesRes.json();
+                if (aucData && aucData.players) {
+                    window.playersData = {};
+                    aucData.players.forEach(p => { window.playersData[p.user.toLowerCase()] = p; });
+                }
+            } catch(e) { console.warn("Не удалось загрузить роли", e); }
+
             await checkTwitchAuth(); 
 
             try {
