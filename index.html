@@ -9,7 +9,6 @@
 
     <style>
         body { margin: 0; padding: 0 0 40px 0; font-family: 'Neucha', cursive, sans-serif; background-color: #050605; color: #a4b09c; min-height: 100vh; overflow-x: hidden;}
-
         body.is-admin .me-element { display: none !important; }
 
         .top-nav { background: #0b0d0a; border-bottom: 2px solid #283325; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
@@ -35,7 +34,6 @@
         .sort-dir-btn:hover { border-color: #a6e3a1; box-shadow: 0 0 15px rgba(166, 227, 161, 0.2); }
 
         .trophy-room { display: flex; justify-content: flex-start; align-items: flex-start; flex-wrap: wrap; gap: 40px; padding: 0 40px; }
-
         .card-container { width: 320px; height: 480px; perspective: 1000px; }
         .card-inner { width: 100%; height: 100%; position: relative; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
         .card-container.is-flipped .card-inner { transform: rotateY(180deg); }
@@ -58,9 +56,8 @@
         .score-label.streamer { color: #cba6f7; border-bottom-color: rgba(203, 166, 247, 0.3); }
         .score-label.me { color: #a6e3a1; border-bottom-color: rgba(166, 227, 161, 0.3); }
         .score-label.chat { color: #b8a87b; border-bottom-color: rgba(184, 168, 123, 0.3); }
-
         .main-score { font-size: 30px; font-weight: bold; line-height: 1; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 4px #000; text-align: center; }
-        .main-score span { font-size: 13px; color: #c4d1b8; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
+        .main-score span { font-size: 13px; color: #c4d1b8; text-shadow: none; }
 
         .divider { border-top: 1px dashed #4a5c41; margin: 8px 0 12px 0; }
         .anime-title { color: #c4d1b8; font-size: 17px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; text-align: center; text-shadow: 2px 2px 5px #000; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; width: 100%; line-height: 1.2; }
@@ -81,7 +78,6 @@
         .theory-bar-fill { height: 100%; border-radius: 3px; }
         
         .loading { font-size: 24px; color: #829c73; text-align: center; margin-top: 50px; width: 100%; }
-        
         .secret-admin-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 40px; height: 40px; background: rgba(11, 13, 10, 0.3); border: 1px solid #283325; color: #4a5c41; border-radius: 50%; justify-content: center; align-items: center; cursor: pointer; z-index: 9999; transition: 0.3s; opacity: 0.2; font-size: 18px; }
         .secret-admin-btn:hover { opacity: 1; background: #1a2618; color: #a6e3a1; border-color: #a6e3a1; box-shadow: 0 0 10px rgba(166,227,161,0.3); }
     </style>
@@ -95,12 +91,10 @@
         </div>
     </nav>
 
-    <!-- ДВУХУРОВНЕВАЯ ПАНЕЛЬ СОРТИРОВКИ -->
     <div class="controls-bar" style="display: none;" id="controls-bar">
         <input type="text" id="search-input" class="search-input" placeholder="Поиск по названию..." oninput="applyFiltersAndSort()">
         
         <div style="display: flex; gap: 10px;">
-            <!-- ПЕРВЫЙ УРОВЕНЬ: КРИТЕРИЙ -->
             <select id="sort-select" class="sort-select" onchange="toggleRoleSelect(); applyFiltersAndSort();">
                 <option value="overall">По Итоговой оценке</option>
                 <option value="plot">По Сюжету</option>
@@ -114,7 +108,6 @@
                 <option value="episodes">По количеству серий</option>
             </select>
             
-            <!-- ВТОРОЙ УРОВЕНЬ: РОЛЬ (появляется динамически) -->
             <select id="role-select" class="sort-select" onchange="applyFiltersAndSort()">
                 <option value="streamer">Стример</option>
                 <option value="me" class="me-element">Я</option>
@@ -126,7 +119,6 @@
     </div>
 
     <div id="trophy-room" class="trophy-room"><div class="loading">Синхронизация с базой...</div></div>
-    
     <div class="secret-admin-btn" id="admin-btn" onclick="window.location.href='admin.html'" title="Панель управления">⚙️</div>
 
     <script>
@@ -145,31 +137,35 @@
             { bg: 'rgba(184, 168, 123, 0.2)', border: '#b8a87b' }, 
             { bg: 'rgba(166, 227, 161, 0.2)', border: '#a6e3a1' }  
         ];
-        Chart.defaults.font.family = "'Neucha', cursive, sans-serif"; Chart.defaults.color = "#829c73";
+        
+        if (typeof Chart !== 'undefined') {
+            Chart.defaults.font.family = "'Neucha', cursive, sans-serif"; Chart.defaults.color = "#829c73";
+        }
 
         function loginTwitch() {
             window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=`;
         }
 
         function logoutTwitch() {
-            localStorage.removeItem('twitch_token');
+            try { localStorage.removeItem('twitch_token'); } catch(e){}
             location.reload();
         }
 
         async function checkTwitchAuth() {
-            const hash = window.location.hash;
-            let token = localStorage.getItem('twitch_token');
+            try {
+                const hash = window.location.hash;
+                let token = null;
+                try { token = localStorage.getItem('twitch_token'); } catch(e){}
 
-            if (hash && hash.includes('access_token')) {
-                token = new URLSearchParams(hash.substring(1)).get('access_token');
-                localStorage.setItem('twitch_token', token);
-                window.history.replaceState(null, null, window.location.pathname); 
-            }
+                if (hash && hash.includes('access_token')) {
+                    token = new URLSearchParams(hash.substring(1)).get('access_token');
+                    try { localStorage.setItem('twitch_token', token); } catch(e){}
+                    window.history.replaceState(null, null, window.location.pathname + window.location.search); 
+                }
 
-            if (token) {
-                try {
+                if (token) {
                     const res = await fetch('https://api.twitch.tv/helix/users', { headers: { 'Client-ID': TWITCH_CLIENT_ID, 'Authorization': `Bearer ${token}` } });
-                    if (res.status === 401) { localStorage.removeItem('twitch_token'); return; }
+                    if (res.status === 401) { try { localStorage.removeItem('twitch_token'); } catch(e){} return; }
                     currentUser = (await res.json()).data[0];
                     
                     document.getElementById('nav-auth').innerHTML = `
@@ -180,8 +176,8 @@
                         document.getElementById('admin-btn').style.display = 'flex';
                         document.body.classList.add('is-admin');
                     }
-                } catch (e) { console.error('Ошибка Твич', e); }
-            }
+                }
+            } catch (e) { console.error('Ошибка Твич', e); }
         }
 
         function getScoreColor(score) {
@@ -190,7 +186,6 @@
             return `hsl(${(numScore / 10) * 120}, 80%, 60%)`;
         }
 
-        // Логика отображения второго списка сортировки (Роль)
         function toggleRoleSelect() {
             const sortVal = document.getElementById('sort-select').value;
             const needsRole = ['overall', 'plot', 'visuals', 'music', 'world', 'atmosphere'].includes(sortVal);
@@ -206,10 +201,9 @@
         const getAvg = (sum, count) => count > 0 ? parseFloat((sum/count).toFixed(1)) : 0;
 
         async function initApp() {
-            await checkTwitchAuth(); // Сначала логинимся, чтобы знать кто мы
+            await checkTwitchAuth(); 
 
             try {
-                // ГРУЗИМ СРАЗУ ОБЕ БАЗЫ
                 const [animeRes, commRes] = await Promise.all([
                     fetch(`${FIREBASE_BASE}/anime_db.json`),
                     fetch(`${FIREBASE_BASE}/community_db.json`)
@@ -233,7 +227,6 @@
                     seasons.forEach(s => {
                         totalEp += parseInt(s.info.episodesTotal) || 0;
                         
-                        // Считаем Стримера
                         if (s.scores && s.scores.overall > 0) { streamer.overall += s.scores.overall; streamer.countOv++; }
                         if (s.scores && s.scores.theory) {
                             streamer.plot += s.scores.theory.plot || 0; streamer.vis += s.scores.theory.visuals || 0;
@@ -241,26 +234,28 @@
                             streamer.atm += s.scores.theory.atmosphere || 0; streamer.countTh++;
                         }
 
-                        // Считаем Чата и Себя (Я)
                         const sComm = commData[franchiseId] && commData[franchiseId][s.seasonId] ? commData[franchiseId][s.seasonId].ratings : null;
                         if (sComm) {
                             for (const [uid, r] of Object.entries(sComm)) {
                                 chat.overall += r.overall || 0;
-                                chat.plot += r.theory.plot || 0; chat.vis += r.theory.visuals || 0;
-                                chat.mus += r.theory.music || 0; chat.wor += r.theory.world || 0; chat.atm += r.theory.atmosphere || 0;
+                                if (r.theory) {
+                                    chat.plot += r.theory.plot || 0; chat.vis += r.theory.visuals || 0;
+                                    chat.mus += r.theory.music || 0; chat.wor += r.theory.world || 0; chat.atm += r.theory.atmosphere || 0;
+                                }
                                 chat.count++;
 
                                 if (currentUser && uid === currentUser.id) {
                                     me.overall += r.overall || 0;
-                                    me.plot += r.theory.plot || 0; me.vis += r.theory.visuals || 0;
-                                    me.mus += r.theory.music || 0; me.wor += r.theory.world || 0; me.atm += r.theory.atmosphere || 0;
+                                    if (r.theory) {
+                                        me.plot += r.theory.plot || 0; me.vis += r.theory.visuals || 0;
+                                        me.mus += r.theory.music || 0; me.wor += r.theory.world || 0; me.atm += r.theory.atmosphere || 0;
+                                    }
                                     me.count++;
                                 }
                             }
                         }
                     });
 
-                    // Собираем математику в красивый объект
                     const scoresObj = {
                         streamer: {
                             overall: getAvg(streamer.overall, streamer.countOv),
@@ -279,7 +274,6 @@
                         }
                     };
 
-                    // Средние для графиков
                     scoresObj.streamer.avgTheory = getAvg(scoresObj.streamer.plot + scoresObj.streamer.visuals + scoresObj.streamer.music + scoresObj.streamer.world + scoresObj.streamer.atmosphere, 5);
                     scoresObj.chat.avgTheory = getAvg(scoresObj.chat.plot + scoresObj.chat.visuals + scoresObj.chat.music + scoresObj.chat.world + scoresObj.chat.atmosphere, 5);
                     scoresObj.me.avgTheory = getAvg(scoresObj.me.plot + scoresObj.me.visuals + scoresObj.me.music + scoresObj.me.world + scoresObj.me.atmosphere, 5);
@@ -370,18 +364,20 @@
                 `;
                 room.insertAdjacentHTML('beforeend', cardHtml);
 
-                allCharts[f.id] = new Chart(document.getElementById(`chart-${f.id}`).getContext('2d'), {
-                    type: 'radar',
-                    data: {
-                        labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Атмосфера'],
-                        datasets: [
-                            { data: [s.streamer.plot, s.streamer.visuals, s.streamer.music, s.streamer.world, s.streamer.atmosphere], backgroundColor: radarColors[0].bg, borderColor: radarColors[0].border, pointBackgroundColor: radarColors[0].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 },
-                            { data: [s.chat.plot, s.chat.visuals, s.chat.music, s.chat.world, s.chat.atmosphere], backgroundColor: radarColors[1].bg, borderColor: radarColors[1].border, pointBackgroundColor: radarColors[1].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 },
-                            { data: [s.me.plot, s.me.visuals, s.me.music, s.me.world, s.me.atmosphere], backgroundColor: radarColors[2].bg, borderColor: radarColors[2].border, pointBackgroundColor: radarColors[2].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 }
-                        ]
-                    },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { filter: function(item) { return item.raw > 0; }, displayColors: false } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: '#283325' }, angleLines: { color: '#283325' }, pointLabels: { font: { size: 10, weight: 'bold' }, color: '#c4d1b8' } } } }
-                });
+                if (typeof Chart !== 'undefined') {
+                    allCharts[f.id] = new Chart(document.getElementById(`chart-${f.id}`).getContext('2d'), {
+                        type: 'radar',
+                        data: {
+                            labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Атмосфера'],
+                            datasets: [
+                                { data: [s.streamer.plot, s.streamer.visuals, s.streamer.music, s.streamer.world, s.streamer.atmosphere], backgroundColor: radarColors[0].bg, borderColor: radarColors[0].border, pointBackgroundColor: radarColors[0].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 },
+                                { data: [s.chat.plot, s.chat.visuals, s.chat.music, s.chat.world, s.chat.atmosphere], backgroundColor: radarColors[1].bg, borderColor: radarColors[1].border, pointBackgroundColor: radarColors[1].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 },
+                                { data: [s.me.plot, s.me.visuals, s.me.music, s.me.world, s.me.atmosphere], backgroundColor: radarColors[2].bg, borderColor: radarColors[2].border, pointBackgroundColor: radarColors[2].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 }
+                            ]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { filter: function(item) { return item.raw > 0; }, displayColors: false } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: '#283325' }, angleLines: { color: '#283325' }, pointLabels: { font: { size: 10, weight: 'bold' }, color: '#c4d1b8' } } } }
+                    });
+                }
             });
         }
         
