@@ -102,7 +102,7 @@
         .modal-box input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: #121612; border-radius: 3px; border: 1px solid #283325; }
         .modal-box input[type=range]::-webkit-slider-thumb { height: 18px; width: 18px; border-radius: 50%; background: #a6e3a1; cursor: pointer; -webkit-appearance: none; margin-top: -7px; box-shadow: 0 0 10px rgba(166, 227, 161, 0.5); }
 
-        .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b0d0a; z-index: 9999; display: flex; justify-content: center; align-items: center; color: #a6e3a1; font-size: 24px; flex-direction: column; }
+        .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b0d0a; z-index: 9999; display: flex; justify-content: center; align-items: center; color: #a6e3a1; font-size: 24px; flex-direction: column; text-align: center; padding: 20px; }
     </style>
 </head>
 <body>
@@ -336,7 +336,7 @@
             let existingData = null;
             
             if (isStreamer) {
-                existingData = franchiseData[currentSeasonKey].scores;
+                existingData = franchiseData[currentSeasonKey].scores || null;
             } else if (currentCommunityRatings[currentUser.id]) {
                 existingData = currentCommunityRatings[currentUser.id];
             }
@@ -380,10 +380,10 @@
 
             try {
                 if (isStreamer) {
-                    const patchUrl = `${FIREBASE_BASE}/anime_db/${currentFranchiseId}/${currentSeasonKey}/scores.json`;
+                    const patchUrl = `${FIREBASE_BASE}/anime_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/scores.json`;
                     await fetch(patchUrl, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overall, theory }) });
                 } else {
-                    const putUrl = `${FIREBASE_BASE}/community_db/${currentFranchiseId}/${currentSeasonKey}/ratings/${currentUser.id}.json`;
+                    const putUrl = `${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/ratings/${currentUser.id}.json`;
                     await fetch(putUrl, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, overall, theory, timestamp: Date.now() }) });
                 }
                 
@@ -460,7 +460,7 @@
             currentFranchiseId = urlParams.get('id');
             if(!currentFranchiseId) { document.getElementById('loading-screen').innerHTML = "ОШИБКА: Франшиза не выбрана!"; return; }
 
-            const dbUrl = `${FIREBASE_BASE}/anime_db/${currentFranchiseId}.json`;
+            const dbUrl = `${FIREBASE_BASE}/anime_db/${encodeURIComponent(currentFranchiseId)}.json`;
             try {
                 const res = await fetch(dbUrl);
                 franchiseData = await res.json();
@@ -488,7 +488,10 @@
                 document.getElementById('loading-screen').style.display = 'none';
                 document.getElementById('top-nav').style.display = 'flex';
                 document.getElementById('main-layout').style.display = 'flex';
-            } catch(e) { console.error(e); }
+            } catch(e) { 
+                console.error(e);
+                document.getElementById('loading-screen').innerHTML = "Произошла ошибка при загрузке данных.";
+            }
         }
 
         async function renderSeasonData(seasonKey) {
@@ -509,7 +512,7 @@
             document.getElementById('synopsis-display').innerText = anime.info.description;
             if(anime.info.genres) { document.getElementById('genres-display').innerHTML = anime.info.genres.map(g => `<span class="genre-badge">${g}</span>`).join(''); }
 
-            const commUrl = `${FIREBASE_BASE}/community_db/${currentFranchiseId}/${seasonKey}/ratings.json`;
+            const commUrl = `${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(seasonKey)}/ratings.json`;
             const commRes = await fetch(commUrl);
             currentCommunityRatings = (await commRes.json()) || {};
 
@@ -539,8 +542,9 @@
             const meAvgSum = tMe.plot + tMe.visuals + tMe.music + tMe.world + tMe.atmosphere;
             const meTheoryAvg = meAvgSum > 0 ? parseFloat((meAvgSum / 5).toFixed(1)) : 0;
 
-            const strOvr = anime.scores.overall || 0;
-            const tStr = anime.scores.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
+            const strScores = anime.scores || {};
+            const strOvr = strScores.overall || 0;
+            const tStr = strScores.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
             const strAvgSum = tStr.plot + tStr.visuals + tStr.music + tStr.world + tStr.atmosphere;
             const strTheoryAvg = strAvgSum > 0 ? parseFloat((strAvgSum / 5).toFixed(1)) : 0;
 
@@ -564,7 +568,6 @@
             radarChart.data.datasets[2].data = [tMe.plot, tMe.visuals, tMe.music, tMe.world, tMe.atmosphere]; 
             radarChart.update();
 
-            // ОБНОВЛЕНИЕ ТЕКСТА КНОПКИ ОЦЕНКИ
             const rateBtn = document.getElementById('rate-title-btn');
             if (currentUser) {
                 const isStreamer = currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
