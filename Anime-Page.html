@@ -15,7 +15,6 @@
         .nav-logo { color: #a6e3a1; font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; transition: 0.2s; cursor: pointer; }
         .nav-logo:hover { filter: brightness(1.2); text-shadow: 0 0 15px rgba(166, 227, 161, 0.5); }
 
-        /* === НЕОНОВАЯ ПАНЕЛЬ АВТОРИЗАЦИИ === */
         .nav-auth .twitch-btn { background: #6441a5; color: white; padding: 8px 16px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; cursor: pointer; border: 1px solid #4a307a; transition: 0.2s; letter-spacing: 1px;}
         .nav-auth .twitch-btn:hover { background: #7d5bbe; box-shadow: 0 0 15px rgba(100, 65, 165, 0.8); }
         
@@ -72,45 +71,39 @@
         .custom-player { width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: 6px; border: 1px solid #283325; display: flex; justify-content: center; align-items: center; color: #4a5c41; font-size: 24px; }
         
         .scores-row { display: flex; justify-content: space-between; align-items: stretch; gap: 10px; }
-        .score-box { display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(14, 17, 13, 0.35); border: 1px solid rgba(74, 92, 65, 0.3); padding: 12px 5px; border-radius: 8px; flex: 1; backdrop-filter: blur(4px); box-shadow: 0 4px 10px rgba(0,0,0,0.3); cursor: pointer; transition: 0.2s; }
-        .score-box:hover { background: rgba(255,255,255,0.05); transform: translateY(-2px); }
+        .score-box { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 5px; border-radius: 8px; flex: 1; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); cursor: pointer; transition: 0.3s; }
+        .score-box:hover { transform: translateY(-3px); filter: brightness(1.2); }
         .score-label { width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; margin-bottom: 6px; font-size: 13px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; text-shadow: 1px 1px 2px #000; text-align: center; }
-        .score-label.streamer { color: #cba6f7; border-bottom-color: rgba(203, 166, 247, 0.3); }
-        .score-label.me { color: #a6e3a1; border-bottom-color: rgba(166, 227, 161, 0.3); }
-        .score-label.chat { color: #b8a87b; border-bottom-color: rgba(184, 168, 123, 0.3); }
-        
         .main-score { font-size: 32px; font-weight: bold; line-height: 1; letter-spacing: 2px; text-align: center; font-family: 'Neucha', cursive, sans-serif; }
-        .main-score span { font-size: 14px; color: #c4d1b8; text-shadow: none !important; letter-spacing: normal; }
+        .main-score span { font-size: 14px; text-shadow: none !important; letter-spacing: normal; color: #c4d1b8;}
 
         .chart-wrapper { width: 100%; height: 240px; margin-bottom: 10px; }
         
         .interactive-legend { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 10px; }
-        .legend-col { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.2s; padding: 5px; border-radius: 6px; flex: 1; }
-        .legend-col:hover { background: rgba(255,255,255,0.05); transform: scale(1.02); }
-        .legend-title { display: flex; align-items: center; gap: 5px; font-size: 14px; font-weight: bold; text-transform: uppercase; text-shadow: 1px 1px 2px #000; margin-bottom: 6px;}
-        .legend-score { font-size: 22px; font-weight: bold; text-shadow: 1px 1px 2px #000; margin-bottom: 5px; transition: color 0.3s;}
-        .dot { width: 12px; height: 12px; border-radius: 50%; border: 1px solid #0b0d0a; }
+        .legend-col { display: flex; flex-direction: column; align-items: center; cursor: pointer; transition: 0.3s; padding: 8px 5px; border-radius: 8px; flex: 1; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+        .legend-col:hover { transform: scale(1.02); filter: brightness(1.2); }
+        .legend-title { display: flex; align-items: center; gap: 5px; font-size: 14px; font-weight: bold; text-transform: uppercase; margin-bottom: 6px; text-shadow: 1px 1px 2px #000;}
+        .legend-score { font-size: 22px; font-weight: bold; margin-bottom: 5px; transition: color 0.3s;}
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
 
-        .legend-breakdown { width: 100%; display: flex; flex-direction: column; gap: 5px; border-top: 1px dashed rgba(74, 92, 65, 0.6); padding-top: 8px; margin-top: 5px;}
-        .crit-row { display: flex; justify-content: space-between; font-size: 14px; color: #a4b09c; }
+        .legend-breakdown { width: 100%; display: flex; flex-direction: column; gap: 4px; border-top: 1px dashed rgba(74, 92, 65, 0.6); padding-top: 8px; margin-top: 5px;}
+        .crit-row { display: flex; justify-content: space-between; font-size: 15px; color: #a4b09c; padding: 4px 8px; border-radius: 0 6px 6px 0; margin-bottom: 4px; transition: 0.2s;}
         .crit-row span:last-child { font-weight: bold; font-family: 'Neucha', cursive, sans-serif; }
 
         .rate-btn { width: 100%; background: rgba(166, 227, 161, 0.1); border: 1px solid #a6e3a1; color: #a6e3a1; padding: 12px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 20px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; margin-top: 15px; box-shadow: 0 0 10px rgba(166, 227, 161, 0.1); }
         .rate-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 20px rgba(166, 227, 161, 0.5); }
 
-        /* === ВВОД КОММЕНТАРИЯ === */
         .comment-input-area { background: rgba(0,0,0,0.3); border: 1px solid #283325; border-radius: 12px; padding: 25px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
         .comment-textarea { width: 100%; background: #121612; border: 1px solid #4a5c41; color: #c4d1b8; border-radius: 8px; padding: 15px; font-family: 'Neucha', cursive; font-size: 18px; outline: none; transition: 0.2s; resize: vertical; min-height: 100px; box-sizing: border-box; }
         .comment-textarea:focus { border-color: #a6e3a1; box-shadow: 0 0 15px rgba(166, 227, 161, 0.2); }
         .send-btn { align-self: flex-end; background: #1a2618; border: 1px solid #a6e3a1; color: #a6e3a1; padding: 10px 30px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px;}
         .send-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 15px rgba(166, 227, 161, 0.4); }
         
-        /* === ВЕТКИ И КОММЕНТАРИИ === */
         .comments-list { display: flex; flex-direction: column; gap: 25px; }
         .comment-wrapper { display: flex; flex-direction: column; gap: 15px; }
         
-        .comment-card { display: flex; flex-direction: column; background: rgba(14, 17, 13, 0.4); border-radius: 12px; border: 1px solid #283325; padding: 20px; box-sizing: border-box; }
-        .reply-card { background: rgba(11, 13, 10, 0.6); padding: 15px; }
+        .comment-card { display: flex; flex-direction: column; border-radius: 12px; padding: 20px; box-sizing: border-box; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+        .reply-card { padding: 15px; }
 
         .comment-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
         
@@ -157,7 +150,6 @@
         .replies-list { display: flex; flex-direction: column; gap: 15px; margin-left: 40px; border-left: 2px solid #283325; padding-left: 20px; display: none; }
         .reply-input-wrapper { display: none; margin-left: 40px; margin-top: 5px; flex-direction: column; gap: 10px; }
 
-        /* МОДАЛЬНЫЕ ОКНА И UI */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .modal-box { background: linear-gradient(180deg, #101411 0%, #080a08 100%); border: 2px solid #a6e3a1; border-radius: 12px; padding: 30px; width: 750px; box-shadow: 0 0 30px rgba(166, 227, 161, 0.2); position: relative; }
         .modal-title { color: #a6e3a1; font-size: 24px; text-transform: uppercase; margin: 0 0 20px 0; text-align: center; font-weight: bold; letter-spacing: 1px;}
@@ -254,17 +246,17 @@
                     <div style="color: #829c73; font-size: 16px; text-transform: uppercase; margin-bottom: 10px; text-align: center; font-weight: bold; letter-spacing: 1px;">Итоговая оценка</div>
                     
                     <div class="scores-row">
-                        <div class="score-box streamer-element" onmouseover="highlightChart(0)" onmouseout="resetChart()">
-                            <div class="score-label streamer">Стример</div>
+                        <div class="score-box streamer-element" id="box-streamer" onmouseover="highlightChart(0)" onmouseout="resetChart()">
+                            <div class="score-label streamer" id="label-streamer">Стример</div>
                             <div class="main-score" id="streamer-score-val">0<span> / 10</span></div>
                         </div>
-                        <div class="score-box me-element" onmouseover="highlightChart(2)" onmouseout="resetChart()">
-                            <div class="score-label me">Моя</div>
-                            <div class="main-score" id="my-score-display" style="color: #6b7a62;">0<span> / 10</span></div>
+                        <div class="score-box me-element" id="box-me" onmouseover="highlightChart(2)" onmouseout="resetChart()">
+                            <div class="score-label me" id="label-me">Моя</div>
+                            <div class="main-score" id="my-score-display">0<span> / 10</span></div>
                         </div>
-                        <div class="score-box chat-element" onmouseover="highlightChart(1)" onmouseout="resetChart()">
-                            <div class="score-label chat">Чат</div>
-                            <div class="main-score" id="chat-score-val" style="color: #6b7a62;">0<span> / 10</span></div>
+                        <div class="score-box chat-element" id="box-chat" onmouseover="highlightChart(1)" onmouseout="resetChart()">
+                            <div class="score-label chat" id="label-chat">Чат</div>
+                            <div class="main-score" id="chat-score-val">0<span> / 10</span></div>
                         </div>
                     </div>
 
@@ -275,19 +267,19 @@
                     <div class="chart-wrapper"><canvas id="detailsChart"></canvas></div>
                     
                     <div class="interactive-legend">
-                        <div class="legend-col streamer-element" onmouseover="highlightChart(0)" onmouseout="resetChart()">
-                            <div class="legend-title" style="color: #cba6f7;"><div class="dot" style="background: #cba6f7;"></div>Стример</div>
+                        <div class="legend-col streamer-element" id="legend-box-streamer" onmouseover="highlightChart(0)" onmouseout="resetChart()">
+                            <div class="legend-title" id="legend-label-streamer"><div class="dot" id="dot-streamer"></div>Стример</div>
                             <div class="legend-score" id="avg-streamer-score">0</div>
                             <div class="legend-breakdown" id="breakdown-streamer"></div>
                         </div>
-                        <div class="legend-col me-element" onmouseover="highlightChart(2)" onmouseout="resetChart()">
-                            <div class="legend-title" style="color: #a6e3a1;"><div class="dot" style="background: #a6e3a1;"></div>Я</div>
-                            <div class="legend-score" id="avg-viewer-score" style="color: #6b7a62;">0</div>
+                        <div class="legend-col me-element" id="legend-box-me" onmouseover="highlightChart(2)" onmouseout="resetChart()">
+                            <div class="legend-title" id="legend-label-me"><div class="dot" id="dot-me"></div>Я</div>
+                            <div class="legend-score" id="avg-viewer-score">0</div>
                             <div class="legend-breakdown" id="breakdown-viewer"></div>
                         </div>
-                        <div class="legend-col chat-element" onmouseover="highlightChart(1)" onmouseout="resetChart()">
-                            <div class="legend-title" style="color: #b8a87b;"><div class="dot" style="background: #b8a87b;"></div>Чат</div>
-                            <div class="legend-score" id="avg-chat-score" style="color: #6b7a62;">0</div>
+                        <div class="legend-col chat-element" id="legend-box-chat" onmouseover="highlightChart(1)" onmouseout="resetChart()">
+                            <div class="legend-title" id="legend-label-chat"><div class="dot" id="dot-chat"></div>Чат</div>
+                            <div class="legend-score" id="avg-chat-score">0</div>
                             <div class="legend-breakdown" id="breakdown-chat"></div>
                         </div>
                     </div>
@@ -355,10 +347,9 @@
 
         if (typeof Chart !== 'undefined') { Chart.defaults.font.family = "'Neucha', cursive, sans-serif"; Chart.defaults.color = "#829c73"; }
 
-        // === ИДЕАЛЬНЫЙ ЦВЕТ И СВЕЧЕНИЕ (БРОНЗА -> СЕРЕБРО -> ЗОЛОТО) ===
-        function getScoreColor(score) {
+        function getScoreColor(score, alpha = 1) {
             const numScore = Number(score);
-            if (numScore === 0 || isNaN(numScore)) return '#6b7a62'; 
+            if (numScore === 0 || isNaN(numScore)) return `rgba(107, 122, 98, ${alpha})`; 
             
             let r, g, b;
             if (numScore <= 5.5) {
@@ -374,7 +365,7 @@
                 g = Math.round(224 + p * (230 - 224));
                 b = Math.round(230 + p * (0 - 230));
             }
-            return `rgb(${r}, ${g}, ${b})`;
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
         }
 
         function getScoreShadow(score, isLarge) {
@@ -385,8 +376,8 @@
                 
             if (numScore === 0 || isNaN(numScore)) return base;
             
-            const color = getScoreColor(score);
-            const blur1 = Math.round(2 + (numScore / 10) * 12); 
+            const color = getScoreColor(score, 1);
+            const blur1 = Math.round(1 + (numScore / 10) * 5); 
             let glow = `${base}, 0 0 ${blur1}px ${color}`;
             
             if (numScore >= 8) {
@@ -394,6 +385,27 @@
                 glow += `, 0 0 ${blur2}px ${color}`;
             }
             return glow;
+        }
+
+        function getGlassBoxStyle(score) {
+            const numScore = Number(score);
+            if (numScore === 0 || isNaN(numScore)) return `background: rgba(107,122,98,0.05); border: 1px solid rgba(107,122,98,0.2); box-shadow: none;`;
+            
+            const bg = getScoreColor(score, 0.15);
+            const border = getScoreColor(score, 0.5);
+            const glow = getScoreColor(score, 0.2);
+            let blur = Math.round(4 + (numScore / 10) * 10);
+            
+            return `background: ${bg}; border: 1px solid ${border}; box-shadow: 0 4px 15px rgba(0,0,0,0.5), 0 0 ${blur}px ${glow} inset, 0 0 ${blur}px ${glow};`;
+        }
+
+        function getGlassRowStyle(score) {
+            const numScore = Number(score);
+            if (numScore === 0 || isNaN(numScore)) return `background: transparent; border-left: 2px solid rgba(107,122,98,0.3);`;
+            
+            const bg = getScoreColor(score, 0.1);
+            const border = getScoreColor(score, 0.8);
+            return `background: linear-gradient(90deg, ${bg} 0%, transparent 100%); border-left: 2px solid ${border};`;
         }
 
         const safeNum = (v) => Number(v) || 0;
@@ -484,10 +496,7 @@
                         </div>
                     `;
 
-                    if (currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase()) {
-                        document.getElementById('admin-btn').style.display = 'flex';
-                        document.body.classList.add('is-admin');
-                    }
+                    if (currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase()) { document.body.classList.add('is-admin'); }
                 }
             } catch (e) { console.error('Ошибка авторизации', e); }
         }
@@ -589,7 +598,12 @@
 
         function generateBreakdownHtml(theoryObj) {
             if (!theoryObj) theoryObj = {plot:0, visuals:0, music:0, world:0, atmosphere:0};
-            return `<div class="crit-row"><span>Сюжет</span><span style="color:${getScoreColor(theoryObj.plot)}; text-shadow:${getScoreShadow(theoryObj.plot, false)};">${theoryObj.plot}</span></div><div class="crit-row"><span>Визуал</span><span style="color:${getScoreColor(theoryObj.visuals)}; text-shadow:${getScoreShadow(theoryObj.visuals, false)};">${theoryObj.visuals}</span></div><div class="crit-row"><span>Музыка</span><span style="color:${getScoreColor(theoryObj.music)}; text-shadow:${getScoreShadow(theoryObj.music, false)};">${theoryObj.music}</span></div><div class="crit-row"><span>Мир</span><span style="color:${getScoreColor(theoryObj.world)}; text-shadow:${getScoreShadow(theoryObj.world, false)};">${theoryObj.world}</span></div><div class="crit-row"><span>Атмосфера</span><span style="color:${getScoreColor(theoryObj.atmosphere)}; text-shadow:${getScoreShadow(theoryObj.atmosphere, false)};">${theoryObj.atmosphere}</span></div>`;
+            const createRow = (name, val) => `<div class="crit-row" style="${getGlassRowStyle(val)}"><span style="color:#c4d1b8">${name}</span><span style="color:#fff; text-shadow: ${getScoreShadow(val, false)};">${val}</span></div>`;
+            return createRow('Сюжет', theoryObj.plot) + 
+                   createRow('Визуал', theoryObj.visuals) + 
+                   createRow('Музыка', theoryObj.music) + 
+                   createRow('Мир', theoryObj.world) + 
+                   createRow('Атмосфера', theoryObj.atmosphere);
         }
 
         async function loadAnimeData() {
@@ -693,34 +707,47 @@
             const tStr = strScores.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
             const strTheoryAvg = calcTheoryAvg(tStr);
 
-            document.getElementById('streamer-score-val').innerHTML = `${strOvr}<span> / 10</span>`; 
-            document.getElementById('streamer-score-val').style.color = getScoreColor(strOvr);
-            document.getElementById('streamer-score-val').style.textShadow = getScoreShadow(strOvr, true);
+            // СТЕКЛЯННЫЕ ПЛАШКИ ОЦЕНОК
+            const boxStreamer = document.getElementById('box-streamer');
+            boxStreamer.style.cssText = getGlassBoxStyle(strOvr);
+            document.getElementById('label-streamer').style.cssText = `color: ${getScoreColor(strOvr, 1)}; border-bottom-color: ${getScoreColor(strOvr, 0.4)}; text-shadow: 0 0 8px ${getScoreColor(strOvr, 0.6)};`;
+            document.getElementById('streamer-score-val').innerHTML = `${strOvr}<span> / 10</span>`;
+            document.getElementById('streamer-score-val').style.cssText = `color: #fff; text-shadow: ${getScoreShadow(strOvr, true)};`;
 
-            document.getElementById('avg-streamer-score').innerText = strTheoryAvg; 
-            document.getElementById('avg-streamer-score').style.color = getScoreColor(strTheoryAvg);
-            document.getElementById('avg-streamer-score').style.textShadow = getScoreShadow(strTheoryAvg, false);
-            
+            const boxChat = document.getElementById('box-chat');
+            boxChat.style.cssText = getGlassBoxStyle(chatOvr);
+            document.getElementById('label-chat').style.cssText = `color: ${getScoreColor(chatOvr, 1)}; border-bottom-color: ${getScoreColor(chatOvr, 0.4)}; text-shadow: 0 0 8px ${getScoreColor(chatOvr, 0.6)};`;
+            document.getElementById('chat-score-val').innerHTML = `${chatOvr}<span> / 10</span>`;
+            document.getElementById('chat-score-val').style.cssText = `color: #fff; text-shadow: ${getScoreShadow(chatOvr, true)};`;
+
+            const boxMe = document.getElementById('box-me');
+            boxMe.style.cssText = getGlassBoxStyle(meOvr);
+            document.getElementById('label-me').style.cssText = `color: ${getScoreColor(meOvr, 1)}; border-bottom-color: ${getScoreColor(meOvr, 0.4)}; text-shadow: 0 0 8px ${getScoreColor(meOvr, 0.6)};`;
+            document.getElementById('my-score-display').innerHTML = `${meOvr}<span> / 10</span>`;
+            document.getElementById('my-score-display').style.cssText = `color: #fff; text-shadow: ${getScoreShadow(meOvr, true)};`;
+
+            // СТЕКЛЯННЫЕ ПЛАШКИ ЛЕГЕНДЫ (ПОД ГРАФИКОМ)
+            document.getElementById('legend-box-streamer').style.cssText = getGlassBoxStyle(strTheoryAvg);
+            document.getElementById('legend-label-streamer').style.cssText = `color: ${getScoreColor(strTheoryAvg, 1)}; text-shadow: 0 0 8px ${getScoreColor(strTheoryAvg, 0.6)};`;
+            document.getElementById('dot-streamer').style.cssText = `background: ${getScoreColor(strTheoryAvg, 1)}; border: 1px solid #0b0d0a; box-shadow: 0 0 5px ${getScoreColor(strTheoryAvg, 0.8)};`;
+            document.getElementById('avg-streamer-score').innerText = strTheoryAvg;
+            document.getElementById('avg-streamer-score').style.cssText = `color: #fff; text-shadow: ${getScoreShadow(strTheoryAvg, false)};`;
+
+            document.getElementById('legend-box-chat').style.cssText = getGlassBoxStyle(chatTheoryAvg);
+            document.getElementById('legend-label-chat').style.cssText = `color: ${getScoreColor(chatTheoryAvg, 1)}; text-shadow: 0 0 8px ${getScoreColor(chatTheoryAvg, 0.6)};`;
+            document.getElementById('dot-chat').style.cssText = `background: ${getScoreColor(chatTheoryAvg, 1)}; border: 1px solid #0b0d0a; box-shadow: 0 0 5px ${getScoreColor(chatTheoryAvg, 0.8)};`;
+            document.getElementById('avg-chat-score').innerText = chatTheoryAvg;
+            document.getElementById('avg-chat-score').style.cssText = `color: #fff; text-shadow: ${getScoreShadow(chatTheoryAvg, false)};`;
+
+            document.getElementById('legend-box-me').style.cssText = getGlassBoxStyle(meTheoryAvg);
+            document.getElementById('legend-label-me').style.cssText = `color: ${getScoreColor(meTheoryAvg, 1)}; text-shadow: 0 0 8px ${getScoreColor(meTheoryAvg, 0.6)};`;
+            document.getElementById('dot-me').style.cssText = `background: ${getScoreColor(meTheoryAvg, 1)}; border: 1px solid #0b0d0a; box-shadow: 0 0 5px ${getScoreColor(meTheoryAvg, 0.8)};`;
+            document.getElementById('avg-viewer-score').innerText = meTheoryAvg;
+            document.getElementById('avg-viewer-score').style.cssText = `color: #fff; text-shadow: ${getScoreShadow(meTheoryAvg, false)};`;
+
+            // ГРАДИЕНТНЫЕ СПИСКИ КРИТЕРИЕВ
             document.getElementById('breakdown-streamer').innerHTML = generateBreakdownHtml(tStr);
-
-            document.getElementById('chat-score-val').innerHTML = `${chatOvr}<span> / 10</span>`; 
-            document.getElementById('chat-score-val').style.color = getScoreColor(chatOvr);
-            document.getElementById('chat-score-val').style.textShadow = getScoreShadow(chatOvr, true);
-            
-            document.getElementById('avg-chat-score').innerText = chatTheoryAvg; 
-            document.getElementById('avg-chat-score').style.color = getScoreColor(chatTheoryAvg);
-            document.getElementById('avg-chat-score').style.textShadow = getScoreShadow(chatTheoryAvg, false);
-            
             document.getElementById('breakdown-chat').innerHTML = generateBreakdownHtml(tChat);
-
-            document.getElementById('my-score-display').innerHTML = `${meOvr}<span> / 10</span>`; 
-            document.getElementById('my-score-display').style.color = getScoreColor(meOvr);
-            document.getElementById('my-score-display').style.textShadow = getScoreShadow(meOvr, true);
-
-            document.getElementById('avg-viewer-score').innerText = meTheoryAvg; 
-            document.getElementById('avg-viewer-score').style.color = getScoreColor(meTheoryAvg);
-            document.getElementById('avg-viewer-score').style.textShadow = getScoreShadow(meTheoryAvg, false);
-
             document.getElementById('breakdown-viewer').innerHTML = generateBreakdownHtml(tMe);
             
             if (radarChart) {
@@ -738,8 +765,12 @@
                 if (!isStreamer && currentCommunityRatings[currentUser.id] && safeNum(currentCommunityRatings[currentUser.id].overall) > 0) hasRated = true;
                 
                 rateBtn.innerText = hasRated ? "Изменить оценку" : "Оценить тайтл";
+                rateBtn.style.opacity = "1";
+                rateBtn.style.pointerEvents = "auto";
             } else { 
                 rateBtn.innerText = "Оценить тайтл"; 
+                rateBtn.style.opacity = "0.5";
+                rateBtn.style.pointerEvents = "none";
             }
 
             await loadComments(); 
@@ -767,25 +798,33 @@
             const isAuthorAdmin = c.displayName.toLowerCase() === ADMIN_USERNAME.toLowerCase();
             const userRating = currentCommunityRatings[authorId] || (isAuthorAdmin ? franchiseData[currentSeasonKey].scores : null);
 
+            let cardStyle = `background: rgba(14, 17, 13, 0.4); border: 1px solid #283325;`;
+            let headerStyle = `background: linear-gradient(90deg, rgba(26, 34, 24, 0.6) 0%, rgba(11, 13, 10, 0.8) 100%); border-bottom: 2px solid #283325;`;
+
             if (userRating && userRating.overall > 0) {
                 const ovr = userRating.overall;
                 const t = userRating.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
+                
+                // Применяем стеклянный дизайн к самому комментарию
+                cardStyle = `background: rgba(14, 17, 13, 0.4); border: 1px solid ${getScoreColor(ovr, 0.3)}; box-shadow: 0 8px 20px rgba(0,0,0,0.4), 0 0 15px ${getScoreColor(ovr, 0.1)};`;
+                headerStyle = `background: linear-gradient(90deg, ${getScoreColor(ovr, 0.15)} 0%, transparent 100%); border-bottom: 1px solid ${getScoreColor(ovr, 0.2)}; border-left: 3px solid ${getScoreColor(ovr, 0.8)}; padding-bottom: 15px; margin-left: -20px; padding-left: 17px; border-radius: 0;`;
+
                 ratingHtml = `
                 <div class="comment-rating-block">
-                    <div class="cr-overall tooltip-element" data-title="Итоговая оценка" style="color:${getScoreColor(ovr)}; text-shadow:${getScoreShadow(ovr, true)};">${ovr}</div>
+                    <div class="cr-overall tooltip-element" data-title="Итоговая оценка" style="color: #fff; text-shadow:${getScoreShadow(ovr, true)};">${ovr}</div>
                     <div class="cr-theory">
-                        <span class="tooltip-element" style="color:${getScoreColor(t.plot)}; text-shadow:${getScoreShadow(t.plot, false)};" data-title="Сюжет: ${t.plot}">${t.plot}</span>
-                        <span class="tooltip-element" style="color:${getScoreColor(t.visuals)}; text-shadow:${getScoreShadow(t.visuals, false)};" data-title="Визуал: ${t.visuals}">${t.visuals}</span>
-                        <span class="tooltip-element" style="color:${getScoreColor(t.music)}; text-shadow:${getScoreShadow(t.music, false)};" data-title="Музыка: ${t.music}">${t.music}</span>
-                        <span class="tooltip-element" style="color:${getScoreColor(t.world)}; text-shadow:${getScoreShadow(t.world, false)};" data-title="Мир: ${t.world}">${t.world}</span>
-                        <span class="tooltip-element" style="color:${getScoreColor(t.atmosphere)}; text-shadow:${getScoreShadow(t.atmosphere, false)};" data-title="Атмосфера: ${t.atmosphere}">${t.atmosphere}</span>
+                        <span class="tooltip-element" style="color: #fff; text-shadow:${getScoreShadow(t.plot, false)};" data-title="Сюжет: ${t.plot}">${t.plot}</span>
+                        <span class="tooltip-element" style="color: #fff; text-shadow:${getScoreShadow(t.visuals, false)};" data-title="Визуал: ${t.visuals}">${t.visuals}</span>
+                        <span class="tooltip-element" style="color: #fff; text-shadow:${getScoreShadow(t.music, false)};" data-title="Музыка: ${t.music}">${t.music}</span>
+                        <span class="tooltip-element" style="color: #fff; text-shadow:${getScoreShadow(t.world, false)};" data-title="Мир: ${t.world}">${t.world}</span>
+                        <span class="tooltip-element" style="color: #fff; text-shadow:${getScoreShadow(t.atmosphere, false)};" data-title="Атмосфера: ${t.atmosphere}">${t.atmosphere}</span>
                     </div>
                 </div>`;
             }
 
             return `
-            <div class="comment-card ${isReply ? 'reply-card' : ''}">
-                <div class="comment-header">
+            <div class="comment-card ${isReply ? 'reply-card' : ''}" style="${cardStyle}">
+                <div class="comment-header" style="${headerStyle}">
                     <div class="comment-author-info">
                         <img src="${c.profileImage}" class="comment-avatar">
                         <div class="comment-name-role">

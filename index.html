@@ -15,6 +15,7 @@
         .nav-logo { color: #a6e3a1; font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; transition: 0.2s; cursor: pointer; }
         .nav-logo:hover { filter: brightness(1.2); text-shadow: 0 0 15px rgba(166, 227, 161, 0.5); }
 
+        /* === НЕОНОВАЯ ПАНЕЛЬ АВТОРИЗАЦИИ === */
         .nav-auth .twitch-btn { background: #6441a5; color: white; padding: 8px 16px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; cursor: pointer; border: 1px solid #4a307a; transition: 0.2s; letter-spacing: 1px;}
         .nav-auth .twitch-btn:hover { background: #7d5bbe; box-shadow: 0 0 15px rgba(100, 65, 165, 0.8); }
         
@@ -72,15 +73,12 @@
 
         .front-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 30px 15px 15px 15px; box-sizing: border-box; background: linear-gradient(0deg, rgba(11, 13, 10, 1) 0%, rgba(11, 13, 10, 0.95) 40%, rgba(11, 13, 10, 0) 100%); display: flex; flex-direction: column; justify-content: flex-end; }
         
+        /* СТЕКЛЯННЫЕ ПЛАШКИ ОЦЕНОК */
         .scores-row { display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 8px; gap: 8px; }
-        .score-box { display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(14, 17, 13, 0.35); border: 1px solid rgba(74, 92, 65, 0.3); padding: 8px 4px; border-radius: 8px; flex: 1; backdrop-filter: blur(4px); box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .score-box { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 4px; border-radius: 8px; flex: 1; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: 0.3s;}
         
         .score-label { width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; text-shadow: 1px 1px 2px #000; text-align: center; }
-        .score-label.streamer { color: #cba6f7; border-bottom-color: rgba(203, 166, 247, 0.3); }
-        .score-label.me { color: #a6e3a1; border-bottom-color: rgba(166, 227, 161, 0.3); }
-        .score-label.chat { color: #b8a87b; border-bottom-color: rgba(184, 168, 123, 0.3); }
-
-        .main-score { font-size: 30px; font-weight: bold; line-height: 1; letter-spacing: 2px; text-align: center; font-family: 'Neucha', cursive, sans-serif; }
+        .main-score { font-size: 30px; font-weight: bold; line-height: 1; letter-spacing: 2px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 4px #000; text-align: center; font-family: 'Neucha', cursive, sans-serif;}
         .main-score span { font-size: 13px; color: #c4d1b8; text-shadow: none !important; letter-spacing: normal; }
 
         .divider { border-top: 1px dashed #4a5c41; margin: 8px 0 12px 0; }
@@ -95,11 +93,9 @@
         .legend-item:hover { filter: brightness(1.3); transform: scale(1.05); }
         .dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #0b0d0a; }
 
-        .theory-container { background: rgba(0, 0, 0, 0.3); border: 1px solid #283325; border-radius: 8px; padding: 10px 12px; }
-        .theory-row { margin-bottom: 10px; } .theory-row:last-child { margin-bottom: 0; }
-        .theory-label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; font-weight: bold; text-transform: uppercase; }
-        .theory-bar-bg { width: 100%; height: 6px; background: #121612; border-radius: 3px; overflow: hidden; border: 1px solid #1a2218; }
-        .theory-bar-fill { height: 100%; border-radius: 3px; }
+        .theory-container { background: transparent; border: none; padding: 0; }
+        .crit-row { display: flex; justify-content: space-between; font-size: 14px; color: #a4b09c; padding: 4px 8px; border-radius: 0 6px 6px 0; margin-bottom: 6px; transition: 0.2s;}
+        .crit-row span:last-child { font-weight: bold; font-family: 'Neucha', cursive, sans-serif; }
         
         .loading { font-size: 24px; color: #829c73; text-align: center; margin-top: 50px; width: 100%; }
         .secret-admin-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 40px; height: 40px; background: rgba(11, 13, 10, 0.3); border: 1px solid #283325; color: #4a5c41; border-radius: 50%; justify-content: center; align-items: center; cursor: pointer; z-index: 9999; transition: 0.3s; opacity: 0.2; font-size: 18px; }
@@ -166,10 +162,9 @@
         
         if (typeof Chart !== 'undefined') { Chart.defaults.font.family = "'Neucha', cursive, sans-serif"; Chart.defaults.color = "#829c73"; }
 
-        // === ИДЕАЛЬНЫЙ ЦВЕТ И СВЕЧЕНИЕ (БРОНЗА -> СЕРЕБРО -> ЗОЛОТО) ===
-        function getScoreColor(score) {
+        function getScoreColor(score, alpha = 1) {
             const numScore = Number(score);
-            if (numScore === 0 || isNaN(numScore)) return '#6b7a62'; 
+            if (numScore === 0 || isNaN(numScore)) return `rgba(107, 122, 98, ${alpha})`; 
             
             let r, g, b;
             if (numScore <= 5.5) {
@@ -185,7 +180,7 @@
                 g = Math.round(224 + p * (230 - 224));
                 b = Math.round(230 + p * (0 - 230));
             }
-            return `rgb(${r}, ${g}, ${b})`;
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
         }
 
         function getScoreShadow(score, isLarge) {
@@ -196,8 +191,8 @@
                 
             if (numScore === 0 || isNaN(numScore)) return base;
             
-            const color = getScoreColor(score);
-            const blur1 = Math.round(2 + (numScore / 10) * 12); 
+            const color = getScoreColor(score, 1);
+            const blur1 = Math.round(1 + (numScore / 10) * 5); 
             let glow = `${base}, 0 0 ${blur1}px ${color}`;
             
             if (numScore >= 8) {
@@ -205,6 +200,27 @@
                 glow += `, 0 0 ${blur2}px ${color}`;
             }
             return glow;
+        }
+
+        function getGlassBoxStyle(score) {
+            const numScore = Number(score);
+            if (numScore === 0 || isNaN(numScore)) return `background: rgba(107,122,98,0.05); border: 1px solid rgba(107,122,98,0.2); box-shadow: none;`;
+            
+            const bg = getScoreColor(score, 0.15);
+            const border = getScoreColor(score, 0.5);
+            const glow = getScoreColor(score, 0.2);
+            let blur = Math.round(4 + (numScore / 10) * 10);
+            
+            return `background: ${bg}; border: 1px solid ${border}; box-shadow: 0 4px 15px rgba(0,0,0,0.5), 0 0 ${blur}px ${glow} inset, 0 0 ${blur}px ${glow};`;
+        }
+
+        function getGlassRowStyle(score) {
+            const numScore = Number(score);
+            if (numScore === 0 || isNaN(numScore)) return `background: transparent; border-left: 2px solid rgba(107,122,98,0.3);`;
+            
+            const bg = getScoreColor(score, 0.1);
+            const border = getScoreColor(score, 0.8);
+            return `background: linear-gradient(90deg, ${bg} 0%, transparent 100%); border-left: 2px solid ${border};`;
         }
 
         function toggleRoleSelect() {
@@ -432,21 +448,32 @@
             if (arr.length === 0) { room.innerHTML = "<div class='loading'>Ничего не найдено...</div>"; return; }
 
             arr.forEach(f => {
-                const detailsLink = `Anime-Page.html?id=${encodeURIComponent(f.id).replace(/'/g, "%27")}`;
+                const safeIdForLink = encodeURIComponent(f.id).replace(/'/g, "%27");
+                const safeDomId = f.id.replace(/[^a-zA-Z0-9_-]/g, "_");
+                const detailsLink = `Anime-Page.html?id=${safeIdForLink}`;
                 const safeCoverUrl = f.coverUrl.replace(/'/g, "\\'");
                 const s = f.scores;
 
                 const cardHtml = `
-                <div class="card-container" id="card-${f.id}" onmouseleave="this.classList.remove('is-flipped')">
+                <div class="card-container" id="card-${safeDomId}" onmouseleave="this.classList.remove('is-flipped')">
                     <div class="card-inner">
                         <div class="card-face card-front" style="background-image: url('${safeCoverUrl}');" onclick="if(!event.target.closest('.flip-btn')) window.location.href='${detailsLink}'">
                             <div class="ep-badge">${f.badgeText}</div>
-                            <div class="flip-btn" onmouseenter="document.getElementById('card-${f.id}').classList.add('is-flipped')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.13 15.57a10 10 0 1 0 3.1-8.91L2 9M2.5 22v-6h6M21.87 8.43a10 10 0 1 0-3.1 8.91l3.23-2.34"/></svg></div>
+                            <div class="flip-btn" onmouseenter="document.getElementById('card-${safeDomId}').classList.add('is-flipped')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.13 15.57a10 10 0 1 0 3.1-8.91L2 9M2.5 22v-6h6M21.87 8.43a10 10 0 1 0-3.1 8.91l3.23-2.34"/></svg></div>
                             <div class="front-overlay">
                                 <div class="scores-row">
-                                    <div class="score-box"><div class="score-label streamer">Стример</div><div class="main-score" style="color:${getScoreColor(s.streamer.overall)}; text-shadow: ${getScoreShadow(s.streamer.overall, true)};">${s.streamer.overall}<span> / 10</span></div></div>
-                                    <div class="score-box me-element"><div class="score-label me">Я</div><div class="main-score" style="color:${getScoreColor(s.me.overall)}; text-shadow: ${getScoreShadow(s.me.overall, true)};">${s.me.overall}<span> / 10</span></div></div>
-                                    <div class="score-box"><div class="score-label chat">Чат</div><div class="main-score" style="color:${getScoreColor(s.chat.overall)}; text-shadow: ${getScoreShadow(s.chat.overall, true)};">${s.chat.overall}<span> / 10</span></div></div>
+                                    <div class="score-box" style="${getGlassBoxStyle(s.streamer.overall)}">
+                                        <div class="score-label streamer" style="color:${getScoreColor(s.streamer.overall, 1)}; border-bottom-color:${getScoreColor(s.streamer.overall, 0.4)}; text-shadow:0 0 8px ${getScoreColor(s.streamer.overall, 0.6)};">Стример</div>
+                                        <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(s.streamer.overall, true)};">${s.streamer.overall}<span> / 10</span></div>
+                                    </div>
+                                    <div class="score-box me-element" style="${getGlassBoxStyle(s.me.overall)}">
+                                        <div class="score-label me" style="color:${getScoreColor(s.me.overall, 1)}; border-bottom-color:${getScoreColor(s.me.overall, 0.4)}; text-shadow:0 0 8px ${getScoreColor(s.me.overall, 0.6)};">Я</div>
+                                        <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(s.me.overall, true)};">${s.me.overall}<span> / 10</span></div>
+                                    </div>
+                                    <div class="score-box" style="${getGlassBoxStyle(s.chat.overall)}">
+                                        <div class="score-label chat" style="color:${getScoreColor(s.chat.overall, 1)}; border-bottom-color:${getScoreColor(s.chat.overall, 0.4)}; text-shadow:0 0 8px ${getScoreColor(s.chat.overall, 0.6)};">Чат</div>
+                                        <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(s.chat.overall, true)};">${s.chat.overall}<span> / 10</span></div>
+                                    </div>
                                 </div>
                                 <div class="divider"></div>
                                 <div class="anime-title">${f.title}</div>
@@ -454,16 +481,25 @@
                         </div>
                         <div class="card-face card-back">
                             <h3 class="back-title" onclick="window.location.href='${detailsLink}'">Критерии</h3>
-                            <div class="chart-container" onclick="window.location.href='${detailsLink}'"><canvas id="chart-${f.id}"></canvas></div>
+                            <div class="chart-container" onclick="window.location.href='${detailsLink}'"><canvas id="chart-${safeDomId}"></canvas></div>
                             <div class="custom-legend">
-                                <div class="legend-item" style="color: ${radarColors[0].border};" onmouseover="highlightChart('${f.id}', 0)" onmouseout="resetChart('${f.id}')"><div class="dot" style="background: ${radarColors[0].border};"></div>Стример</div>
-                                <div class="legend-item me-element" style="color: ${radarColors[2].border};" onmouseover="highlightChart('${f.id}', 2)" onmouseout="resetChart('${f.id}')"><div class="dot" style="background: ${radarColors[2].border};"></div>Я</div>
-                                <div class="legend-item" style="color: ${radarColors[1].border};" onmouseover="highlightChart('${f.id}', 1)" onmouseout="resetChart('${f.id}')"><div class="dot" style="background: ${radarColors[1].border};"></div>Чат</div>
+                                <div class="legend-item" style="color: ${radarColors[0].border};" onmouseover="highlightChart('${safeDomId}', 0)" onmouseout="resetChart('${safeDomId}')"><div class="dot" style="background: ${radarColors[0].border};"></div>Стример</div>
+                                <div class="legend-item me-element" style="color: ${radarColors[2].border};" onmouseover="highlightChart('${safeDomId}', 2)" onmouseout="resetChart('${safeDomId}')"><div class="dot" style="background: ${radarColors[2].border};"></div>Я</div>
+                                <div class="legend-item" style="color: ${radarColors[1].border};" onmouseover="highlightChart('${safeDomId}', 1)" onmouseout="resetChart('${safeDomId}')"><div class="dot" style="background: ${radarColors[1].border};"></div>Чат</div>
                             </div>
                             <div class="theory-container">
-                                <div class="theory-row"><div class="theory-label"><span style="color: #fff;">Стример</span><span style="color: ${getScoreColor(s.streamer.avgTheory)}; text-shadow: ${getScoreShadow(s.streamer.avgTheory, false)};">${s.streamer.avgTheory}/10</span></div><div class="theory-bar-bg"><div class="theory-bar-fill" style="width: ${s.streamer.avgTheory * 10}%; background: ${getScoreColor(s.streamer.avgTheory)}; box-shadow: 0 0 ${s.streamer.avgTheory * 1.5}px ${getScoreColor(s.streamer.avgTheory)};"></div></div></div>
-                                <div class="theory-row"><div class="theory-label"><span style="color: #fff;">Чат</span><span style="color: ${getScoreColor(s.chat.avgTheory)}; text-shadow: ${getScoreShadow(s.chat.avgTheory, false)};">${s.chat.avgTheory}/10</span></div><div class="theory-bar-bg"><div class="theory-bar-fill" style="width: ${s.chat.avgTheory * 10}%; background: ${getScoreColor(s.chat.avgTheory)}; box-shadow: 0 0 ${s.chat.avgTheory * 1.5}px ${getScoreColor(s.chat.avgTheory)};"></div></div></div>
-                                <div class="theory-row me-element"><div class="theory-label"><span style="color: #fff;">Я</span><span style="color: ${getScoreColor(s.me.avgTheory)}; text-shadow: ${getScoreShadow(s.me.avgTheory, false)};">${s.me.avgTheory}/10</span></div><div class="theory-bar-bg"><div class="theory-bar-fill" style="width: ${s.me.avgTheory * 10}%; background: ${getScoreColor(s.me.avgTheory)}; box-shadow: 0 0 ${s.me.avgTheory * 1.5}px ${getScoreColor(s.me.avgTheory)};"></div></div></div>
+                                <div class="crit-row" style="${getGlassRowStyle(s.streamer.avgTheory)}">
+                                    <span style="color:#cba6f7; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: 1px 1px 2px #000;">Стример</span>
+                                    <span style="color:#fff; text-shadow: ${getScoreShadow(s.streamer.avgTheory, false)};">${s.streamer.avgTheory}/10</span>
+                                </div>
+                                <div class="crit-row" style="${getGlassRowStyle(s.chat.avgTheory)}">
+                                    <span style="color:#b8a87b; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: 1px 1px 2px #000;">Чат</span>
+                                    <span style="color:#fff; text-shadow: ${getScoreShadow(s.chat.avgTheory, false)};">${s.chat.avgTheory}/10</span>
+                                </div>
+                                <div class="crit-row me-element" style="${getGlassRowStyle(s.me.avgTheory)}">
+                                    <span style="color:#a6e3a1; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: 1px 1px 2px #000;">Я</span>
+                                    <span style="color:#fff; text-shadow: ${getScoreShadow(s.me.avgTheory, false)};">${s.me.avgTheory}/10</span>
+                                </div>
                             </div>
                             <button onclick="window.location.href='${detailsLink}'" style="margin-top: 10px; width: 100%; background: #222b20; border: 1px solid #4a5c41; color: #a4b09c; padding: 6px; font-family: 'Neucha', cursive; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase;">Медиатека ▶</button>
                         </div>
@@ -473,7 +509,7 @@
                 room.insertAdjacentHTML('beforeend', cardHtml);
 
                 if (typeof Chart !== 'undefined') {
-                    allCharts[f.id] = new Chart(document.getElementById(`chart-${f.id}`).getContext('2d'), {
+                    allCharts[safeDomId] = new Chart(document.getElementById(`chart-${safeDomId}`).getContext('2d'), {
                         type: 'radar',
                         data: {
                             labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Атмосфера'],
@@ -489,19 +525,19 @@
             });
         }
         
-        function highlightChart(animeId, index) {
-            if(!allCharts[animeId]) return;
-            allCharts[animeId].data.datasets.forEach((ds, i) => {
+        function highlightChart(domId, index) {
+            if(!allCharts[domId]) return;
+            allCharts[domId].data.datasets.forEach((ds, i) => {
                 if (i !== index) { ds.backgroundColor = 'transparent'; ds.borderColor = 'rgba(255,255,255,0.05)'; ds.borderWidth = 1; }
                 else { ds.backgroundColor = radarColors[i].border + '40'; ds.borderColor = radarColors[i].border; ds.borderWidth = 4; }
             });
-            allCharts[animeId].update();
+            allCharts[domId].update();
         }
 
-        function resetChart(animeId) {
-            if(!allCharts[animeId]) return;
-            allCharts[animeId].data.datasets.forEach((ds, i) => { ds.backgroundColor = radarColors[i].bg; ds.borderColor = radarColors[i].border; ds.borderWidth = 2; });
-            allCharts[animeId].update();
+        function resetChart(domId) {
+            if(!allCharts[domId]) return;
+            allCharts[domId].data.datasets.forEach((ds, i) => { ds.backgroundColor = radarColors[i].bg; ds.borderColor = radarColors[i].border; ds.borderWidth = 2; });
+            allCharts[domId].update();
         }
 
         initApp();
