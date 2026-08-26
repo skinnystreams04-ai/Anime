@@ -14,33 +14,37 @@
         .nav-logo { color: #a6e3a1; font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; transition: 0.2s; cursor: pointer; }
         .nav-logo:hover { filter: brightness(1.2); text-shadow: 0 0 15px rgba(166, 227, 161, 0.5); }
 
-        /* === ДИЗАЙН ПАНЕЛИ АВТОРИЗАЦИИ === */
-        .nav-auth .twitch-btn { background: #6441a5; color: white; padding: 8px 16px; border-radius: 6px; font-family: sans-serif; font-size: 14px; font-weight: bold; cursor: pointer; border: 1px solid #4a307a; transition: 0.2s; }
-        .nav-auth .twitch-btn:hover { background: #7d5bbe; box-shadow: 0 0 15px rgba(100, 65, 165, 0.6); }
+        /* === НЕОНОВАЯ ПАНЕЛЬ АВТОРИЗАЦИИ === */
+        .nav-auth .twitch-btn { background: #6441a5; color: white; padding: 8px 16px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; cursor: pointer; border: 1px solid #4a307a; transition: 0.2s; letter-spacing: 1px;}
+        .nav-auth .twitch-btn:hover { background: #7d5bbe; box-shadow: 0 0 15px rgba(100, 65, 165, 0.8); }
         
-        .user-profile { display: flex; align-items: center; gap: 12px; background: linear-gradient(90deg, #0b0d0a 0%, #121612 100%); padding: 6px 20px 6px 6px; border-radius: 40px; border: 1px solid #283325; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
-        .user-profile img { width: 42px; height: 42px; border-radius: 50%; border: 2px solid #4a5c41; box-shadow: 0 0 8px rgba(0,0,0,0.6); }
+        .user-profile-neon { display: flex; align-items: center; gap: 18px; background: rgba(11, 13, 10, 0.6); backdrop-filter: blur(8px); padding: 10px 25px 10px 10px; border-radius: 12px; border: 1px solid rgba(74, 92, 65, 0.4); box-shadow: 0 8px 20px rgba(0,0,0,0.6); transition: 0.3s ease; }
+        .user-profile-neon:hover { border-color: rgba(166, 227, 161, 0.4); box-shadow: 0 8px 25px rgba(0,0,0,0.8), 0 0 15px rgba(166, 227, 161, 0.1); }
         
-        .profile-info { display: flex; flex-direction: column; justify-content: center; gap: 4px; }
-        .profile-top { display: flex; align-items: center; justify-content: space-between; gap: 15px; }
-        .profile-name { font-size: 16px; font-family: sans-serif; font-weight: 800; letter-spacing: 0.5px; text-shadow: 1px 1px 2px #000; }
+        .avatar-glow-wrap { position: relative; display: flex; justify-content: center; align-items: center; }
+        .avatar-glow-wrap::before { content: ''; position: absolute; width: 120%; height: 120%; border-radius: 50%; background: var(--user-color, #a6e3a1); filter: blur(10px); opacity: 0.3; transition: 0.3s; }
+        .user-profile-neon:hover .avatar-glow-wrap::before { opacity: 0.6; }
+        .user-avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--user-color, #a6e3a1); position: relative; z-index: 2; object-fit: cover; }
         
-        .profile-bottom { display: flex; align-items: center; gap: 10px; }
+        .profile-info { display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+        .profile-top { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+        .profile-name { font-family: 'Neucha', cursive; font-size: 22px; font-weight: bold; letter-spacing: 1px; line-height: 1; }
         
-        /* БЕЙДЖИ РОЛЕЙ */
-        .role-badge { display: flex; align-items: center; justify-content: center; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-family: sans-serif; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 2px 4px rgba(0,0,0,0.5); line-height: 1; height: 16px; box-sizing: border-box; }
-        .role-sub { background: linear-gradient(45deg, #6441a5, #cba6f7); color: #fff; border: 1px solid #4a307a; text-shadow: 1px 1px 1px rgba(0,0,0,0.5); } 
-        .role-vip { background: linear-gradient(45deg, #e05e85, #f5c2e7); color: #fff; border: 1px solid #b83d63; text-shadow: 1px 1px 1px rgba(0,0,0,0.5); } 
+        .profile-bottom { display: flex; align-items: center; gap: 15px; }
+        
+        .role-badge { display: inline-flex; align-items: center; justify-content: center; padding: 2px 10px; border-radius: 6px; font-size: 13px; font-family: 'Neucha', cursive; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 2px 5px rgba(0,0,0,0.5); line-height: 1.2; }
+        .role-streamer { background: linear-gradient(45deg, #6441a5, #cba6f7); color: #fff; border: 1px solid #4a307a; text-shadow: 1px 1px 1px rgba(0,0,0,0.5); } 
+        .role-sub { background: linear-gradient(45deg, #e05e85, #f5c2e7); color: #fff; border: 1px solid #b83d63; text-shadow: 1px 1px 1px rgba(0,0,0,0.5); } 
+        .role-vip { background: linear-gradient(45deg, #d4af37, #f3e5ab); color: #121612; border: 1px solid #c29929; } 
         .role-f { background: linear-gradient(45deg, #283325, #4a5c41); color: #a6e3a1; border: 1px solid #1a2218; } 
 
-        /* БИЛЕТЫ */
-        .ticket-counter { display: flex; align-items: center; gap: 4px; font-family: sans-serif; font-weight: bold; font-size: 12px; text-shadow: 1px 1px 2px #000; line-height: 1;}
-        .ticket-counter img { width: 14px; height: 14px; border: none; border-radius: 0; box-shadow: none; }
-        .ticket-gold { color: #ffd700; }
-        .ticket-regular { color: #a6e3a1; }
+        .wallet-item { display: flex; align-items: center; gap: 6px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; line-height: 1; text-shadow: 1px 1px 2px #000; }
+        .wallet-item img { width: 18px; height: 18px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); }
+        .wallet-item.gold { color: #ffd700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.3); }
+        .wallet-item.tickets { color: #a6e3a1; text-shadow: 0 0 10px rgba(166, 227, 161, 0.3); }
 
-        .logout-btn { background: transparent; border: none; color: #ff5555; cursor: pointer; font-size: 11px; font-family: sans-serif; text-transform: uppercase; font-weight: bold; transition: 0.2s; padding: 0; opacity: 0.7; }
-        .logout-btn:hover { opacity: 1; text-shadow: 0 0 8px rgba(255, 85, 85, 0.8); }
+        .logout-neon { background: transparent; border: none; color: rgba(255, 85, 85, 0.6); font-family: 'Neucha', cursive; font-size: 15px; text-transform: uppercase; font-weight: bold; cursor: pointer; transition: 0.3s; padding: 0; line-height: 1; letter-spacing: 1px;}
+        .logout-neon:hover { color: #ff5555; text-shadow: 0 0 12px rgba(255, 85, 85, 0.8); transform: scale(1.05); }
 
         .layout { display: flex; gap: 20px; align-items: stretch; padding: 0 20px; }
         .widget-base { background: linear-gradient(180deg, #101411 0%, #080a08 100%); border: 2px solid #283325; border-radius: 6px; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.8); overflow: hidden; }
@@ -185,14 +189,17 @@
     <script>
         const TWITCH_CLIENT_ID = 'gko3y2nhxg0ocvte0ru970pbau3eiq';
         const REDIRECT_URI = 'https://skinnystreams04-ai.github.io/Anime/';
+        const ADMIN_USERNAME = 'skinwalker_nozxc'; 
         const FIREBASE_BASE = 'https://skinwalkerauction-default-rtdb.europe-west1.firebasedatabase.app';
-        
+
         let currentUser = null;
         let currentFranchiseId = null;
         let currentSeasonKey = null;
         let franchiseData = {};
         let currentCommunityRatings = {}; 
         let radarChart = null;
+
+        window.globalUsersDB = {};
 
         const radarColors = [
             { bg: 'rgba(203, 166, 247, 0.2)', border: '#cba6f7' }, 
@@ -201,10 +208,39 @@
 
         if (typeof Chart !== 'undefined') { Chart.defaults.font.family = "'Neucha', cursive, sans-serif"; Chart.defaults.color = "#829c73"; }
 
+        const safeNum = (v) => Number(v) || 0;
+        const calcTheoryAvg = (t) => {
+            if (!t) return 0;
+            const sum = safeNum(t.plot) + safeNum(t.visuals) + safeNum(t.music) + safeNum(t.world) + safeNum(t.atmosphere);
+            return sum > 0 ? parseFloat((sum / 5).toFixed(1)) : 0;
+        };
+
+        window.addEventListener('pageshow', (event) => { if (event.persisted) { loadAnimeData(); } });
+
         function loginTwitch() { window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=`; }
         function logoutTwitch() { try { localStorage.removeItem('twitch_token'); } catch(e){} location.reload(); }
 
-        // === ЧИСТАЯ АВТОРИЗАЦИЯ ИЗ GLOBAL_USERS ===
+        function getUserInfo(username, fallbackTwitchColor) {
+            const lowerName = username.toLowerCase();
+            const dbUser = window.globalUsersDB[lowerName]; 
+
+            let r = "F"; let g = 0; let t = 0; let c = fallbackTwitchColor || '#a4b09c';
+            
+            if (dbUser) {
+                if (dbUser.role) r = dbUser.role.toUpperCase();
+                if (dbUser.wallet_gold) g = dbUser.wallet_gold;
+                if (dbUser.wallet_tickets) t = dbUser.wallet_tickets;
+                if (dbUser.color && dbUser.color.trim() !== "") c = dbUser.color;
+            }
+
+            let badgeHtml = `<span class="role-badge role-f">FOLLOW</span>`;
+            if (lowerName === ADMIN_USERNAME.toLowerCase()) badgeHtml = `<span class="role-badge role-streamer">СТРИМЕР</span>`;
+            else if (r === 'SUB' || r === 'SUBSCRIBER') badgeHtml = `<span class="role-badge role-sub">SUB</span>`;
+            else if (r === 'VIP') badgeHtml = `<span class="role-badge role-vip">VIP</span>`;
+
+            return { role: r, gold: g, tickets: t, color: c, badge: badgeHtml };
+        }
+
         async function checkTwitchAuth() {
             try {
                 const hash = window.location.hash;
@@ -222,67 +258,41 @@
                     if (res.status === 401) { try { localStorage.removeItem('twitch_token'); } catch(e){} return; }
                     currentUser = (await res.json()).data[0];
 
-                    let twitchColor = '#a6e3a1';
                     try {
                         const colorRes = await fetch(`https://api.twitch.tv/helix/chat/color?user_id=${currentUser.id}`, { headers: { 'Client-ID': TWITCH_CLIENT_ID, 'Authorization': `Bearer ${token}` } });
                         const colorData = await colorRes.json();
-                        if (colorData.data && colorData.data[0] && colorData.data[0].color) {
-                            twitchColor = colorData.data[0].color;
-                        }
+                        currentUser.color = (colorData.data && colorData.data[0] && colorData.data[0].color) ? colorData.data[0].color : null;
                     } catch(e) {}
                     
-                    let role = "F", gold = 0, tickets = 0, finalColor = twitchColor;
-                    try {
-                        const dbRes = await fetch(`${FIREBASE_BASE}/global_users.json`, { cache: 'no-store' });
-                        if (dbRes.ok) {
-                            const globalUsers = await dbRes.json() || {};
-                            const dbUser = globalUsers[currentUser.login.toLowerCase()];
-                            if (dbUser) {
-                                if (dbUser.role) role = dbUser.role.toUpperCase();
-                                if (dbUser.wallet_gold) gold = dbUser.wallet_gold;
-                                if (dbUser.wallet_tickets) tickets = dbUser.wallet_tickets;
-                                if (dbUser.color && dbUser.color.trim() !== "") finalColor = dbUser.color;
-                            }
-                        }
-                    } catch(e) { console.warn("Не удалось подтянуть данные с базы", e); }
-
-                    let badgeHtml = `<span class="role-badge role-f">FOLLOW</span>`;
-                    if (role === 'SUB' || role === 'SUBSCRIBER') {
-                        badgeHtml = `<span class="role-badge role-sub">SUB</span>`;
-                    } else if (role === 'VIP') {
-                        badgeHtml = `<span class="role-badge role-vip">VIP</span>`;
-                    }
-
+                    const uInfo = getUserInfo(currentUser.login, currentUser.color);
+                    
                     document.getElementById('nav-auth').innerHTML = `
-                        <div class="user-profile">
-                            <img src="${currentUser.profile_image_url}">
+                        <div class="user-profile-neon">
+                            <div class="avatar-glow-wrap" style="--user-color: ${uInfo.color};">
+                                <img src="${currentUser.profile_image_url}" class="user-avatar">
+                            </div>
                             <div class="profile-info">
                                 <div class="profile-top">
-                                    <span class="profile-name" style="color: ${finalColor};">${currentUser.display_name}</span>
-                                    <button class="logout-btn" onclick="logoutTwitch()">Выйти</button>
+                                    <span class="profile-name" style="color: ${uInfo.color}; text-shadow: 0 0 8px ${uInfo.color};">${currentUser.display_name}</span>
+                                    <button class="logout-neon" onclick="logoutTwitch()">Выйти</button>
                                 </div>
                                 <div class="profile-bottom">
-                                    ${badgeHtml}
-                                    <div class="ticket-counter ticket-gold">
-                                        <img src="icons/BILET_GOLD.png"> ${gold}
+                                    ${uInfo.badge}
+                                    <div class="wallet-item gold">
+                                        <img src="icons/BILET_GOLD.png"> <span>${uInfo.gold}</span>
                                     </div>
-                                    <div class="ticket-counter ticket-regular">
-                                        <img src="icons/BILET.png"> ${tickets}
+                                    <div class="wallet-item tickets">
+                                        <img src="icons/BILET.png"> <span>${uInfo.tickets}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     `;
+
+                    if (currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase()) { document.body.classList.add('is-admin'); }
                 }
             } catch (e) { console.error('Ошибка авторизации', e); }
         }
-
-        const safeNum = (v) => Number(v) || 0;
-        const calcTheoryAvg = (t) => {
-            if (!t) return 0;
-            const sum = safeNum(t.plot) + safeNum(t.visuals) + safeNum(t.music) + safeNum(t.world) + safeNum(t.atmosphere);
-            return sum > 0 ? parseFloat((sum / 5).toFixed(1)) : 0;
-        };
 
         function initCharts() {
             if (typeof Chart === 'undefined') return;
@@ -329,6 +339,11 @@
             try {
                 const loadingScreen = document.getElementById('loading-screen');
                 
+                try {
+                    const dbRes = await fetch(`${FIREBASE_BASE}/global_users.json`, { cache: 'no-store' });
+                    if (dbRes.ok) { window.globalUsersDB = (await dbRes.json()) || {}; }
+                } catch(e) { console.warn("Не удалось загрузить базу пользователей", e); }
+
                 loadingScreen.innerText = "Авторизация Twitch...";
                 await checkTwitchAuth();
 
