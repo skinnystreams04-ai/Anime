@@ -70,6 +70,7 @@
         .season-btn.active { background: rgba(166, 227, 161, 0.15); border-color: #a6e3a1; color: #a6e3a1; box-shadow: 0 0 10px rgba(166, 227, 161, 0.2); }
         .custom-player { width: 100%; aspect-ratio: 16 / 9; background: #000; border-radius: 6px; border: 1px solid #283325; display: flex; justify-content: center; align-items: center; color: #4a5c41; font-size: 24px; }
         
+        /* СТЕКЛЯННЫЕ ПЛАШКИ ОЦЕНОК */
         .scores-row { display: flex; justify-content: space-between; align-items: stretch; gap: 10px; }
         .score-box { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 5px; border-radius: 8px; flex: 1; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); cursor: pointer; transition: 0.3s; }
         .score-box:hover { transform: translateY(-3px); filter: brightness(1.2); }
@@ -93,35 +94,35 @@
         .rate-btn { width: 100%; background: rgba(166, 227, 161, 0.1); border: 1px solid #a6e3a1; color: #a6e3a1; padding: 12px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 20px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; margin-top: 15px; box-shadow: 0 0 10px rgba(166, 227, 161, 0.1); }
         .rate-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 20px rgba(166, 227, 161, 0.5); }
 
+        /* === ВВОД КОММЕНТАРИЯ === */
         .comment-input-area { background: rgba(0,0,0,0.3); border: 1px solid #283325; border-radius: 12px; padding: 25px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
         .comment-textarea { width: 100%; background: #121612; border: 1px solid #4a5c41; color: #c4d1b8; border-radius: 8px; padding: 15px; font-family: 'Neucha', cursive; font-size: 18px; outline: none; transition: 0.2s; resize: vertical; min-height: 100px; box-sizing: border-box; }
         .comment-textarea:focus { border-color: #a6e3a1; box-shadow: 0 0 15px rgba(166, 227, 161, 0.2); }
         .send-btn { align-self: flex-end; background: #1a2618; border: 1px solid #a6e3a1; color: #a6e3a1; padding: 10px 30px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px;}
         .send-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 15px rgba(166, 227, 161, 0.4); }
         
+        /* === ВЕТКИ И КОММЕНТАРИИ (ТЕМНАЯ ВЕРСИЯ С ЦВЕТНЫМ ТЕКСТОМ) === */
         .comments-list { display: flex; flex-direction: column; gap: 25px; }
         .comment-wrapper { display: flex; flex-direction: column; gap: 15px; }
         
-        .comment-card { display: flex; flex-direction: column; border-radius: 12px; padding: 20px; box-sizing: border-box; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
-        .reply-card { padding: 15px; }
-
-        .comment-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
-        
-        .comment-author-info { display: flex; align-items: center; gap: 15px; }
-        .comment-avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #4a5c41; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
-        .reply-card .comment-avatar { width: 40px; height: 40px; border-width: 1px; }
-        
-        .comment-name-role { display: flex; flex-direction: column; gap: 5px; align-items: flex-start; justify-content: center; }
+        .comment-item { display: flex; flex-direction: column; background: rgba(14, 17, 13, 0.4); border-radius: 12px; border: 1px solid #283325; overflow: hidden; }
+        .comment-top { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(90deg, rgba(26, 34, 24, 0.6) 0%, rgba(11, 13, 10, 0.8) 100%); padding: 15px 25px; border-bottom: 2px solid #283325; border-radius: 12px 12px 0 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .comment-author-block { display: flex; align-items: center; gap: 15px; }
+        .comment-avatar { width: 55px; height: 55px; border-radius: 50%; border: 2px solid #4a5c41; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .author-details { display: flex; flex-direction: column; gap: 6px; }
         .comment-author { font-family: 'Neucha', cursive, sans-serif; font-weight: bold; font-size: 22px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); letter-spacing: 1px;}
-        .reply-card .comment-author { font-size: 20px; }
-
+        
         .comment-rating-block { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; }
         
         .cr-overall { font-size: 40px; font-weight: bold; line-height: 1; font-family: 'Neucha', cursive, sans-serif; letter-spacing: -1px; }
-        .reply-card .cr-overall { font-size: 32px; }
-        
         .cr-theory { display: flex; gap: 8px; font-family: 'Neucha', cursive, sans-serif; font-size: 16px; font-weight: bold; margin-top: 5px; }
-        .reply-card .cr-theory { font-size: 14px; gap: 6px; }
+        
+        .reply-item { display: flex; flex-direction: column; background: rgba(11, 13, 10, 0.6); border-radius: 12px; border: 1px solid rgba(40, 51, 37, 0.5); overflow: hidden;}
+        .reply-item .comment-top { padding: 12px 20px; border-radius: 12px 12px 0 0; background: linear-gradient(90deg, rgba(26, 34, 24, 0.4) 0%, rgba(11, 13, 10, 0.6) 100%); border-bottom: 1px solid rgba(40,51,37,0.5); }
+        .reply-item .comment-avatar { width: 45px; height: 45px; border-width: 1px; }
+        .reply-item .comment-author { font-size: 20px; }
+        .reply-item .cr-overall { font-size: 32px; }
+        .reply-item .cr-theory { font-size: 14px; gap: 6px; }
 
         .tooltip-element { position: relative; cursor: help; transition: transform 0.2s; padding: 2px; display: inline-block; }
         .tooltip-element:hover { transform: scale(1.1); z-index: 50; }
@@ -129,17 +130,20 @@
         .tooltip-element:hover::after { opacity: 1; }
         .cr-theory span:nth-last-child(1)::after, .cr-theory span:nth-last-child(2)::after, .cr-overall::after { left: auto; right: 0; transform: none; }
 
+        .comment-content-wrap { padding: 20px 25px; display: flex; flex-direction: column; gap: 15px; }
         .comment-text { font-size: 18px; color: #c4d1b8; line-height: 1.6; word-break: break-word; white-space: pre-wrap; margin-bottom: 15px; }
-        .reply-card .comment-text { font-size: 16px; margin-bottom: 10px; }
+        .reply-item .comment-content-wrap { padding: 15px 20px; gap: 10px; }
+        .reply-item .comment-text { font-size: 16px; margin-bottom: 10px; }
         
-        .comment-footer { display: flex; flex-direction: column; gap: 10px; border-top: 1px dashed rgba(74, 92, 65, 0.4); padding-top: 15px; }
-        .reply-card .comment-footer { padding-top: 10px; }
+        .comment-bottom { display: flex; flex-direction: column; gap: 10px; border-top: 1px dashed rgba(74, 92, 65, 0.4); padding-top: 15px; }
+        .reply-item .comment-bottom { padding-top: 10px; }
         
         .comment-date { font-size: 13px; color: #6b7a62; font-family: sans-serif; font-style: italic; }
         .edited-tag { font-size: 11px; opacity: 0.6; margin-left: 5px; font-style: italic; }
         
         .comment-actions { display: flex; gap: 20px; align-items: center; }
         .comment-actions button { background: transparent; border: none; cursor: pointer; font-family: 'Neucha', cursive; font-size: 15px; text-transform: uppercase; transition: 0.2s; padding: 0; font-weight: bold; letter-spacing: 1px; }
+        .reply-item .comment-actions button { font-size: 14px; }
         .btn-reply { color: #a4b09c; } .btn-reply:hover { color: #a6e3a1; }
         .btn-edit { color: #829c73; } .btn-edit:hover { color: #cba6f7; }
         .btn-del { color: #ff5555; } .btn-del:hover { text-shadow: 0 0 5px rgba(255,85,85,0.5); }
@@ -150,6 +154,7 @@
         .replies-list { display: flex; flex-direction: column; gap: 15px; margin-left: 40px; border-left: 2px solid #283325; padding-left: 20px; display: none; }
         .reply-input-wrapper { display: none; margin-left: 40px; margin-top: 5px; flex-direction: column; gap: 10px; }
 
+        /* МОДАЛЬНЫЕ ОКНА И UI */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .modal-box { background: linear-gradient(180deg, #101411 0%, #080a08 100%); border: 2px solid #a6e3a1; border-radius: 12px; padding: 30px; width: 750px; box-shadow: 0 0 30px rgba(166, 227, 161, 0.2); position: relative; }
         .modal-title { color: #a6e3a1; font-size: 24px; text-transform: uppercase; margin: 0 0 20px 0; text-align: center; font-weight: bold; letter-spacing: 1px;}
@@ -570,11 +575,14 @@
 
             const isStreamer = currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
             try {
+                let res;
                 if (isStreamer) {
-                    await fetch(`${FIREBASE_BASE}/anime_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/scores.json`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overall, theory }) });
+                    res = await fetch(`${FIREBASE_BASE}/anime_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/scores.json`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overall, theory }) });
                 } else {
-                    await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/ratings/${currentUser.id}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, overall, theory, timestamp: Date.now() }) });
+                    res = await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/ratings/${currentUser.id}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, overall, theory, timestamp: Date.now() }) });
                 }
+                
+                if (!res.ok) throw new Error("Server error");
                 closeRatingModal(); showToast("✅ Оценка успешно сохранена!"); await loadAnimeData(); 
             } catch (e) { showToast("❌ Ошибка сохранения!", true); }
             
@@ -798,46 +806,41 @@
             const isAuthorAdmin = c.displayName.toLowerCase() === ADMIN_USERNAME.toLowerCase();
             const userRating = currentCommunityRatings[authorId] || (isAuthorAdmin ? franchiseData[currentSeasonKey].scores : null);
 
-            let cardStyle = `background: rgba(14, 17, 13, 0.4); border: 1px solid #283325;`;
-            let headerStyle = `background: linear-gradient(90deg, rgba(26, 34, 24, 0.6) 0%, rgba(11, 13, 10, 0.8) 100%); border-bottom: 2px solid #283325;`;
-
             if (userRating && userRating.overall > 0) {
                 const ovr = userRating.overall;
                 const t = userRating.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
                 
-                // Применяем стеклянный дизайн к самому комментарию
-                cardStyle = `background: rgba(14, 17, 13, 0.4); border: 1px solid ${getScoreColor(ovr, 0.3)}; box-shadow: 0 8px 20px rgba(0,0,0,0.4), 0 0 15px ${getScoreColor(ovr, 0.1)};`;
-                headerStyle = `background: linear-gradient(90deg, ${getScoreColor(ovr, 0.15)} 0%, transparent 100%); border-bottom: 1px solid ${getScoreColor(ovr, 0.2)}; border-left: 3px solid ${getScoreColor(ovr, 0.8)}; padding-bottom: 15px; margin-left: -20px; padding-left: 17px; border-radius: 0;`;
-
                 ratingHtml = `
                 <div class="comment-rating-block">
-                    <div class="cr-overall tooltip-element" data-title="Итоговая оценка" style="color: #fff; text-shadow:${getScoreShadow(ovr, true)};">${ovr}</div>
+                    <div class="cr-overall tooltip-element" data-title="Итоговая оценка" style="color:${getScoreColor(ovr, 1)}; text-shadow:${getScoreShadow(ovr, true)};">${ovr}</div>
                     <div class="cr-theory">
-                        <span class="tooltip-element" style="color: #fff; text-shadow:${getScoreShadow(t.plot, false)};" data-title="Сюжет: ${t.plot}">${t.plot}</span>
-                        <span class="tooltip-element" style="color: #fff; text-shadow:${getScoreShadow(t.visuals, false)};" data-title="Визуал: ${t.visuals}">${t.visuals}</span>
-                        <span class="tooltip-element" style="color: #fff; text-shadow:${getScoreShadow(t.music, false)};" data-title="Музыка: ${t.music}">${t.music}</span>
-                        <span class="tooltip-element" style="color: #fff; text-shadow:${getScoreShadow(t.world, false)};" data-title="Мир: ${t.world}">${t.world}</span>
-                        <span class="tooltip-element" style="color: #fff; text-shadow:${getScoreShadow(t.atmosphere, false)};" data-title="Атмосфера: ${t.atmosphere}">${t.atmosphere}</span>
+                        <span class="tooltip-element" style="color:${getScoreColor(t.plot, 1)}; text-shadow:${getScoreShadow(t.plot, false)};" data-title="Сюжет: ${t.plot}">${t.plot}</span>
+                        <span class="tooltip-element" style="color:${getScoreColor(t.visuals, 1)}; text-shadow:${getScoreShadow(t.visuals, false)};" data-title="Визуал: ${t.visuals}">${t.visuals}</span>
+                        <span class="tooltip-element" style="color:${getScoreColor(t.music, 1)}; text-shadow:${getScoreShadow(t.music, false)};" data-title="Музыка: ${t.music}">${t.music}</span>
+                        <span class="tooltip-element" style="color:${getScoreColor(t.world, 1)}; text-shadow:${getScoreShadow(t.world, false)};" data-title="Мир: ${t.world}">${t.world}</span>
+                        <span class="tooltip-element" style="color:${getScoreColor(t.atmosphere, 1)}; text-shadow:${getScoreShadow(t.atmosphere, false)};" data-title="Атмосфера: ${t.atmosphere}">${t.atmosphere}</span>
                     </div>
                 </div>`;
             }
 
             return `
-            <div class="comment-card ${isReply ? 'reply-card' : ''}" style="${cardStyle}">
-                <div class="comment-header" style="${headerStyle}">
-                    <div class="comment-author-info">
+            <div class="comment-item ${isReply ? 'reply-item' : ''}">
+                <div class="comment-top">
+                    <div class="comment-author-block">
                         <img src="${c.profileImage}" class="comment-avatar">
-                        <div class="comment-name-role">
+                        <div class="author-details">
                             <span class="comment-author" style="color: ${uInfo.color};">${c.displayName}</span>
                             <div>${uInfo.badge}</div>
                         </div>
                     </div>
                     ${ratingHtml}
                 </div>
-                <div class="comment-text">${c.text}</div>
-                <div class="comment-footer">
-                    <span class="comment-date">${dateStr} ${editedHtml}</span>
-                    ${actions}
+                <div class="comment-content-wrap">
+                    <div class="comment-text">${c.text}</div>
+                    <div class="comment-bottom">
+                        <span class="comment-date">${dateStr} ${editedHtml}</span>
+                        ${actions}
+                    </div>
                 </div>
             </div>`;
         }
