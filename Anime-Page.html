@@ -79,8 +79,8 @@
         .score-label.me { color: #a6e3a1; border-bottom-color: rgba(166, 227, 161, 0.3); }
         .score-label.chat { color: #b8a87b; border-bottom-color: rgba(184, 168, 123, 0.3); }
         
-        .main-score { font-size: 32px; font-weight: bold; line-height: 1; letter-spacing: 2px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 4px #000; text-align: center; font-family: 'Neucha', cursive, sans-serif; }
-        .main-score span { font-size: 14px; color: #c4d1b8; text-shadow: none; letter-spacing: normal; }
+        .main-score { font-size: 32px; font-weight: bold; line-height: 1; letter-spacing: 2px; text-align: center; font-family: 'Neucha', cursive, sans-serif; }
+        .main-score span { font-size: 14px; color: #c4d1b8; text-shadow: none !important; letter-spacing: normal; }
 
         .chart-wrapper { width: 100%; height: 240px; margin-bottom: 10px; }
         
@@ -93,7 +93,7 @@
 
         .legend-breakdown { width: 100%; display: flex; flex-direction: column; gap: 5px; border-top: 1px dashed rgba(74, 92, 65, 0.6); padding-top: 8px; margin-top: 5px;}
         .crit-row { display: flex; justify-content: space-between; font-size: 14px; color: #a4b09c; }
-        .crit-row span:last-child { font-weight: bold; text-shadow: 1px 1px 2px #000;}
+        .crit-row span:last-child { font-weight: bold; font-family: 'Neucha', cursive, sans-serif; }
 
         .rate-btn { width: 100%; background: rgba(166, 227, 161, 0.1); border: 1px solid #a6e3a1; color: #a6e3a1; padding: 12px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 20px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; margin-top: 15px; box-shadow: 0 0 10px rgba(166, 227, 161, 0.1); }
         .rate-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 20px rgba(166, 227, 161, 0.5); }
@@ -124,13 +124,13 @@
 
         .comment-rating-block { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; }
         
-        .cr-overall { font-size: 40px; font-weight: bold; line-height: 1; font-family: 'Neucha', cursive, sans-serif; letter-spacing: -1px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+        .cr-overall { font-size: 40px; font-weight: bold; line-height: 1; font-family: 'Neucha', cursive, sans-serif; letter-spacing: -1px; }
         .reply-card .cr-overall { font-size: 32px; }
         
         .cr-theory { display: flex; gap: 8px; font-family: 'Neucha', cursive, sans-serif; font-size: 16px; font-weight: bold; margin-top: 5px; }
         .reply-card .cr-theory { font-size: 14px; gap: 6px; }
 
-        .tooltip-element { position: relative; cursor: help; text-shadow: 1px 1px 1px #000; transition: transform 0.2s; padding: 2px; display: inline-block; }
+        .tooltip-element { position: relative; cursor: help; transition: transform 0.2s; padding: 2px; display: inline-block; }
         .tooltip-element:hover { transform: scale(1.1); z-index: 50; }
         .tooltip-element::after { content: attr(data-title); position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%); background: #121612; color: #c4d1b8; padding: 6px 10px; border-radius: 6px; font-size: 13px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s; border: 1px solid #4a5c41; font-weight: normal; font-family: 'Neucha', cursive; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0,0,0,0.8); z-index: 100;}
         .tooltip-element:hover::after { opacity: 1; }
@@ -355,6 +355,47 @@
 
         if (typeof Chart !== 'undefined') { Chart.defaults.font.family = "'Neucha', cursive, sans-serif"; Chart.defaults.color = "#829c73"; }
 
+        // === ИДЕАЛЬНЫЙ ЦВЕТ И СВЕЧЕНИЕ (БРОНЗА -> СЕРЕБРО -> ЗОЛОТО) ===
+        function getScoreColor(score) {
+            const numScore = Number(score);
+            if (numScore === 0 || isNaN(numScore)) return '#6b7a62'; 
+            
+            let r, g, b;
+            if (numScore <= 5.5) {
+                let p = (numScore - 1) / 4.5;
+                if (p < 0) p = 0;
+                r = Math.round(205 + p * (220 - 205));
+                g = Math.round(127 + p * (224 - 127));
+                b = Math.round(50 + p * (230 - 50));
+            } else {
+                let p = (numScore - 5.5) / 4.5;
+                if (p > 1) p = 1;
+                r = Math.round(220 + p * (255 - 220));
+                g = Math.round(224 + p * (230 - 224));
+                b = Math.round(230 + p * (0 - 230));
+            }
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+
+        function getScoreShadow(score, isLarge) {
+            const numScore = Number(score);
+            const base = isLarge 
+                ? '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 4px #000' 
+                : '1px 1px 2px #000';
+                
+            if (numScore === 0 || isNaN(numScore)) return base;
+            
+            const color = getScoreColor(score);
+            const blur1 = Math.round(2 + (numScore / 10) * 12); 
+            let glow = `${base}, 0 0 ${blur1}px ${color}`;
+            
+            if (numScore >= 8) {
+                const blur2 = Math.round(blur1 * 1.5);
+                glow += `, 0 0 ${blur2}px ${color}`;
+            }
+            return glow;
+        }
+
         const safeNum = (v) => Number(v) || 0;
         const calcTheoryAvg = (t) => {
             if (!t) return 0;
@@ -443,7 +484,10 @@
                         </div>
                     `;
 
-                    if (currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase()) { document.body.classList.add('is-admin'); }
+                    if (currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase()) {
+                        document.getElementById('admin-btn').style.display = 'flex';
+                        document.body.classList.add('is-admin');
+                    }
                 }
             } catch (e) { console.error('Ошибка авторизации', e); }
         }
@@ -528,14 +572,6 @@
             btn.innerText = "СОХРАНИТЬ"; btn.style.pointerEvents = "auto";
         }
 
-        function getScoreColor(score) {
-            const numScore = Number(score);
-            if (numScore === 0 || isNaN(numScore)) return '#6b7a62'; 
-            if (numScore < 5) return '#cd7f32'; 
-            if (numScore < 8) return '#c0c0c0'; 
-            return '#ffd700'; 
-        }
-
         function highlightChart(index) {
             if (!radarChart) return;
             radarChart.data.datasets.forEach((ds, i) => {
@@ -553,7 +589,7 @@
 
         function generateBreakdownHtml(theoryObj) {
             if (!theoryObj) theoryObj = {plot:0, visuals:0, music:0, world:0, atmosphere:0};
-            return `<div class="crit-row"><span>Сюжет</span><span style="color:${getScoreColor(theoryObj.plot)}">${theoryObj.plot}</span></div><div class="crit-row"><span>Визуал</span><span style="color:${getScoreColor(theoryObj.visuals)}">${theoryObj.visuals}</span></div><div class="crit-row"><span>Музыка</span><span style="color:${getScoreColor(theoryObj.music)}">${theoryObj.music}</span></div><div class="crit-row"><span>Мир</span><span style="color:${getScoreColor(theoryObj.world)}">${theoryObj.world}</span></div><div class="crit-row"><span>Атмосфера</span><span style="color:${getScoreColor(theoryObj.atmosphere)}">${theoryObj.atmosphere}</span></div>`;
+            return `<div class="crit-row"><span>Сюжет</span><span style="color:${getScoreColor(theoryObj.plot)}; text-shadow:${getScoreShadow(theoryObj.plot, false)};">${theoryObj.plot}</span></div><div class="crit-row"><span>Визуал</span><span style="color:${getScoreColor(theoryObj.visuals)}; text-shadow:${getScoreShadow(theoryObj.visuals, false)};">${theoryObj.visuals}</span></div><div class="crit-row"><span>Музыка</span><span style="color:${getScoreColor(theoryObj.music)}; text-shadow:${getScoreShadow(theoryObj.music, false)};">${theoryObj.music}</span></div><div class="crit-row"><span>Мир</span><span style="color:${getScoreColor(theoryObj.world)}; text-shadow:${getScoreShadow(theoryObj.world, false)};">${theoryObj.world}</span></div><div class="crit-row"><span>Атмосфера</span><span style="color:${getScoreColor(theoryObj.atmosphere)}; text-shadow:${getScoreShadow(theoryObj.atmosphere, false)};">${theoryObj.atmosphere}</span></div>`;
         }
 
         async function loadAnimeData() {
@@ -657,16 +693,34 @@
             const tStr = strScores.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
             const strTheoryAvg = calcTheoryAvg(tStr);
 
-            document.getElementById('streamer-score-val').innerHTML = `${strOvr}<span> / 10</span>`; document.getElementById('streamer-score-val').style.color = getScoreColor(strOvr);
-            document.getElementById('avg-streamer-score').innerText = strTheoryAvg; document.getElementById('avg-streamer-score').style.color = getScoreColor(strTheoryAvg);
+            document.getElementById('streamer-score-val').innerHTML = `${strOvr}<span> / 10</span>`; 
+            document.getElementById('streamer-score-val').style.color = getScoreColor(strOvr);
+            document.getElementById('streamer-score-val').style.textShadow = getScoreShadow(strOvr, true);
+
+            document.getElementById('avg-streamer-score').innerText = strTheoryAvg; 
+            document.getElementById('avg-streamer-score').style.color = getScoreColor(strTheoryAvg);
+            document.getElementById('avg-streamer-score').style.textShadow = getScoreShadow(strTheoryAvg, false);
+            
             document.getElementById('breakdown-streamer').innerHTML = generateBreakdownHtml(tStr);
 
-            document.getElementById('chat-score-val').innerHTML = `${chatOvr}<span> / 10</span>`; document.getElementById('chat-score-val').style.color = getScoreColor(chatOvr);
-            document.getElementById('avg-chat-score').innerText = chatTheoryAvg; document.getElementById('avg-chat-score').style.color = getScoreColor(chatTheoryAvg);
+            document.getElementById('chat-score-val').innerHTML = `${chatOvr}<span> / 10</span>`; 
+            document.getElementById('chat-score-val').style.color = getScoreColor(chatOvr);
+            document.getElementById('chat-score-val').style.textShadow = getScoreShadow(chatOvr, true);
+            
+            document.getElementById('avg-chat-score').innerText = chatTheoryAvg; 
+            document.getElementById('avg-chat-score').style.color = getScoreColor(chatTheoryAvg);
+            document.getElementById('avg-chat-score').style.textShadow = getScoreShadow(chatTheoryAvg, false);
+            
             document.getElementById('breakdown-chat').innerHTML = generateBreakdownHtml(tChat);
 
-            document.getElementById('my-score-display').innerHTML = `${meOvr}<span> / 10</span>`; document.getElementById('my-score-display').style.color = getScoreColor(meOvr);
-            document.getElementById('avg-viewer-score').innerText = meTheoryAvg; document.getElementById('avg-viewer-score').style.color = getScoreColor(meTheoryAvg);
+            document.getElementById('my-score-display').innerHTML = `${meOvr}<span> / 10</span>`; 
+            document.getElementById('my-score-display').style.color = getScoreColor(meOvr);
+            document.getElementById('my-score-display').style.textShadow = getScoreShadow(meOvr, true);
+
+            document.getElementById('avg-viewer-score').innerText = meTheoryAvg; 
+            document.getElementById('avg-viewer-score').style.color = getScoreColor(meTheoryAvg);
+            document.getElementById('avg-viewer-score').style.textShadow = getScoreShadow(meTheoryAvg, false);
+
             document.getElementById('breakdown-viewer').innerHTML = generateBreakdownHtml(tMe);
             
             if (radarChart) {
@@ -681,7 +735,7 @@
                 const isStreamer = currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
                 let hasRated = false;
                 if (isStreamer && strOvr > 0) hasRated = true;
-                if (!isStreamer && meOvr > 0) hasRated = true;
+                if (!isStreamer && currentCommunityRatings[currentUser.id] && safeNum(currentCommunityRatings[currentUser.id].overall) > 0) hasRated = true;
                 
                 rateBtn.innerText = hasRated ? "Изменить оценку" : "Оценить тайтл";
             } else { 
@@ -691,6 +745,7 @@
             await loadComments(); 
         }
 
+        // === УНИВЕРСАЛЬНЫЙ РЕНДЕР КОММЕНТОВ ===
         function createCommentCard(c, isReply = false, parentId = null) {
             const authorId = c.userId || c.id;
             const isMe = currentUser && authorId === currentUser.id;
@@ -710,20 +765,20 @@
 
             let ratingHtml = '';
             const isAuthorAdmin = c.displayName.toLowerCase() === ADMIN_USERNAME.toLowerCase();
-            const userRating = isAuthorAdmin ? franchiseData[currentSeasonKey].scores : currentCommunityRatings[authorId];
+            const userRating = currentCommunityRatings[authorId] || (isAuthorAdmin ? franchiseData[currentSeasonKey].scores : null);
 
             if (userRating && userRating.overall > 0) {
                 const ovr = userRating.overall;
                 const t = userRating.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
                 ratingHtml = `
                 <div class="comment-rating-block">
-                    <div class="cr-overall tooltip-element" data-title="Итоговая оценка" style="color:${getScoreColor(ovr)}">${ovr}</div>
+                    <div class="cr-overall tooltip-element" data-title="Итоговая оценка" style="color:${getScoreColor(ovr)}; text-shadow:${getScoreShadow(ovr, true)};">${ovr}</div>
                     <div class="cr-theory">
-                        <span class="tooltip-element" style="color:${getScoreColor(t.plot)}" data-title="Сюжет: ${t.plot}">${t.plot}</span>
-                        <span class="tooltip-element" style="color:${getScoreColor(t.visuals)}" data-title="Визуал: ${t.visuals}">${t.visuals}</span>
-                        <span class="tooltip-element" style="color:${getScoreColor(t.music)}" data-title="Музыка: ${t.music}">${t.music}</span>
-                        <span class="tooltip-element" style="color:${getScoreColor(t.world)}" data-title="Мир: ${t.world}">${t.world}</span>
-                        <span class="tooltip-element" style="color:${getScoreColor(t.atmosphere)}" data-title="Атмосфера: ${t.atmosphere}">${t.atmosphere}</span>
+                        <span class="tooltip-element" style="color:${getScoreColor(t.plot)}; text-shadow:${getScoreShadow(t.plot, false)};" data-title="Сюжет: ${t.plot}">${t.plot}</span>
+                        <span class="tooltip-element" style="color:${getScoreColor(t.visuals)}; text-shadow:${getScoreShadow(t.visuals, false)};" data-title="Визуал: ${t.visuals}">${t.visuals}</span>
+                        <span class="tooltip-element" style="color:${getScoreColor(t.music)}; text-shadow:${getScoreShadow(t.music, false)};" data-title="Музыка: ${t.music}">${t.music}</span>
+                        <span class="tooltip-element" style="color:${getScoreColor(t.world)}; text-shadow:${getScoreShadow(t.world, false)};" data-title="Мир: ${t.world}">${t.world}</span>
+                        <span class="tooltip-element" style="color:${getScoreColor(t.atmosphere)}; text-shadow:${getScoreShadow(t.atmosphere, false)};" data-title="Атмосфера: ${t.atmosphere}">${t.atmosphere}</span>
                     </div>
                 </div>`;
             }

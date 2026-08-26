@@ -15,7 +15,6 @@
         .nav-logo { color: #a6e3a1; font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; transition: 0.2s; cursor: pointer; }
         .nav-logo:hover { filter: brightness(1.2); text-shadow: 0 0 15px rgba(166, 227, 161, 0.5); }
 
-        /* === НЕОНОВАЯ ПАНЕЛЬ АВТОРИЗАЦИИ === */
         .nav-auth .twitch-btn { background: #6441a5; color: white; padding: 8px 16px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; cursor: pointer; border: 1px solid #4a307a; transition: 0.2s; letter-spacing: 1px;}
         .nav-auth .twitch-btn:hover { background: #7d5bbe; box-shadow: 0 0 15px rgba(100, 65, 165, 0.8); }
         
@@ -78,10 +77,11 @@
         
         .score-label { width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; text-shadow: 1px 1px 2px #000; text-align: center; }
         .score-label.streamer { color: #cba6f7; border-bottom-color: rgba(203, 166, 247, 0.3); }
+        .score-label.me { color: #a6e3a1; border-bottom-color: rgba(166, 227, 161, 0.3); }
         .score-label.chat { color: #b8a87b; border-bottom-color: rgba(184, 168, 123, 0.3); }
 
-        .main-score { font-size: 30px; font-weight: bold; line-height: 1; letter-spacing: 2px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 4px #000; text-align: center; font-family: 'Neucha', cursive, sans-serif;}
-        .main-score span { font-size: 13px; color: #c4d1b8; text-shadow: none; letter-spacing: normal; }
+        .main-score { font-size: 30px; font-weight: bold; line-height: 1; letter-spacing: 2px; text-align: center; font-family: 'Neucha', cursive, sans-serif; }
+        .main-score span { font-size: 13px; color: #c4d1b8; text-shadow: none !important; letter-spacing: normal; }
 
         .divider { border-top: 1px dashed #4a5c41; margin: 8px 0 12px 0; }
         .anime-title { color: #c4d1b8; font-size: 17px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; text-align: center; text-shadow: 2px 2px 5px #000; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; width: 100%; line-height: 1.2; }
@@ -166,12 +166,45 @@
         
         if (typeof Chart !== 'undefined') { Chart.defaults.font.family = "'Neucha', cursive, sans-serif"; Chart.defaults.color = "#829c73"; }
 
+        // === ИДЕАЛЬНЫЙ ЦВЕТ И СВЕЧЕНИЕ (БРОНЗА -> СЕРЕБРО -> ЗОЛОТО) ===
         function getScoreColor(score) {
             const numScore = Number(score);
             if (numScore === 0 || isNaN(numScore)) return '#6b7a62'; 
-            if (numScore < 5) return '#cd7f32'; 
-            if (numScore < 8) return '#c0c0c0'; 
-            return '#ffd700'; 
+            
+            let r, g, b;
+            if (numScore <= 5.5) {
+                let p = (numScore - 1) / 4.5;
+                if (p < 0) p = 0;
+                r = Math.round(205 + p * (220 - 205));
+                g = Math.round(127 + p * (224 - 127));
+                b = Math.round(50 + p * (230 - 50));
+            } else {
+                let p = (numScore - 5.5) / 4.5;
+                if (p > 1) p = 1;
+                r = Math.round(220 + p * (255 - 220));
+                g = Math.round(224 + p * (230 - 224));
+                b = Math.round(230 + p * (0 - 230));
+            }
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+
+        function getScoreShadow(score, isLarge) {
+            const numScore = Number(score);
+            const base = isLarge 
+                ? '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 4px #000' 
+                : '1px 1px 2px #000';
+                
+            if (numScore === 0 || isNaN(numScore)) return base;
+            
+            const color = getScoreColor(score);
+            const blur1 = Math.round(2 + (numScore / 10) * 12); 
+            let glow = `${base}, 0 0 ${blur1}px ${color}`;
+            
+            if (numScore >= 8) {
+                const blur2 = Math.round(blur1 * 1.5);
+                glow += `, 0 0 ${blur2}px ${color}`;
+            }
+            return glow;
         }
 
         function toggleRoleSelect() {
@@ -411,9 +444,9 @@
                             <div class="flip-btn" onmouseenter="document.getElementById('card-${f.id}').classList.add('is-flipped')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.13 15.57a10 10 0 1 0 3.1-8.91L2 9M2.5 22v-6h6M21.87 8.43a10 10 0 1 0-3.1 8.91l3.23-2.34"/></svg></div>
                             <div class="front-overlay">
                                 <div class="scores-row">
-                                    <div class="score-box"><div class="score-label streamer">Стример</div><div class="main-score" style="color:${getScoreColor(s.streamer.overall)};">${s.streamer.overall}<span> / 10</span></div></div>
-                                    <div class="score-box me-element"><div class="score-label me">Я</div><div class="main-score" style="color:${getScoreColor(s.me.overall)};">${s.me.overall}<span> / 10</span></div></div>
-                                    <div class="score-box"><div class="score-label chat">Чат</div><div class="main-score" style="color:${getScoreColor(s.chat.overall)};">${s.chat.overall}<span> / 10</span></div></div>
+                                    <div class="score-box"><div class="score-label streamer">Стример</div><div class="main-score" style="color:${getScoreColor(s.streamer.overall)}; text-shadow: ${getScoreShadow(s.streamer.overall, true)};">${s.streamer.overall}<span> / 10</span></div></div>
+                                    <div class="score-box me-element"><div class="score-label me">Я</div><div class="main-score" style="color:${getScoreColor(s.me.overall)}; text-shadow: ${getScoreShadow(s.me.overall, true)};">${s.me.overall}<span> / 10</span></div></div>
+                                    <div class="score-box"><div class="score-label chat">Чат</div><div class="main-score" style="color:${getScoreColor(s.chat.overall)}; text-shadow: ${getScoreShadow(s.chat.overall, true)};">${s.chat.overall}<span> / 10</span></div></div>
                                 </div>
                                 <div class="divider"></div>
                                 <div class="anime-title">${f.title}</div>
@@ -428,9 +461,9 @@
                                 <div class="legend-item" style="color: ${radarColors[1].border};" onmouseover="highlightChart('${f.id}', 1)" onmouseout="resetChart('${f.id}')"><div class="dot" style="background: ${radarColors[1].border};"></div>Чат</div>
                             </div>
                             <div class="theory-container">
-                                <div class="theory-row"><div class="theory-label"><span style="color: #fff;">Стример</span><span style="color: ${getScoreColor(s.streamer.avgTheory)};">${s.streamer.avgTheory}/10</span></div><div class="theory-bar-bg"><div class="theory-bar-fill" style="width: ${s.streamer.avgTheory * 10}%; background: ${getScoreColor(s.streamer.avgTheory)};"></div></div></div>
-                                <div class="theory-row"><div class="theory-label"><span style="color: #fff;">Чат</span><span style="color: ${getScoreColor(s.chat.avgTheory)};">${s.chat.avgTheory}/10</span></div><div class="theory-bar-bg"><div class="theory-bar-fill" style="width: ${s.chat.avgTheory * 10}%; background: ${getScoreColor(s.chat.avgTheory)};"></div></div></div>
-                                <div class="theory-row me-element"><div class="theory-label"><span style="color: #fff;">Я</span><span style="color: ${getScoreColor(s.me.avgTheory)};">${s.me.avgTheory}/10</span></div><div class="theory-bar-bg"><div class="theory-bar-fill" style="width: ${s.me.avgTheory * 10}%; background: ${getScoreColor(s.me.avgTheory)};"></div></div></div>
+                                <div class="theory-row"><div class="theory-label"><span style="color: #fff;">Стример</span><span style="color: ${getScoreColor(s.streamer.avgTheory)}; text-shadow: ${getScoreShadow(s.streamer.avgTheory, false)};">${s.streamer.avgTheory}/10</span></div><div class="theory-bar-bg"><div class="theory-bar-fill" style="width: ${s.streamer.avgTheory * 10}%; background: ${getScoreColor(s.streamer.avgTheory)}; box-shadow: 0 0 ${s.streamer.avgTheory * 1.5}px ${getScoreColor(s.streamer.avgTheory)};"></div></div></div>
+                                <div class="theory-row"><div class="theory-label"><span style="color: #fff;">Чат</span><span style="color: ${getScoreColor(s.chat.avgTheory)}; text-shadow: ${getScoreShadow(s.chat.avgTheory, false)};">${s.chat.avgTheory}/10</span></div><div class="theory-bar-bg"><div class="theory-bar-fill" style="width: ${s.chat.avgTheory * 10}%; background: ${getScoreColor(s.chat.avgTheory)}; box-shadow: 0 0 ${s.chat.avgTheory * 1.5}px ${getScoreColor(s.chat.avgTheory)};"></div></div></div>
+                                <div class="theory-row me-element"><div class="theory-label"><span style="color: #fff;">Я</span><span style="color: ${getScoreColor(s.me.avgTheory)}; text-shadow: ${getScoreShadow(s.me.avgTheory, false)};">${s.me.avgTheory}/10</span></div><div class="theory-bar-bg"><div class="theory-bar-fill" style="width: ${s.me.avgTheory * 10}%; background: ${getScoreColor(s.me.avgTheory)}; box-shadow: 0 0 ${s.me.avgTheory * 1.5}px ${getScoreColor(s.me.avgTheory)};"></div></div></div>
                             </div>
                             <button onclick="window.location.href='${detailsLink}'" style="margin-top: 10px; width: 100%; background: #222b20; border: 1px solid #4a5c41; color: #a4b09c; padding: 6px; font-family: 'Neucha', cursive; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase;">Медиатека ▶</button>
                         </div>
