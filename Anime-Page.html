@@ -104,58 +104,56 @@
         .send-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 15px rgba(166, 227, 161, 0.4); }
         
         /* === ВЕТКИ И КОММЕНТАРИИ === */
-        .comments-list { display: flex; flex-direction: column; gap: 30px; }
+        .comments-list { display: flex; flex-direction: column; gap: 25px; }
         .comment-wrapper { display: flex; flex-direction: column; gap: 15px; }
         
-        .comment-item { display: flex; flex-direction: column; background: rgba(14, 17, 13, 0.4); border-radius: 12px; border: 1px solid #283325; overflow: hidden; }
+        .comment-card { display: flex; flex-direction: column; background: rgba(14, 17, 13, 0.4); border-radius: 12px; border: 1px solid #283325; padding: 20px; box-sizing: border-box; }
+        .reply-card { background: rgba(11, 13, 10, 0.6); padding: 15px; }
+
+        .comment-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 15px; }
         
-        .comment-top { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(90deg, rgba(26, 34, 24, 0.6) 0%, rgba(11, 13, 10, 0.8) 100%); padding: 15px 25px; border-bottom: 2px solid #283325; border-radius: 12px 12px 0 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .comment-author-block { display: flex; align-items: center; gap: 15px; }
-        .comment-avatar { width: 55px; height: 55px; border-radius: 50%; border: 2px solid #4a5c41; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
-        .author-details { display: flex; flex-direction: column; gap: 6px; }
+        .comment-author-info { display: flex; align-items: center; gap: 15px; }
+        .comment-avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #4a5c41; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .reply-card .comment-avatar { width: 40px; height: 40px; border-width: 1px; }
         
+        .comment-name-role { display: flex; flex-direction: column; gap: 5px; align-items: flex-start; justify-content: center; }
         .comment-author { font-family: 'Neucha', cursive, sans-serif; font-weight: bold; font-size: 22px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); letter-spacing: 1px;}
+        .reply-card .comment-author { font-size: 20px; }
+
+        .comment-rating-block { display: flex; flex-direction: column; align-items: flex-end; justify-content: center; }
         
-        .comment-rating-block { display: flex; flex-direction: column; align-items: flex-end; }
+        .cr-overall { font-size: 40px; font-weight: bold; line-height: 1; font-family: 'Neucha', cursive, sans-serif; letter-spacing: -1px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
+        .reply-card .cr-overall { font-size: 32px; }
+        
+        .cr-theory { display: flex; gap: 8px; font-family: 'Neucha', cursive, sans-serif; font-size: 16px; font-weight: bold; margin-top: 5px; }
+        .reply-card .cr-theory { font-size: 14px; gap: 6px; }
+
         .tooltip-element { position: relative; cursor: help; text-shadow: 1px 1px 1px #000; transition: transform 0.2s; padding: 2px; display: inline-block; }
         .tooltip-element:hover { transform: scale(1.1); z-index: 50; }
-        .tooltip-element::after { content: attr(data-title); position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%); background: #121612; color: #c4d1b8; padding: 6px 10px; border-radius: 6px; font-size: 13px; white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity 0.2s; border: 1px solid #4a5c41; font-weight: normal; font-family: 'Neucha', cursive; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0,0,0,0.8); z-index: 100;}
-        .tooltip-element:hover::after { opacity: 1; visibility: visible; }
-        
-        .cr-theory span:nth-last-child(1)::after, .cr-theory span:nth-last-child(2)::after { left: auto; right: -10px; transform: none; }
-        .cr-overall::after { left: auto; right: 0; transform: none; }
+        .tooltip-element::after { content: attr(data-title); position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%); background: #121612; color: #c4d1b8; padding: 6px 10px; border-radius: 6px; font-size: 13px; white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.2s; border: 1px solid #4a5c41; font-weight: normal; font-family: 'Neucha', cursive; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0,0,0,0.8); z-index: 100;}
+        .tooltip-element:hover::after { opacity: 1; }
+        .cr-theory span:nth-last-child(1)::after, .cr-theory span:nth-last-child(2)::after, .cr-overall::after { left: auto; right: 0; transform: none; }
 
-        .cr-overall { font-size: 42px; font-weight: bold; line-height: 1; font-family: 'Neucha', cursive, sans-serif; letter-spacing: -1px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
-        .cr-theory { display: flex; gap: 10px; font-family: 'Neucha', cursive, sans-serif; font-size: 16px; font-weight: bold; margin-top: 8px; }
-
-        .comment-content-wrap { padding: 20px 25px; display: flex; flex-direction: column; gap: 15px; }
-        .comment-text { font-size: 18px; color: #c4d1b8; line-height: 1.6; word-break: break-word; white-space: pre-wrap; }
+        .comment-text { font-size: 18px; color: #c4d1b8; line-height: 1.6; word-break: break-word; white-space: pre-wrap; margin-bottom: 15px; }
+        .reply-card .comment-text { font-size: 16px; margin-bottom: 10px; }
         
-        .comment-bottom { display: flex; flex-direction: column; gap: 10px; border-top: 1px dashed rgba(74, 92, 65, 0.4); padding-top: 15px;}
-        .comment-date { font-size: 13px; color: #6b7a62; font-family: sans-serif; font-style: italic;}
+        .comment-footer { display: flex; flex-direction: column; gap: 10px; border-top: 1px dashed rgba(74, 92, 65, 0.4); padding-top: 15px; }
+        .reply-card .comment-footer { padding-top: 10px; }
+        
+        .comment-date { font-size: 13px; color: #6b7a62; font-family: sans-serif; font-style: italic; }
         .edited-tag { font-size: 11px; opacity: 0.6; margin-left: 5px; font-style: italic; }
+        
         .comment-actions { display: flex; gap: 20px; align-items: center; }
         .comment-actions button { background: transparent; border: none; cursor: pointer; font-family: 'Neucha', cursive; font-size: 15px; text-transform: uppercase; transition: 0.2s; padding: 0; font-weight: bold; letter-spacing: 1px; }
         .btn-reply { color: #a4b09c; } .btn-reply:hover { color: #a6e3a1; }
         .btn-edit { color: #829c73; } .btn-edit:hover { color: #cba6f7; }
         .btn-del { color: #ff5555; } .btn-del:hover { text-shadow: 0 0 5px rgba(255,85,85,0.5); }
 
-        .toggle-replies-btn { background: transparent; border: none; color: #829c73; font-family: 'Neucha', cursive; font-size: 17px; font-weight: bold; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; gap: 8px; margin-left: 25px; transition: 0.2s; width: fit-content; }
+        .toggle-replies-btn { background: transparent; border: none; color: #829c73; font-family: 'Neucha', cursive; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; gap: 8px; margin-left: 10px; transition: 0.2s; width: fit-content; }
         .toggle-replies-btn:hover { color: #a6e3a1; }
 
-        .replies-list { display: flex; flex-direction: column; gap: 15px; margin-left: 60px; border-left: 2px solid #283325; padding-left: 20px; display: none; }
-        
-        .reply-item { display: flex; flex-direction: column; background: rgba(11, 13, 10, 0.6); border-radius: 12px; border: 1px solid rgba(40, 51, 37, 0.5); overflow: hidden;}
-        .reply-item .comment-top { padding: 12px 20px; border-radius: 12px 12px 0 0; background: linear-gradient(90deg, rgba(26, 34, 24, 0.4) 0%, rgba(11, 13, 10, 0.6) 100%); border-bottom: 1px solid rgba(40,51,37,0.5); }
-        .reply-item .comment-avatar { width: 45px; height: 45px; }
-        .reply-item .comment-author { font-size: 20px; }
-        .reply-item .cr-overall { font-size: 32px; }
-        .reply-item .cr-theory { font-size: 15px; gap: 8px; margin-top: 5px; }
-        .reply-item .comment-content-wrap { padding: 15px 20px; gap: 10px; }
-        .reply-item .comment-text { font-size: 17px; margin-bottom: 5px; }
-        .reply-item .comment-actions button { font-size: 14px; }
-
-        .reply-input-wrapper { display: none; margin-left: 60px; margin-top: 5px; flex-direction: column; gap: 10px; }
+        .replies-list { display: flex; flex-direction: column; gap: 15px; margin-left: 40px; border-left: 2px solid #283325; padding-left: 20px; display: none; }
+        .reply-input-wrapper { display: none; margin-left: 40px; margin-top: 5px; flex-direction: column; gap: 10px; }
 
         /* МОДАЛЬНЫЕ ОКНА И UI */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
@@ -283,8 +281,39 @@
                         </div>
                     </div>
 
+                    <button class="rate-btn" id="rate-title-btn" onclick="openRatingModal()">Оценить тайтл</button>
+
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- МОДАЛЬНОЕ ОКНО ОЦЕНКИ -->
+    <div id="rating-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-box">
+            <div class="close-btn" onclick="closeRatingModal()">×</div>
+            <h2 class="modal-title">Выставить оценку</h2>
+            
+            <div class="modal-content-wrapper">
+                <div class="modal-sliders">
+                    <div class="input-label">Итоговое впечатление</div>
+                    <input type="number" id="modal-overall" min="1" max="10" placeholder="От 1 до 10">
+
+                    <div style="border-top: 1px dashed #283325; margin: 15px 0;"></div>
+
+                    <div class="slider-group"><div class="slider-header"><span>Сюжет</span><span id="m-plot">5</span></div><input type="range" id="msl-plot" min="1" max="10" value="5" oninput="document.getElementById('m-plot').innerText=this.value; syncModalChart();"></div>
+                    <div class="slider-group"><div class="slider-header"><span>Визуал</span><span id="m-vis">5</span></div><input type="range" id="msl-vis" min="1" max="10" value="5" oninput="document.getElementById('m-vis').innerText=this.value; syncModalChart();"></div>
+                    <div class="slider-group"><div class="slider-header"><span>Музыка</span><span id="m-mus">5</span></div><input type="range" id="msl-mus" min="1" max="10" value="5" oninput="document.getElementById('m-mus').innerText=this.value; syncModalChart();"></div>
+                    <div class="slider-group"><div class="slider-header"><span>Мир</span><span id="m-wor">5</span></div><input type="range" id="msl-wor" min="1" max="10" value="5" oninput="document.getElementById('m-wor').innerText=this.value; syncModalChart();"></div>
+                    <div class="slider-group"><div class="slider-header"><span>Атмосфера</span><span id="m-atm">5</span></div><input type="range" id="msl-atm" min="1" max="10" value="5" oninput="document.getElementById('m-atm').innerText=this.value; syncModalChart();"></div>
+                </div>
+
+                <div class="modal-chart-area">
+                    <canvas id="modalChart"></canvas>
+                </div>
+            </div>
+
+            <button class="rate-btn" id="save-rate-btn" onclick="saveUserRating()">Сохранить</button>
         </div>
     </div>
 
@@ -301,6 +330,7 @@
         let currentCommunityRatings = {}; 
         let currentComments = {};
         let radarChart = null;
+        let modalRadarChart = null;
         
         let editingTarget = { type: null, id: null, parentId: null }; 
 
@@ -400,6 +430,8 @@
                             </div>
                         </div>
                     `;
+
+                    if (currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase()) { document.body.classList.add('is-admin'); }
                 }
             } catch (e) { console.error('Ошибка авторизации', e); }
         }
@@ -420,9 +452,75 @@
             });
         }
 
+        function syncModalChart() {
+            if (typeof Chart === 'undefined') return;
+            const isStreamer = currentUser && currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
+            const color = isStreamer ? radarColors[0].border : radarColors[1].border; 
+            const bg = isStreamer ? radarColors[0].bg : radarColors[1].bg;
+
+            if (!modalRadarChart) {
+                const ctxModal = document.getElementById('modalChart').getContext('2d');
+                modalRadarChart = new Chart(ctxModal, {
+                    type: 'radar',
+                    data: { labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Атмосфера'], datasets: [{ label: 'Оценка', data: [5,5,5,5,5], backgroundColor: bg, borderColor: color, pointBackgroundColor: color, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 3 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: '#283325' }, angleLines: { color: '#283325' }, pointLabels: { font: { size: 10, weight: 'bold' }, color: '#c4d1b8' } } } }
+                });
+            }
+
+            modalRadarChart.data.datasets[0].data = [ document.getElementById('msl-plot').value, document.getElementById('msl-vis').value, document.getElementById('msl-mus').value, document.getElementById('msl-wor').value, document.getElementById('msl-atm').value ];
+            modalRadarChart.update();
+        }
+
+        function openRatingModal() {
+            if (!currentUser) { alert("Сначала нужно войти через Twitch!"); return; }
+            const isStreamer = currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
+            let existingData = isStreamer ? (franchiseData[currentSeasonKey].scores || null) : (currentCommunityRatings[currentUser.id] || null);
+
+            if (existingData) {
+                document.getElementById('modal-overall').value = existingData.overall || '';
+                if (existingData.theory) {
+                    ['plot','vis','mus','wor','atm'].forEach(id => {
+                        const val = existingData.theory[id==='vis'?'visuals':id==='mus'?'music':id==='wor'?'world':id==='atm'?'atmosphere':id] || 5;
+                        document.getElementById('msl-'+id).value = val; document.getElementById('m-'+id).innerText = val;
+                    });
+                }
+            } else {
+                document.getElementById('modal-overall').value = '';
+                ['plot','vis','mus','wor','atm'].forEach(id => { document.getElementById('msl-'+id).value = 5; document.getElementById('m-'+id).innerText = 5; });
+            }
+
+            syncModalChart(); document.getElementById('rating-modal').style.display = 'flex';
+        }
+
+        function closeRatingModal() { document.getElementById('rating-modal').style.display = 'none'; }
+
+        async function saveUserRating() {
+            if (!currentUser) return;
+            const btn = document.getElementById('save-rate-btn');
+            btn.innerText = "СОХРАНЕНИЕ..."; btn.style.pointerEvents = "none";
+
+            const overall = parseFloat(document.getElementById('modal-overall').value) || 0;
+            const theory = { plot: parseFloat(document.getElementById('msl-plot').value), visuals: parseFloat(document.getElementById('msl-vis').value), music: parseFloat(document.getElementById('msl-mus').value), world: parseFloat(document.getElementById('msl-wor').value), atmosphere: parseFloat(document.getElementById('msl-atm').value) };
+
+            const isStreamer = currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
+            try {
+                if (isStreamer) {
+                    await fetch(`${FIREBASE_BASE}/anime_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/scores.json`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overall, theory }) });
+                } else {
+                    await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/ratings/${currentUser.id}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, overall, theory, timestamp: Date.now() }) });
+                }
+                closeRatingModal(); showToast("✅ Оценка успешно сохранена!"); await loadAnimeData(); 
+            } catch (e) { showToast("❌ Ошибка сохранения!", true); }
+            
+            btn.innerText = "СОХРАНИТЬ"; btn.style.pointerEvents = "auto";
+        }
+
         function getScoreColor(score) {
-            const numScore = Number(score); if (numScore === 0 || isNaN(numScore)) return '#6b7a62'; 
-            return `hsl(${(numScore / 10) * 120}, 80%, 60%)`;
+            const numScore = Number(score);
+            if (numScore === 0 || isNaN(numScore)) return '#6b7a62'; // Без оценки
+            if (numScore < 5) return '#cd7f32'; // Медь / Мусор
+            if (numScore < 8) return '#c0c0c0'; // Серебро / Норма
+            return '#ffd700'; // Золото / Шедевр
         }
 
         function highlightChart(index) {
@@ -554,7 +652,82 @@
                 radarChart.update();
             }
 
+            const rateBtn = document.getElementById('rate-title-btn');
+            if (currentUser) {
+                const isStreamer = currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
+                // Ищем оценку в community_db, а если админ - проверяем есть ли strOvr
+                let hasRated = false;
+                if (isStreamer && strOvr > 0) hasRated = true;
+                if (!isStreamer && currentCommunityRatings[currentUser.id] && safeNum(currentCommunityRatings[currentUser.id].overall) > 0) hasRated = true;
+                
+                rateBtn.innerText = hasRated ? "Изменить оценку" : "Оценить тайтл";
+                rateBtn.style.opacity = "1";
+                rateBtn.style.pointerEvents = "auto";
+            } else { 
+                rateBtn.innerText = "Оценить тайтл"; 
+                rateBtn.style.opacity = "0.5";
+                rateBtn.style.pointerEvents = "none";
+            }
+
             await loadComments(); 
+        }
+
+        // === УНИВЕРСАЛЬНЫЙ РЕНДЕР КОММЕНТАРИЕВ ===
+        function createCommentCard(c, isReply = false, parentId = null) {
+            const authorId = c.userId || c.id;
+            const isMe = currentUser && authorId === currentUser.id;
+            const isAdminViewer = currentUser && currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
+            
+            const d = new Date(c.timestamp);
+            const dateStr = `${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')} в ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
+            const editedHtml = c.isEdited ? `<span class="edited-tag">(изменено)</span>` : '';
+            
+            const uInfo = getUserInfo(c.displayName, c.userColor);
+
+            let actions = `<div class="comment-actions">
+                                <button class="btn-reply" onclick="toggleReplyBox('${parentId || c.id}', '${isReply ? c.displayName : ''}')">Ответить</button>
+                                ${isMe ? `<button class="btn-edit" onclick="${isReply ? `editReply('${parentId}', '${c.rid}')` : `editComment('${c.id}')`}">Изменить</button>` : ''}
+                                ${isMe || isAdminViewer ? `<button class="btn-del" onclick="${isReply ? `deleteReply('${parentId}', '${c.rid}')` : `deleteComment('${c.id}')`}">Удалить</button>` : ''}
+                            </div>`;
+
+            let ratingHtml = '';
+            const isAuthorAdmin = c.displayName.toLowerCase() === ADMIN_USERNAME.toLowerCase();
+            const userRating = currentCommunityRatings[authorId] || (isAuthorAdmin ? franchiseData[currentSeasonKey].scores : null);
+
+            if (userRating && userRating.overall > 0) {
+                const ovr = userRating.overall;
+                const t = userRating.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
+                ratingHtml = `
+                <div class="comment-rating-block">
+                    <div class="cr-overall tooltip-element" data-title="Итоговая оценка" style="color:${getScoreColor(ovr)}">${ovr}</div>
+                    <div class="cr-theory">
+                        <span class="tooltip-element" style="color:${getScoreColor(t.plot)}" data-title="Сюжет: ${t.plot}">${t.plot}</span>
+                        <span class="tooltip-element" style="color:${getScoreColor(t.visuals)}" data-title="Визуал: ${t.visuals}">${t.visuals}</span>
+                        <span class="tooltip-element" style="color:${getScoreColor(t.music)}" data-title="Музыка: ${t.music}">${t.music}</span>
+                        <span class="tooltip-element" style="color:${getScoreColor(t.world)}" data-title="Мир: ${t.world}">${t.world}</span>
+                        <span class="tooltip-element" style="color:${getScoreColor(t.atmosphere)}" data-title="Атмосфера: ${t.atmosphere}">${t.atmosphere}</span>
+                    </div>
+                </div>`;
+            }
+
+            return `
+            <div class="comment-card ${isReply ? 'reply-card' : ''}">
+                <div class="comment-header">
+                    <div class="comment-author-info">
+                        <img src="${c.profileImage}" class="comment-avatar">
+                        <div class="comment-name-role">
+                            <span class="comment-author" style="color: ${uInfo.color};">${c.displayName}</span>
+                            <div>${uInfo.badge}</div>
+                        </div>
+                    </div>
+                    ${ratingHtml}
+                </div>
+                <div class="comment-text">${c.text}</div>
+                <div class="comment-footer">
+                    <span class="comment-date">${dateStr} ${editedHtml}</span>
+                    ${actions}
+                </div>
+            </div>`;
         }
 
         async function loadComments() {
@@ -601,124 +774,19 @@
             if (arr.length === 0) { list.innerHTML = '<div style="color: #6b7a62; text-align: center; padding: 20px; font-size: 18px;">Пока нет рецензий. Будь первым!</div>'; return; }
 
             arr.forEach(c => {
-                const authorId = c.userId || c.id;
-                const isMe = currentUser && authorId === currentUser.id;
-                const isAdminViewer = currentUser && currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
-                const isAuthorAdmin = c.displayName.toLowerCase() === ADMIN_USERNAME.toLowerCase();
-                
-                const d = new Date(c.timestamp);
-                const dateStr = `${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')} в ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
-                const editedHtml = c.isEdited ? `<span class="edited-tag">(изменено)</span>` : '';
-                
-                let actions = `<div class="comment-actions">
-                                 <button class="btn-reply" onclick="toggleReplyBox('${c.id}')">Ответить</button>
-                                 ${isMe ? `<button class="btn-edit" onclick="editComment('${c.id}')">Изменить</button>` : ''}
-                                 ${isMe || isAdminViewer ? `<button class="btn-del" onclick="deleteComment('${c.id}')">Удалить</button>` : ''}
-                               </div>`;
-
-                let ratingHtml = '';
-                const userRating = currentCommunityRatings[authorId] || (isAuthorAdmin ? franchiseData[currentSeasonKey].scores : null);
-
-                if (userRating && userRating.overall > 0) {
-                    const ovr = userRating.overall;
-                    const t = userRating.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
-                    ratingHtml = `
-                    <div class="comment-rating-block">
-                        <div class="cr-overall tooltip-element" data-title="Итоговая оценка" style="color:${getScoreColor(ovr)}">${ovr}</div>
-                        <div class="cr-theory">
-                            <span class="tooltip-element" style="color:${getScoreColor(t.plot)}" data-title="Сюжет: ${t.plot}">${t.plot}</span>
-                            <span class="tooltip-element" style="color:${getScoreColor(t.visuals)}" data-title="Визуал: ${t.visuals}">${t.visuals}</span>
-                            <span class="tooltip-element" style="color:${getScoreColor(t.music)}" data-title="Музыка: ${t.music}">${t.music}</span>
-                            <span class="tooltip-element" style="color:${getScoreColor(t.world)}" data-title="Мир: ${t.world}">${t.world}</span>
-                            <span class="tooltip-element" style="color:${getScoreColor(t.atmosphere)}" data-title="Атмосфера: ${t.atmosphere}">${t.atmosphere}</span>
-                        </div>
-                    </div>`;
-                }
-
-                const uInfo = getUserInfo(c.displayName, c.userColor);
+                const mainCommentHtml = createCommentCard(c);
 
                 let repliesHtml = '';
                 let toggleRepliesBtn = '';
                 if (c.replies) {
-                    const replArr = Object.entries(c.replies).map(([rid, rdata]) => ({rid, ...rdata})).sort((a,b)=>a.timestamp - b.timestamp);
+                    const replArr = Object.entries(c.replies).map(([rid, rdata]) => ({rid: rid, ...rdata})).sort((a,b)=>a.timestamp - b.timestamp);
                     toggleRepliesBtn = `<button class="toggle-replies-btn" id="toggle-btn-${c.id}" data-count="${replArr.length}" onclick="toggleRepliesList('${c.id}')">▼ Показать ответы (${replArr.length})</button>`;
-                    
-                    repliesHtml = `<div class="replies-list" id="replies-list-${c.id}">` + replArr.map(rep => {
-                        const rd = new Date(rep.timestamp); const rDateStr = `${rd.getDate().toString().padStart(2,'0')}.${(rd.getMonth()+1).toString().padStart(2,'0')} в ${rd.getHours().toString().padStart(2,'0')}:${rd.getMinutes().toString().padStart(2,'0')}`;
-                        const repEditedHtml = rep.isEdited ? `<span class="edited-tag">(изменено)</span>` : '';
-                        
-                        const isRepAuthorAdmin = rep.displayName.toLowerCase() === ADMIN_USERNAME.toLowerCase();
-                        const repInfo = getUserInfo(rep.displayName, rep.userColor);
-                        const isRepMe = currentUser && rep.userId === currentUser.id;
-                        
-                        let repActions = `<div class="comment-actions">
-                                            <button class="btn-reply" onclick="toggleReplyBox('${c.id}', '${rep.displayName}')">Ответить</button>
-                                            ${isRepMe ? `<button class="btn-edit" onclick="editReply('${c.id}', '${rep.rid}')">Изменить</button>` : ''}
-                                            ${isRepMe || isAdminViewer ? `<button class="btn-del" onclick="deleteReply('${c.id}', '${rep.rid}')">Удалить</button>` : ''}
-                                          </div>`;
-
-                        let repRatingHtml = '';
-                        const repUserRating = currentCommunityRatings[rep.userId] || (isRepAuthorAdmin ? franchiseData[currentSeasonKey].scores : null);
-
-                        if (repUserRating && repUserRating.overall > 0) {
-                            const ovr = repUserRating.overall;
-                            const t = repUserRating.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
-                            repRatingHtml = `
-                            <div class="comment-rating-block">
-                                <div class="cr-overall tooltip-element" data-title="Итоговая оценка" style="color:${getScoreColor(ovr)}">${ovr}</div>
-                                <div class="cr-theory">
-                                    <span class="tooltip-element" style="color:${getScoreColor(t.plot)}" data-title="Сюжет: ${t.plot}">${t.plot}</span>
-                                    <span class="tooltip-element" style="color:${getScoreColor(t.visuals)}" data-title="Визуал: ${t.visuals}">${t.visuals}</span>
-                                    <span class="tooltip-element" style="color:${getScoreColor(t.music)}" data-title="Музыка: ${t.music}">${t.music}</span>
-                                    <span class="tooltip-element" style="color:${getScoreColor(t.world)}" data-title="Мир: ${t.world}">${t.world}</span>
-                                    <span class="tooltip-element" style="color:${getScoreColor(t.atmosphere)}" data-title="Атмосфера: ${t.atmosphere}">${t.atmosphere}</span>
-                                </div>
-                            </div>`;
-                        }
-
-                        return `<div class="reply-item">
-                                    <div class="comment-top">
-                                        <div class="comment-author-block">
-                                            <img src="${rep.profileImage}" class="comment-avatar">
-                                            <div class="author-details">
-                                                <span class="comment-author" style="color: ${repInfo.color};">${rep.displayName}</span>
-                                                <div>${repInfo.badge}</div>
-                                            </div>
-                                        </div>
-                                        ${repRatingHtml}
-                                    </div>
-                                    <div class="comment-content-wrap">
-                                        <div class="comment-text">${rep.text}</div>
-                                        <div class="comment-bottom">
-                                            <span class="comment-date">${rDateStr} ${repEditedHtml}</span>
-                                            ${repActions}
-                                        </div>
-                                    </div>
-                                </div>`;
-                    }).join('') + `</div>`;
+                    repliesHtml = `<div class="replies-list" id="replies-list-${c.id}">` + replArr.map(rep => createCommentCard(rep, true, c.id)).join('') + `</div>`;
                 }
 
                 list.innerHTML += `
                 <div class="comment-wrapper">
-                    <div class="comment-item">
-                        <div class="comment-top">
-                            <div class="comment-author-block">
-                                <img src="${c.profileImage}" class="comment-avatar">
-                                <div class="author-details">
-                                    <span class="comment-author" style="color: ${uInfo.color};">${c.displayName}</span>
-                                    <div>${uInfo.badge}</div>
-                                </div>
-                            </div>
-                            ${ratingHtml}
-                        </div>
-                        <div class="comment-content-wrap">
-                            <div class="comment-text">${c.text}</div>
-                            <div class="comment-bottom">
-                                <span class="comment-date">${dateStr} ${editedHtml}</span>
-                                ${actions}
-                            </div>
-                        </div>
-                    </div>
+                    ${mainCommentHtml}
                     ${toggleRepliesBtn}
                     ${repliesHtml}
                     <div class="reply-input-wrapper" id="reply-box-${c.id}">
