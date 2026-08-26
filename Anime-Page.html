@@ -9,6 +9,7 @@
 
     <style>
         body { margin: 0; padding: 0 0 20px 0; font-family: 'Neucha', cursive, sans-serif; background-color: #0b0d0a; color: #a4b09c; min-width: 1350px; overflow-x: hidden; }
+        body.is-admin .me-element { display: none !important; }
 
         .top-nav { background: #0b0d0a; border-bottom: 2px solid #283325; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
         .nav-logo { color: #a6e3a1; font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; transition: 0.2s; cursor: pointer; }
@@ -75,6 +76,7 @@
         .score-box:hover { background: rgba(255,255,255,0.05); transform: translateY(-2px); }
         .score-label { width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; margin-bottom: 6px; font-size: 13px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; text-shadow: 1px 1px 2px #000; text-align: center; }
         .score-label.streamer { color: #cba6f7; border-bottom-color: rgba(203, 166, 247, 0.3); }
+        .score-label.me { color: #a6e3a1; border-bottom-color: rgba(166, 227, 161, 0.3); }
         .score-label.chat { color: #b8a87b; border-bottom-color: rgba(184, 168, 123, 0.3); }
         
         .main-score { font-size: 32px; font-weight: bold; line-height: 1; letter-spacing: 2px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 4px #000; text-align: center; font-family: 'Neucha', cursive, sans-serif; }
@@ -256,6 +258,10 @@
                             <div class="score-label streamer">Стример</div>
                             <div class="main-score" id="streamer-score-val">0<span> / 10</span></div>
                         </div>
+                        <div class="score-box me-element" onmouseover="highlightChart(2)" onmouseout="resetChart()">
+                            <div class="score-label me">Моя</div>
+                            <div class="main-score" id="my-score-display" style="color: #6b7a62;">0<span> / 10</span></div>
+                        </div>
                         <div class="score-box chat-element" onmouseover="highlightChart(1)" onmouseout="resetChart()">
                             <div class="score-label chat">Чат</div>
                             <div class="main-score" id="chat-score-val" style="color: #6b7a62;">0<span> / 10</span></div>
@@ -273,6 +279,11 @@
                             <div class="legend-title" style="color: #cba6f7;"><div class="dot" style="background: #cba6f7;"></div>Стример</div>
                             <div class="legend-score" id="avg-streamer-score">0</div>
                             <div class="legend-breakdown" id="breakdown-streamer"></div>
+                        </div>
+                        <div class="legend-col me-element" onmouseover="highlightChart(2)" onmouseout="resetChart()">
+                            <div class="legend-title" style="color: #a6e3a1;"><div class="dot" style="background: #a6e3a1;"></div>Я</div>
+                            <div class="legend-score" id="avg-viewer-score" style="color: #6b7a62;">0</div>
+                            <div class="legend-breakdown" id="breakdown-viewer"></div>
                         </div>
                         <div class="legend-col chat-element" onmouseover="highlightChart(1)" onmouseout="resetChart()">
                             <div class="legend-title" style="color: #b8a87b;"><div class="dot" style="background: #b8a87b;"></div>Чат</div>
@@ -338,7 +349,8 @@
 
         const radarColors = [
             { bg: 'rgba(203, 166, 247, 0.2)', border: '#cba6f7' }, 
-            { bg: 'rgba(184, 168, 123, 0.2)', border: '#b8a87b' }
+            { bg: 'rgba(184, 168, 123, 0.2)', border: '#b8a87b' }, 
+            { bg: 'rgba(166, 227, 161, 0.2)', border: '#a6e3a1' }  
         ];
 
         if (typeof Chart !== 'undefined') { Chart.defaults.font.family = "'Neucha', cursive, sans-serif"; Chart.defaults.color = "#829c73"; }
@@ -445,7 +457,8 @@
                     labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Атмосфера'], 
                     datasets: [
                         { label: 'Стример', data: [0,0,0,0,0], backgroundColor: radarColors[0].bg, borderColor: radarColors[0].border, pointBackgroundColor: radarColors[0].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 3 }, 
-                        { label: 'Чат', data: [0,0,0,0,0], backgroundColor: radarColors[1].bg, borderColor: radarColors[1].border, pointBackgroundColor: radarColors[1].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 3 }
+                        { label: 'Чат', data: [0,0,0,0,0], backgroundColor: radarColors[1].bg, borderColor: radarColors[1].border, pointBackgroundColor: radarColors[1].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 3 }, 
+                        { label: 'Я', data: [0,0,0,0,0], backgroundColor: radarColors[2].bg, borderColor: radarColors[2].border, pointBackgroundColor: radarColors[2].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 3 }
                     ] 
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { filter: function(item) { return item.raw > 0; } } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: '#283325' }, angleLines: { color: '#283325' }, pointLabels: { font: { size: 13, weight: 'bold' }, color: '#c4d1b8' } } } }
@@ -455,8 +468,8 @@
         function syncModalChart() {
             if (typeof Chart === 'undefined') return;
             const isStreamer = currentUser && currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
-            const color = isStreamer ? radarColors[0].border : radarColors[1].border; 
-            const bg = isStreamer ? radarColors[0].bg : radarColors[1].bg;
+            const color = isStreamer ? radarColors[0].border : radarColors[2].border; 
+            const bg = isStreamer ? radarColors[0].bg : radarColors[2].bg;
 
             if (!modalRadarChart) {
                 const ctxModal = document.getElementById('modalChart').getContext('2d');
@@ -517,10 +530,10 @@
 
         function getScoreColor(score) {
             const numScore = Number(score);
-            if (numScore === 0 || isNaN(numScore)) return '#6b7a62'; // Без оценки
-            if (numScore < 5) return '#cd7f32'; // Медь / Мусор
-            if (numScore < 8) return '#c0c0c0'; // Серебро / Норма
-            return '#ffd700'; // Золото / Шедевр
+            if (numScore === 0 || isNaN(numScore)) return '#6b7a62'; 
+            if (numScore < 5) return '#cd7f32'; 
+            if (numScore < 8) return '#c0c0c0'; 
+            return '#ffd700'; 
         }
 
         function highlightChart(index) {
@@ -620,6 +633,7 @@
             currentCommunityRatings = (await commRes.json()) || {};
 
             let chatTotalOvr = 0, chatPlot = 0, chatVis = 0, chatMus = 0, chatWor = 0, chatAtm = 0, chatCount = 0;
+            let meData = null;
 
             for (const [userId, r] of Object.entries(currentCommunityRatings)) {
                 chatTotalOvr += safeNum(r.overall);
@@ -628,11 +642,16 @@
                     chatMus += safeNum(r.theory.music); chatWor += safeNum(r.theory.world); chatAtm += safeNum(r.theory.atmosphere);
                 }
                 chatCount++;
+                if (currentUser && userId === currentUser.id) { meData = r; }
             }
 
             const chatOvr = chatCount > 0 ? parseFloat((chatTotalOvr / chatCount).toFixed(1)) : 0;
             const tChat = { plot: chatCount > 0 ? parseFloat((chatPlot/chatCount).toFixed(1)) : 0, visuals: chatCount > 0 ? parseFloat((chatVis/chatCount).toFixed(1)) : 0, music: chatCount > 0 ? parseFloat((chatMus/chatCount).toFixed(1)) : 0, world: chatCount > 0 ? parseFloat((chatWor/chatCount).toFixed(1)) : 0, atmosphere: chatCount > 0 ? parseFloat((chatAtm/chatCount).toFixed(1)) : 0 };
             const chatTheoryAvg = calcTheoryAvg(tChat);
+
+            const meOvr = meData ? safeNum(meData.overall) : 0;
+            const tMe = meData && meData.theory ? meData.theory : {plot:0, visuals:0, music:0, world:0, atmosphere:0};
+            const meTheoryAvg = calcTheoryAvg(tMe);
 
             const strScores = anime.scores || {}; const strOvr = safeNum(strScores.overall);
             const tStr = strScores.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
@@ -646,33 +665,32 @@
             document.getElementById('avg-chat-score').innerText = chatTheoryAvg; document.getElementById('avg-chat-score').style.color = getScoreColor(chatTheoryAvg);
             document.getElementById('breakdown-chat').innerHTML = generateBreakdownHtml(tChat);
 
+            document.getElementById('my-score-display').innerHTML = `${meOvr}<span> / 10</span>`; document.getElementById('my-score-display').style.color = getScoreColor(meOvr);
+            document.getElementById('avg-viewer-score').innerText = meTheoryAvg; document.getElementById('avg-viewer-score').style.color = getScoreColor(meTheoryAvg);
+            document.getElementById('breakdown-viewer').innerHTML = generateBreakdownHtml(tMe);
+            
             if (radarChart) {
                 radarChart.data.datasets[0].data = [safeNum(tStr.plot), safeNum(tStr.visuals), safeNum(tStr.music), safeNum(tStr.world), safeNum(tStr.atmosphere)]; 
                 radarChart.data.datasets[1].data = [safeNum(tChat.plot), safeNum(tChat.visuals), safeNum(tChat.music), safeNum(tChat.world), safeNum(tChat.atmosphere)]; 
+                radarChart.data.datasets[2].data = [safeNum(tMe.plot), safeNum(tMe.visuals), safeNum(tMe.music), safeNum(tMe.world), safeNum(tMe.atmosphere)]; 
                 radarChart.update();
             }
 
             const rateBtn = document.getElementById('rate-title-btn');
             if (currentUser) {
                 const isStreamer = currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
-                // Ищем оценку в community_db, а если админ - проверяем есть ли strOvr
                 let hasRated = false;
                 if (isStreamer && strOvr > 0) hasRated = true;
-                if (!isStreamer && currentCommunityRatings[currentUser.id] && safeNum(currentCommunityRatings[currentUser.id].overall) > 0) hasRated = true;
+                if (!isStreamer && meOvr > 0) hasRated = true;
                 
                 rateBtn.innerText = hasRated ? "Изменить оценку" : "Оценить тайтл";
-                rateBtn.style.opacity = "1";
-                rateBtn.style.pointerEvents = "auto";
             } else { 
                 rateBtn.innerText = "Оценить тайтл"; 
-                rateBtn.style.opacity = "0.5";
-                rateBtn.style.pointerEvents = "none";
             }
 
             await loadComments(); 
         }
 
-        // === УНИВЕРСАЛЬНЫЙ РЕНДЕР КОММЕНТАРИЕВ ===
         function createCommentCard(c, isReply = false, parentId = null) {
             const authorId = c.userId || c.id;
             const isMe = currentUser && authorId === currentUser.id;
@@ -692,7 +710,7 @@
 
             let ratingHtml = '';
             const isAuthorAdmin = c.displayName.toLowerCase() === ADMIN_USERNAME.toLowerCase();
-            const userRating = currentCommunityRatings[authorId] || (isAuthorAdmin ? franchiseData[currentSeasonKey].scores : null);
+            const userRating = isAuthorAdmin ? franchiseData[currentSeasonKey].scores : currentCommunityRatings[authorId];
 
             if (userRating && userRating.overall > 0) {
                 const ovr = userRating.overall;
