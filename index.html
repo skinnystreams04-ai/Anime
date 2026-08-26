@@ -15,7 +15,6 @@
         .nav-logo { color: #a6e3a1; font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; transition: 0.2s; cursor: pointer; }
         .nav-logo:hover { filter: brightness(1.2); text-shadow: 0 0 15px rgba(166, 227, 161, 0.5); }
 
-        /* === НЕОНОВАЯ ПАНЕЛЬ АВТОРИЗАЦИИ === */
         .nav-auth .twitch-btn { background: #6441a5; color: white; padding: 8px 16px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; cursor: pointer; border: 1px solid #4a307a; transition: 0.2s; letter-spacing: 1px;}
         .nav-auth .twitch-btn:hover { background: #7d5bbe; box-shadow: 0 0 15px rgba(100, 65, 165, 0.8); }
         
@@ -170,15 +169,15 @@
             if (numScore <= 5.5) {
                 let p = (numScore - 1) / 4.5;
                 if (p < 0) p = 0;
-                r = Math.round(205 + p * (220 - 205));
-                g = Math.round(127 + p * (224 - 127));
-                b = Math.round(50 + p * (230 - 50));
+                r = Math.round(205 + p * (210 - 205));
+                g = Math.round(115 + p * (215 - 115));
+                b = Math.round(50 + p * (220 - 50));
             } else {
                 let p = (numScore - 5.5) / 4.5;
                 if (p > 1) p = 1;
-                r = Math.round(220 + p * (255 - 220));
-                g = Math.round(224 + p * (230 - 224));
-                b = Math.round(230 + p * (0 - 230));
+                r = Math.round(210 + p * (255 - 210));
+                g = Math.round(215 + p * (235 - 215));
+                b = Math.round(220 + p * (20 - 220));
             }
             return `rgba(${r}, ${g}, ${b}, ${alpha})`;
         }
@@ -199,6 +198,9 @@
                 const blur2 = Math.round(blur1 * 1.5);
                 glow += `, 0 0 ${blur2}px ${color}`;
             }
+            if (numScore === 10) {
+                glow += `, 0 0 15px rgba(255,255,255,0.3)`;
+            }
             return glow;
         }
 
@@ -206,10 +208,10 @@
             const numScore = Number(score);
             if (numScore === 0 || isNaN(numScore)) return `background: rgba(107,122,98,0.05); border: 1px solid rgba(107,122,98,0.2); box-shadow: none;`;
             
-            const bg = getScoreColor(score, 0.15);
+            const bg = getScoreColor(score, 0.1);
             const border = getScoreColor(score, 0.5);
-            const glow = getScoreColor(score, 0.2);
-            let blur = Math.round(4 + (numScore / 10) * 10);
+            const glow = getScoreColor(score, 0.15);
+            let blur = Math.round(4 + (numScore / 10) * 8);
             
             return `background: ${bg}; border: 1px solid ${border}; box-shadow: 0 4px 15px rgba(0,0,0,0.5), 0 0 ${blur}px ${glow} inset, 0 0 ${blur}px ${glow};`;
         }
@@ -489,15 +491,15 @@
                             </div>
                             <div class="theory-container">
                                 <div class="crit-row" style="${getGlassRowStyle(s.streamer.avgTheory)}">
-                                    <span style="color:#cba6f7; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: 1px 1px 2px #000;">Стример</span>
+                                    <span style="color:${getScoreColor(s.streamer.avgTheory, 1)}; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: ${getScoreShadow(s.streamer.avgTheory, false)};">Стример</span>
                                     <span style="color:#fff; text-shadow: ${getScoreShadow(s.streamer.avgTheory, false)};">${s.streamer.avgTheory}/10</span>
                                 </div>
                                 <div class="crit-row" style="${getGlassRowStyle(s.chat.avgTheory)}">
-                                    <span style="color:#b8a87b; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: 1px 1px 2px #000;">Чат</span>
+                                    <span style="color:${getScoreColor(s.chat.avgTheory, 1)}; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: ${getScoreShadow(s.chat.avgTheory, false)};">Чат</span>
                                     <span style="color:#fff; text-shadow: ${getScoreShadow(s.chat.avgTheory, false)};">${s.chat.avgTheory}/10</span>
                                 </div>
                                 <div class="crit-row me-element" style="${getGlassRowStyle(s.me.avgTheory)}">
-                                    <span style="color:#a6e3a1; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: 1px 1px 2px #000;">Я</span>
+                                    <span style="color:${getScoreColor(s.me.avgTheory, 1)}; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: ${getScoreShadow(s.me.avgTheory, false)};">Я</span>
                                     <span style="color:#fff; text-shadow: ${getScoreShadow(s.me.avgTheory, false)};">${s.me.avgTheory}/10</span>
                                 </div>
                             </div>

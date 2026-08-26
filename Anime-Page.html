@@ -94,14 +94,13 @@
         .rate-btn { width: 100%; background: rgba(166, 227, 161, 0.1); border: 1px solid #a6e3a1; color: #a6e3a1; padding: 12px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 20px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; margin-top: 15px; box-shadow: 0 0 10px rgba(166, 227, 161, 0.1); }
         .rate-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 20px rgba(166, 227, 161, 0.5); }
 
-        /* === ВВОД КОММЕНТАРИЯ === */
         .comment-input-area { background: rgba(0,0,0,0.3); border: 1px solid #283325; border-radius: 12px; padding: 25px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
         .comment-textarea { width: 100%; background: #121612; border: 1px solid #4a5c41; color: #c4d1b8; border-radius: 8px; padding: 15px; font-family: 'Neucha', cursive; font-size: 18px; outline: none; transition: 0.2s; resize: vertical; min-height: 100px; box-sizing: border-box; }
         .comment-textarea:focus { border-color: #a6e3a1; box-shadow: 0 0 15px rgba(166, 227, 161, 0.2); }
         .send-btn { align-self: flex-end; background: #1a2618; border: 1px solid #a6e3a1; color: #a6e3a1; padding: 10px 30px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px;}
         .send-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 15px rgba(166, 227, 161, 0.4); }
         
-        /* === ВЕТКИ И КОММЕНТАРИИ (ТЕМНАЯ ВЕРСИЯ С ЦВЕТНЫМ ТЕКСТОМ) === */
+        /* СТРОГИЕ КОММЕНТАРИИ С ЦВЕТНЫМ ТЕКСТОМ */
         .comments-list { display: flex; flex-direction: column; gap: 25px; }
         .comment-wrapper { display: flex; flex-direction: column; gap: 15px; }
         
@@ -360,15 +359,15 @@
             if (numScore <= 5.5) {
                 let p = (numScore - 1) / 4.5;
                 if (p < 0) p = 0;
-                r = Math.round(205 + p * (220 - 205));
-                g = Math.round(127 + p * (224 - 127));
-                b = Math.round(50 + p * (230 - 50));
+                r = Math.round(205 + p * (210 - 205));
+                g = Math.round(115 + p * (215 - 115));
+                b = Math.round(50 + p * (220 - 50));
             } else {
                 let p = (numScore - 5.5) / 4.5;
                 if (p > 1) p = 1;
-                r = Math.round(220 + p * (255 - 220));
-                g = Math.round(224 + p * (230 - 224));
-                b = Math.round(230 + p * (0 - 230));
+                r = Math.round(210 + p * (255 - 210));
+                g = Math.round(215 + p * (235 - 215));
+                b = Math.round(220 + p * (20 - 220));
             }
             return `rgba(${r}, ${g}, ${b}, ${alpha})`;
         }
@@ -389,6 +388,9 @@
                 const blur2 = Math.round(blur1 * 1.5);
                 glow += `, 0 0 ${blur2}px ${color}`;
             }
+            if (numScore === 10) {
+                glow += `, 0 0 15px rgba(255,255,255,0.3)`;
+            }
             return glow;
         }
 
@@ -396,10 +398,10 @@
             const numScore = Number(score);
             if (numScore === 0 || isNaN(numScore)) return `background: rgba(107,122,98,0.05); border: 1px solid rgba(107,122,98,0.2); box-shadow: none;`;
             
-            const bg = getScoreColor(score, 0.15);
+            const bg = getScoreColor(score, 0.1);
             const border = getScoreColor(score, 0.5);
-            const glow = getScoreColor(score, 0.2);
-            let blur = Math.round(4 + (numScore / 10) * 10);
+            const glow = getScoreColor(score, 0.15);
+            let blur = Math.round(4 + (numScore / 10) * 8);
             
             return `background: ${bg}; border: 1px solid ${border}; box-shadow: 0 4px 15px rgba(0,0,0,0.5), 0 0 ${blur}px ${glow} inset, 0 0 ${blur}px ${glow};`;
         }
@@ -736,20 +738,26 @@
 
             // СТЕКЛЯННЫЕ ПЛАШКИ ЛЕГЕНДЫ (ПОД ГРАФИКОМ)
             document.getElementById('legend-box-streamer').style.cssText = getGlassBoxStyle(strTheoryAvg);
-            document.getElementById('legend-label-streamer').style.cssText = `color: ${getScoreColor(strTheoryAvg, 1)}; text-shadow: 0 0 8px ${getScoreColor(strTheoryAvg, 0.6)};`;
-            document.getElementById('dot-streamer').style.cssText = `background: ${getScoreColor(strTheoryAvg, 1)}; border: 1px solid #0b0d0a; box-shadow: 0 0 5px ${getScoreColor(strTheoryAvg, 0.8)};`;
+            document.getElementById('legend-label-streamer').style.color = radarColors[0].border;
+            document.getElementById('legend-label-streamer').style.textShadow = '1px 1px 2px #000';
+            document.getElementById('dot-streamer').style.background = radarColors[0].border;
+            document.getElementById('dot-streamer').style.boxShadow = `0 0 5px ${radarColors[0].border}`;
             document.getElementById('avg-streamer-score').innerText = strTheoryAvg;
             document.getElementById('avg-streamer-score').style.cssText = `color: #fff; text-shadow: ${getScoreShadow(strTheoryAvg, false)};`;
 
             document.getElementById('legend-box-chat').style.cssText = getGlassBoxStyle(chatTheoryAvg);
-            document.getElementById('legend-label-chat').style.cssText = `color: ${getScoreColor(chatTheoryAvg, 1)}; text-shadow: 0 0 8px ${getScoreColor(chatTheoryAvg, 0.6)};`;
-            document.getElementById('dot-chat').style.cssText = `background: ${getScoreColor(chatTheoryAvg, 1)}; border: 1px solid #0b0d0a; box-shadow: 0 0 5px ${getScoreColor(chatTheoryAvg, 0.8)};`;
+            document.getElementById('legend-label-chat').style.color = radarColors[1].border;
+            document.getElementById('legend-label-chat').style.textShadow = '1px 1px 2px #000';
+            document.getElementById('dot-chat').style.background = radarColors[1].border;
+            document.getElementById('dot-chat').style.boxShadow = `0 0 5px ${radarColors[1].border}`;
             document.getElementById('avg-chat-score').innerText = chatTheoryAvg;
             document.getElementById('avg-chat-score').style.cssText = `color: #fff; text-shadow: ${getScoreShadow(chatTheoryAvg, false)};`;
 
             document.getElementById('legend-box-me').style.cssText = getGlassBoxStyle(meTheoryAvg);
-            document.getElementById('legend-label-me').style.cssText = `color: ${getScoreColor(meTheoryAvg, 1)}; text-shadow: 0 0 8px ${getScoreColor(meTheoryAvg, 0.6)};`;
-            document.getElementById('dot-me').style.cssText = `background: ${getScoreColor(meTheoryAvg, 1)}; border: 1px solid #0b0d0a; box-shadow: 0 0 5px ${getScoreColor(meTheoryAvg, 0.8)};`;
+            document.getElementById('legend-label-me').style.color = radarColors[2].border;
+            document.getElementById('legend-label-me').style.textShadow = '1px 1px 2px #000';
+            document.getElementById('dot-me').style.background = radarColors[2].border;
+            document.getElementById('dot-me').style.boxShadow = `0 0 5px ${radarColors[2].border}`;
             document.getElementById('avg-viewer-score').innerText = meTheoryAvg;
             document.getElementById('avg-viewer-score').style.cssText = `color: #fff; text-shadow: ${getScoreShadow(meTheoryAvg, false)};`;
 
