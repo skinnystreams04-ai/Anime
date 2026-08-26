@@ -9,26 +9,38 @@
 
     <style>
         body { margin: 0; padding: 0 0 20px 0; font-family: 'Neucha', cursive, sans-serif; background-color: #0b0d0a; color: #a4b09c; min-width: 1350px; overflow-x: hidden; }
-        body.is-admin .me-element { display: none !important; }
 
         .top-nav { background: #0b0d0a; border-bottom: 2px solid #283325; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
         .nav-logo { color: #a6e3a1; font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; transition: 0.2s; cursor: pointer; }
         .nav-logo:hover { filter: brightness(1.2); text-shadow: 0 0 15px rgba(166, 227, 161, 0.5); }
-        
+
+        /* === ДИЗАЙН ПАНЕЛИ АВТОРИЗАЦИИ === */
         .nav-auth .twitch-btn { background: #6441a5; color: white; padding: 8px 16px; border-radius: 6px; font-family: sans-serif; font-size: 14px; font-weight: bold; cursor: pointer; border: 1px solid #4a307a; transition: 0.2s; }
         .nav-auth .twitch-btn:hover { background: #7d5bbe; box-shadow: 0 0 15px rgba(100, 65, 165, 0.6); }
         
-        /* ЧИСТЫЕ СТИЛИ РОЛЕЙ */
-        .role-badge { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-family: sans-serif; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 2px 5px rgba(0,0,0,0.5); width: fit-content;}
-        .role-streamer { background: #6441a5; color: #fff; border: 1px solid #4a307a; } 
-        .role-sub { background: #e05e85; color: #fff; border: 1px solid #b83d63; } 
-        .role-vip { background: #d4af37; color: #121612; border: 1px solid #c29929; } 
-        .role-f { background: #333333; color: #a4b09c; border: 1px solid #222; } 
+        .user-profile { display: flex; align-items: center; gap: 12px; background: linear-gradient(90deg, #0b0d0a 0%, #121612 100%); padding: 6px 20px 6px 6px; border-radius: 40px; border: 1px solid #283325; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
+        .user-profile img { width: 42px; height: 42px; border-radius: 50%; border: 2px solid #4a5c41; box-shadow: 0 0 8px rgba(0,0,0,0.6); }
+        
+        .profile-info { display: flex; flex-direction: column; justify-content: center; gap: 4px; }
+        .profile-top { display: flex; align-items: center; justify-content: space-between; gap: 15px; }
+        .profile-name { font-size: 16px; font-family: sans-serif; font-weight: 800; letter-spacing: 0.5px; text-shadow: 1px 1px 2px #000; }
+        
+        .profile-bottom { display: flex; align-items: center; gap: 10px; }
+        
+        /* БЕЙДЖИ РОЛЕЙ */
+        .role-badge { display: flex; align-items: center; justify-content: center; padding: 2px 8px; border-radius: 4px; font-size: 10px; font-family: sans-serif; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 2px 4px rgba(0,0,0,0.5); line-height: 1; height: 16px; box-sizing: border-box; }
+        .role-sub { background: linear-gradient(45deg, #6441a5, #cba6f7); color: #fff; border: 1px solid #4a307a; text-shadow: 1px 1px 1px rgba(0,0,0,0.5); } 
+        .role-vip { background: linear-gradient(45deg, #e05e85, #f5c2e7); color: #fff; border: 1px solid #b83d63; text-shadow: 1px 1px 1px rgba(0,0,0,0.5); } 
+        .role-f { background: linear-gradient(45deg, #283325, #4a5c41); color: #a6e3a1; border: 1px solid #1a2218; } 
 
-        .user-profile { display: flex; align-items: center; gap: 15px; background: rgba(14, 17, 13, 0.8); padding: 8px 20px 8px 8px; border-radius: 30px; border: 1px solid #283325; box-shadow: 0 4px 15px rgba(0,0,0,0.5);}
-        .user-profile img { width: 45px; height: 45px; border-radius: 50%; border: 2px solid #4a5c41; box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); }
-        .logout-btn { background: transparent; border: none; color: #ff5555; cursor: pointer; font-size: 12px; margin-left: 10px; font-family: sans-serif; text-transform: uppercase; font-weight: bold; transition: 0.2s;}
-        .logout-btn:hover { text-shadow: 0 0 8px rgba(255, 85, 85, 0.8); }
+        /* БИЛЕТЫ */
+        .ticket-counter { display: flex; align-items: center; gap: 4px; font-family: sans-serif; font-weight: bold; font-size: 12px; text-shadow: 1px 1px 2px #000; line-height: 1;}
+        .ticket-counter img { width: 14px; height: 14px; border: none; border-radius: 0; box-shadow: none; }
+        .ticket-gold { color: #ffd700; }
+        .ticket-regular { color: #a6e3a1; }
+
+        .logout-btn { background: transparent; border: none; color: #ff5555; cursor: pointer; font-size: 11px; font-family: sans-serif; text-transform: uppercase; font-weight: bold; transition: 0.2s; padding: 0; opacity: 0.7; }
+        .logout-btn:hover { opacity: 1; text-shadow: 0 0 8px rgba(255, 85, 85, 0.8); }
 
         .layout { display: flex; gap: 20px; align-items: stretch; padding: 0 20px; }
         .widget-base { background: linear-gradient(180deg, #101411 0%, #080a08 100%); border: 2px solid #283325; border-radius: 6px; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.8); overflow: hidden; }
@@ -60,8 +72,8 @@
         .score-box:hover { background: rgba(255,255,255,0.05); transform: translateY(-2px); }
         .score-label { width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; margin-bottom: 6px; font-size: 13px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; text-shadow: 1px 1px 2px #000; text-align: center; }
         .score-label.streamer { color: #cba6f7; border-bottom-color: rgba(203, 166, 247, 0.3); }
-        .score-label.me { color: #a6e3a1; border-bottom-color: rgba(166, 227, 161, 0.3); }
         .score-label.chat { color: #b8a87b; border-bottom-color: rgba(184, 168, 123, 0.3); }
+        
         .main-score { font-size: 32px; font-weight: bold; line-height: 1; letter-spacing: 2px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 4px #000; text-align: center; }
         .main-score span { font-size: 14px; color: #c4d1b8; text-shadow: none; letter-spacing: normal; }
 
@@ -78,101 +90,12 @@
         .crit-row { display: flex; justify-content: space-between; font-size: 14px; color: #a4b09c; }
         .crit-row span:last-child { font-weight: bold; text-shadow: 1px 1px 2px #000;}
 
-        .rate-btn { width: 100%; background: rgba(166, 227, 161, 0.1); border: 1px solid #a6e3a1; color: #a6e3a1; padding: 12px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 20px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.2s; margin-top: 15px; box-shadow: 0 0 10px rgba(166, 227, 161, 0.1); }
-        .rate-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 20px rgba(166, 227, 161, 0.5); }
-
-        /* === ВВОД КОММЕНТАРИЯ === */
-        .comment-input-area { background: rgba(0,0,0,0.3); border: 1px solid #283325; border-radius: 12px; padding: 25px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
-        .comment-textarea { width: 100%; background: #121612; border: 1px solid #4a5c41; color: #c4d1b8; border-radius: 8px; padding: 15px; font-family: 'Neucha', cursive; font-size: 18px; outline: none; transition: 0.2s; resize: vertical; min-height: 100px; box-sizing: border-box; }
-        .comment-textarea:focus { border-color: #a6e3a1; box-shadow: 0 0 15px rgba(166, 227, 161, 0.2); }
-        .send-btn { align-self: flex-end; background: #1a2618; border: 1px solid #a6e3a1; color: #a6e3a1; padding: 10px 30px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px;}
-        .send-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 15px rgba(166, 227, 161, 0.4); }
-        
-        /* === ВЕТКИ И КОММЕНТАРИИ === */
-        .comments-list { display: flex; flex-direction: column; gap: 30px; }
-        .comment-wrapper { display: flex; flex-direction: column; gap: 15px; }
-        
-        /* Блок карточки. overflow УБРАН, чтобы тултипы не резались */
-        .comment-item { display: flex; flex-direction: column; background: rgba(14, 17, 13, 0.4); border-radius: 12px; border: 1px solid #283325; }
-        
-        .comment-top { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(90deg, rgba(26, 34, 24, 0.6) 0%, rgba(11, 13, 10, 0.8) 100%); padding: 15px 25px; border-bottom: 2px solid #283325; border-radius: 12px 12px 0 0; }
-        .comment-author-block { display: flex; align-items: center; gap: 15px; }
-        .comment-avatar { width: 55px; height: 55px; border-radius: 50%; border: 2px solid #4a5c41; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
-        .author-details { display: flex; flex-direction: column; gap: 6px; }
-        
-        .comment-author { font-family: sans-serif; font-weight: bold; font-size: 20px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); }
-        
-        .comment-rating-block { display: flex; flex-direction: column; align-items: flex-end; }
-        .tooltip-element { position: relative; cursor: help; text-shadow: 1px 1px 1px #000; transition: transform 0.2s; padding: 2px; display: inline-block; }
-        .tooltip-element:hover { transform: scale(1.1); z-index: 50; }
-        .tooltip-element::after { content: attr(data-title); position: absolute; bottom: 130%; left: 50%; transform: translateX(-50%); background: #121612; color: #c4d1b8; padding: 6px 10px; border-radius: 6px; font-size: 13px; white-space: nowrap; opacity: 0; visibility: hidden; transition: opacity 0.2s; border: 1px solid #4a5c41; font-weight: normal; font-family: 'Neucha', cursive; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0,0,0,0.8); z-index: 100;}
-        .tooltip-element:hover::after { opacity: 1; visibility: visible; }
-        
-        .cr-theory span:nth-last-child(1)::after, .cr-theory span:nth-last-child(2)::after { left: auto; right: -10px; transform: none; }
-        .cr-overall::after { left: auto; right: 0; transform: none; }
-
-        .cr-overall { font-size: 42px; font-weight: bold; line-height: 1; font-family: sans-serif; letter-spacing: -1px; text-shadow: 2px 2px 4px rgba(0,0,0,0.8); }
-        .cr-theory { display: flex; gap: 10px; font-family: sans-serif; font-size: 15px; font-weight: bold; margin-top: 8px; }
-
-        .comment-content-wrap { padding: 20px 25px; display: flex; flex-direction: column; gap: 15px; }
-        .comment-text { font-size: 18px; color: #c4d1b8; line-height: 1.6; word-break: break-word; white-space: pre-wrap; }
-        
-        .comment-bottom { display: flex; flex-direction: column; gap: 10px; border-top: 1px dashed rgba(74, 92, 65, 0.4); padding-top: 15px;}
-        .comment-date { font-size: 13px; color: #6b7a62; font-family: sans-serif; font-style: italic;}
-        .comment-actions { display: flex; gap: 20px; align-items: center; }
-        .comment-actions button { background: transparent; border: none; cursor: pointer; font-family: 'Neucha', cursive; font-size: 15px; text-transform: uppercase; transition: 0.2s; padding: 0; font-weight: bold; letter-spacing: 1px; }
-        .btn-reply { color: #a4b09c; } .btn-reply:hover { color: #a6e3a1; }
-        .btn-edit { color: #829c73; } .btn-edit:hover { color: #cba6f7; }
-        .btn-del { color: #ff5555; } .btn-del:hover { text-shadow: 0 0 5px rgba(255,85,85,0.5); }
-
-        .toggle-replies-btn { background: transparent; border: none; color: #829c73; font-family: 'Neucha', cursive; font-size: 17px; font-weight: bold; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; gap: 8px; margin-left: 25px; transition: 0.2s; width: fit-content; }
-        .toggle-replies-btn:hover { color: #a6e3a1; }
-
-        .replies-list { display: flex; flex-direction: column; gap: 15px; margin-left: 60px; border-left: 2px solid #283325; padding-left: 20px; display: none; }
-        
-        .reply-item { display: flex; flex-direction: column; background: rgba(11, 13, 10, 0.6); border-radius: 12px; border: 1px solid rgba(40, 51, 37, 0.5); }
-        .reply-item .comment-top { padding: 12px 20px; border-radius: 12px 12px 0 0; background: linear-gradient(90deg, rgba(26, 34, 24, 0.4) 0%, rgba(11, 13, 10, 0.6) 100%); border-bottom: 1px solid rgba(40,51,37,0.5); }
-        .reply-item .comment-avatar { width: 45px; height: 45px; }
-        .reply-item .comment-author { font-size: 18px; }
-        .reply-item .cr-overall { font-size: 32px; }
-        .reply-item .cr-theory { font-size: 14px; gap: 8px; margin-top: 5px; }
-        .reply-item .comment-content-wrap { padding: 15px 20px; gap: 10px; }
-        .reply-item .comment-text { font-size: 17px; margin-bottom: 5px; }
-        .reply-item .comment-actions button { font-size: 14px; }
-
-        .reply-input-wrapper { display: none; margin-left: 60px; margin-top: 5px; flex-direction: column; gap: 10px; }
-
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-        .modal-box { background: linear-gradient(180deg, #101411 0%, #080a08 100%); border: 2px solid #a6e3a1; border-radius: 12px; padding: 30px; width: 750px; box-shadow: 0 0 30px rgba(166, 227, 161, 0.2); position: relative; }
-        .modal-title { color: #a6e3a1; font-size: 24px; text-transform: uppercase; margin: 0 0 20px 0; text-align: center; font-weight: bold; letter-spacing: 1px;}
-        .close-btn { position: absolute; top: 15px; right: 20px; color: #829c73; font-size: 28px; cursor: pointer; transition: 0.2s; font-family: sans-serif; line-height: 1; }
-        .close-btn:hover { color: #ff5555; transform: scale(1.1); }
-        
-        .modal-content-wrapper { display: flex; gap: 30px; align-items: center; }
-        .modal-sliders { flex: 1; }
-        .modal-chart-area { width: 260px; height: 260px; display: flex; justify-content: center; align-items: center; }
-
-        .modal-box .input-label { color: #829c73; font-size: 15px; text-transform: uppercase; font-weight: bold; display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;}
-        .modal-box input[type="number"] { width: 100%; background: #121612; border: 1px solid #4a5c41; color: #c4d1b8; border-radius: 6px; padding: 10px; font-family: 'Neucha', cursive; font-size: 18px; outline: none; transition: 0.2s; box-sizing: border-box; margin-bottom: 20px; text-align: center;}
-        .modal-box input:focus { border-color: #a6e3a1; box-shadow: 0 0 10px rgba(166, 227, 161, 0.2); }
-        
-        .slider-group { margin-bottom: 15px; }
-        .slider-header { display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 5px; color: #c4d1b8; font-weight: bold;}
-        .modal-box input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        .modal-box input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: #121612; border-radius: 3px; border: 1px solid #283325; }
-        .modal-box input[type=range]::-webkit-slider-thumb { height: 18px; width: 18px; border-radius: 50%; background: #a6e3a1; cursor: pointer; -webkit-appearance: none; margin-top: -7px; box-shadow: 0 0 10px rgba(166, 227, 161, 0.5); }
-
         .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b0d0a; z-index: 9999; display: flex; justify-content: center; align-items: center; color: #a6e3a1; font-size: 24px; flex-direction: column; text-align: center; padding: 20px; }
-
-        #toast { position: fixed; bottom: 30px; right: 30px; background: #a6e3a1; color: #121612; padding: 15px 25px; border-radius: 8px; font-weight: bold; font-size: 18px; box-shadow: 0 5px 20px rgba(166, 227, 161, 0.4); transform: translateY(100px); opacity: 0; transition: 0.3s; z-index: 2000; font-family: sans-serif;}
-        #toast.show { transform: translateY(0); opacity: 1; }
-        #toast.error { background: #ff5555; color: white; box-shadow: 0 5px 20px rgba(255, 85, 85, 0.4); }
     </style>
 </head>
 <body>
 
     <div class="loading-screen" id="loading-screen">Загрузка данных...</div>
-    <div id="toast">✅ Оценка успешно сохранена!</div>
 
     <nav class="top-nav" id="top-nav" style="display: none;">
         <a href="index.html" class="nav-logo">Skinwalker Аниме</a>
@@ -215,19 +138,6 @@
                     <div class="synopsis-text" id="synopsis-display">Загрузка...</div>
                 </div>
             </div>
-
-            <div class="widget-base" style="flex: 1;">
-                <div class="widget-header"><div class="widget-title">Комментарии</div></div>
-                <div class="widget-content" style="padding: 25px;">
-                    <div class="comment-input-area" id="main-comment-area">
-                        <textarea id="comment-text" class="comment-textarea" placeholder="Напиши свою рецензию на этот сезон..."></textarea>
-                        <button class="send-btn" id="send-comment-btn" onclick="postComment()">Отправить</button>
-                    </div>
-                    <div class="comments-list" id="comments-list">
-                        <div style="color: #6b7a62; text-align: center; padding: 20px;">Загрузка комментариев...</div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <div class="col-right">
@@ -241,10 +151,6 @@
                         <div class="score-box streamer-element" onmouseover="highlightChart(0)" onmouseout="resetChart()">
                             <div class="score-label streamer">Стример</div>
                             <div class="main-score" id="streamer-score-val">0<span> / 10</span></div>
-                        </div>
-                        <div class="score-box me-element" onmouseover="highlightChart(2)" onmouseout="resetChart()">
-                            <div class="score-label me">Моя</div>
-                            <div class="main-score" id="my-score-display" style="color: #6b7a62;">0<span> / 10</span></div>
                         </div>
                         <div class="score-box chat-element" onmouseover="highlightChart(1)" onmouseout="resetChart()">
                             <div class="score-label chat">Чат</div>
@@ -264,11 +170,6 @@
                             <div class="legend-score" id="avg-streamer-score">0</div>
                             <div class="legend-breakdown" id="breakdown-streamer"></div>
                         </div>
-                        <div class="legend-col me-element" onmouseover="highlightChart(2)" onmouseout="resetChart()">
-                            <div class="legend-title" style="color: #a6e3a1;"><div class="dot" style="background: #a6e3a1;"></div>Я</div>
-                            <div class="legend-score" id="avg-viewer-score" style="color: #6b7a62;">0</div>
-                            <div class="legend-breakdown" id="breakdown-viewer"></div>
-                        </div>
                         <div class="legend-col chat-element" onmouseover="highlightChart(1)" onmouseout="resetChart()">
                             <div class="legend-title" style="color: #b8a87b;"><div class="dot" style="background: #b8a87b;"></div>Чат</div>
                             <div class="legend-score" id="avg-chat-score" style="color: #6b7a62;">0</div>
@@ -276,118 +177,34 @@
                         </div>
                     </div>
 
-                    <button class="rate-btn" id="rate-title-btn" onclick="openRatingModal()">Оценить тайтл</button>
-
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- МОДАЛЬНОЕ ОКНО ОЦЕНКИ -->
-    <div id="rating-modal" class="modal-overlay" style="display: none;">
-        <div class="modal-box">
-            <div class="close-btn" onclick="closeRatingModal()">×</div>
-            <h2 class="modal-title">Выставить оценку</h2>
-            
-            <div class="modal-content-wrapper">
-                <div class="modal-sliders">
-                    <div class="input-label">Итоговое впечатление</div>
-                    <input type="number" id="modal-overall" min="1" max="10" placeholder="От 1 до 10">
-
-                    <div style="border-top: 1px dashed #283325; margin: 15px 0;"></div>
-
-                    <div class="slider-group"><div class="slider-header"><span>Сюжет</span><span id="m-plot">5</span></div><input type="range" id="msl-plot" min="1" max="10" value="5" oninput="document.getElementById('m-plot').innerText=this.value; syncModalChart();"></div>
-                    <div class="slider-group"><div class="slider-header"><span>Визуал</span><span id="m-vis">5</span></div><input type="range" id="msl-vis" min="1" max="10" value="5" oninput="document.getElementById('m-vis').innerText=this.value; syncModalChart();"></div>
-                    <div class="slider-group"><div class="slider-header"><span>Музыка</span><span id="m-mus">5</span></div><input type="range" id="msl-mus" min="1" max="10" value="5" oninput="document.getElementById('m-mus').innerText=this.value; syncModalChart();"></div>
-                    <div class="slider-group"><div class="slider-header"><span>Мир</span><span id="m-wor">5</span></div><input type="range" id="msl-wor" min="1" max="10" value="5" oninput="document.getElementById('m-wor').innerText=this.value; syncModalChart();"></div>
-                    <div class="slider-group"><div class="slider-header"><span>Атмосфера</span><span id="m-atm">5</span></div><input type="range" id="msl-atm" min="1" max="10" value="5" oninput="document.getElementById('m-atm').innerText=this.value; syncModalChart();"></div>
-                </div>
-
-                <div class="modal-chart-area">
-                    <canvas id="modalChart"></canvas>
-                </div>
-            </div>
-
-            <button class="rate-btn" id="save-rate-btn" onclick="saveUserRating()">Сохранить</button>
         </div>
     </div>
 
     <script>
         const TWITCH_CLIENT_ID = 'gko3y2nhxg0ocvte0ru970pbau3eiq';
         const REDIRECT_URI = 'https://skinnystreams04-ai.github.io/Anime/';
-        const ADMIN_USERNAME = 'skinwalker_nozxc'; 
-
         const FIREBASE_BASE = 'https://skinwalkerauction-default-rtdb.europe-west1.firebasedatabase.app';
-
+        
         let currentUser = null;
         let currentFranchiseId = null;
         let currentSeasonKey = null;
         let franchiseData = {};
         let currentCommunityRatings = {}; 
-        let currentComments = {};
         let radarChart = null;
-        let modalRadarChart = null;
-        
-        let editingTarget = { type: null, id: null, parentId: null }; 
-
-        // ИСКЛЮЧИТЕЛЬНО НОВАЯ БАЗА РОЛЕЙ
-        window.globalUsersDB = {};
 
         const radarColors = [
             { bg: 'rgba(203, 166, 247, 0.2)', border: '#cba6f7' }, 
-            { bg: 'rgba(184, 168, 123, 0.2)', border: '#b8a87b' }, 
-            { bg: 'rgba(166, 227, 161, 0.2)', border: '#a6e3a1' }  
+            { bg: 'rgba(184, 168, 123, 0.2)', border: '#b8a87b' }
         ];
 
         if (typeof Chart !== 'undefined') { Chart.defaults.font.family = "'Neucha', cursive, sans-serif"; Chart.defaults.color = "#829c73"; }
 
-        const safeNum = (v) => Number(v) || 0;
-        const calcTheoryAvg = (t) => {
-            if (!t) return 0;
-            const sum = safeNum(t.plot) + safeNum(t.visuals) + safeNum(t.music) + safeNum(t.world) + safeNum(t.atmosphere);
-            return sum > 0 ? parseFloat((sum / 5).toFixed(1)) : 0;
-        };
-
-        window.addEventListener('pageshow', (event) => { if (event.persisted) { loadAnimeData(); } });
-
-        function showToast(msg, isError = false) {
-            const toast = document.getElementById('toast');
-            toast.innerText = msg;
-            if (isError) toast.classList.add('error'); else toast.classList.remove('error');
-            toast.classList.add('show');
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
-
         function loginTwitch() { window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=`; }
         function logoutTwitch() { try { localStorage.removeItem('twitch_token'); } catch(e){} location.reload(); }
 
-        // ЧИСТАЯ ФУНКЦИЯ БЕЗ ХАРДКОДА СТРИМЕРА ДЛЯ РОЛЕЙ И ЦВЕТОВ
-        function getUserInfo(username, fallbackTwitchColor) {
-            const lowerName = username.toLowerCase();
-            const dbUser = window.globalUsersDB[lowerName]; 
-
-            let r = "F"; let g = 0; let t = 0; 
-            
-            if (dbUser) {
-                if (dbUser.role) r = dbUser.role.toUpperCase();
-                if (dbUser.wallet_gold) g = dbUser.wallet_gold;
-                if (dbUser.wallet_tickets) t = dbUser.wallet_tickets;
-            }
-
-            // УСИЛЕННЫЙ ВЫБОР ЦВЕТА (Берет из сохраненного коммента, если передан fallback)
-            let c = fallbackTwitchColor || '#a6e3a1';
-            if (dbUser && dbUser.color && dbUser.color.trim() !== "") {
-                c = dbUser.color;
-            }
-
-            let badgeHtml = `<span class="role-badge role-f">FOLLOW</span>`;
-            if (r === 'SUB' || r === 'SUBSCRIBER') badgeHtml = `<span class="role-badge role-sub">SUB</span>`;
-            else if (r === 'VIP') badgeHtml = `<span class="role-badge role-vip">VIP</span>`;
-            else if (r !== 'F') badgeHtml = `<span class="role-badge role-f">${r}</span>`;
-
-            return { role: r, gold: g, tickets: t, color: c, badge: badgeHtml };
-        }
-
+        // === ЧИСТАЯ АВТОРИЗАЦИЯ ИЗ GLOBAL_USERS ===
         async function checkTwitchAuth() {
             try {
                 const hash = window.location.hash;
@@ -405,43 +222,67 @@
                     if (res.status === 401) { try { localStorage.removeItem('twitch_token'); } catch(e){} return; }
                     currentUser = (await res.json()).data[0];
 
+                    let twitchColor = '#a6e3a1';
                     try {
                         const colorRes = await fetch(`https://api.twitch.tv/helix/chat/color?user_id=${currentUser.id}`, { headers: { 'Client-ID': TWITCH_CLIENT_ID, 'Authorization': `Bearer ${token}` } });
                         const colorData = await colorRes.json();
-                        currentUser.color = (colorData.data && colorData.data[0] && colorData.data[0].color) ? colorData.data[0].color : null;
+                        if (colorData.data && colorData.data[0] && colorData.data[0].color) {
+                            twitchColor = colorData.data[0].color;
+                        }
                     } catch(e) {}
                     
-                    const uInfo = getUserInfo(currentUser.login, currentUser.color);
-                    
+                    let role = "F", gold = 0, tickets = 0, finalColor = twitchColor;
+                    try {
+                        const dbRes = await fetch(`${FIREBASE_BASE}/global_users.json`, { cache: 'no-store' });
+                        if (dbRes.ok) {
+                            const globalUsers = await dbRes.json() || {};
+                            const dbUser = globalUsers[currentUser.login.toLowerCase()];
+                            if (dbUser) {
+                                if (dbUser.role) role = dbUser.role.toUpperCase();
+                                if (dbUser.wallet_gold) gold = dbUser.wallet_gold;
+                                if (dbUser.wallet_tickets) tickets = dbUser.wallet_tickets;
+                                if (dbUser.color && dbUser.color.trim() !== "") finalColor = dbUser.color;
+                            }
+                        }
+                    } catch(e) { console.warn("Не удалось подтянуть данные с базы", e); }
+
+                    let badgeHtml = `<span class="role-badge role-f">FOLLOW</span>`;
+                    if (role === 'SUB' || role === 'SUBSCRIBER') {
+                        badgeHtml = `<span class="role-badge role-sub">SUB</span>`;
+                    } else if (role === 'VIP') {
+                        badgeHtml = `<span class="role-badge role-vip">VIP</span>`;
+                    }
+
                     document.getElementById('nav-auth').innerHTML = `
                         <div class="user-profile">
                             <img src="${currentUser.profile_image_url}">
-                            <div style="display: flex; flex-direction: column; gap: 5px;">
-                                <div style="display: flex; align-items: center; justify-content: space-between;">
-                                    <span style="color: ${uInfo.color}; font-size: 18px; font-weight: bold; text-shadow: 1px 1px 2px #000;">${currentUser.display_name}</span>
+                            <div class="profile-info">
+                                <div class="profile-top">
+                                    <span class="profile-name" style="color: ${finalColor};">${currentUser.display_name}</span>
                                     <button class="logout-btn" onclick="logoutTwitch()">Выйти</button>
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 10px;">
-                                    ${uInfo.badge}
-                                    <div style="display: flex; align-items: center; gap: 4px; font-family: sans-serif; font-weight: bold; color: #ffd700; text-shadow: 1px 1px 2px #000;">
-                                        <img src="icons/BILET_GOLD.png" style="width: 16px; height: 16px; border: none; box-shadow: none; border-radius: 0;"> ${uInfo.gold}
+                                <div class="profile-bottom">
+                                    ${badgeHtml}
+                                    <div class="ticket-counter ticket-gold">
+                                        <img src="icons/BILET_GOLD.png"> ${gold}
                                     </div>
-                                    <div style="display: flex; align-items: center; gap: 4px; font-family: sans-serif; font-weight: bold; color: #a6e3a1; text-shadow: 1px 1px 2px #000;">
-                                        <img src="icons/BILET.png" style="width: 16px; height: 16px; border: none; box-shadow: none; border-radius: 0;"> ${uInfo.tickets}
+                                    <div class="ticket-counter ticket-regular">
+                                        <img src="icons/BILET.png"> ${tickets}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     `;
-
-                    // Оставляем только скрытие админской кнопки шестеренки
-                    if (currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase()) {
-                        document.getElementById('admin-btn').style.display = 'flex';
-                        document.body.classList.add('is-admin');
-                    }
                 }
             } catch (e) { console.error('Ошибка авторизации', e); }
         }
+
+        const safeNum = (v) => Number(v) || 0;
+        const calcTheoryAvg = (t) => {
+            if (!t) return 0;
+            const sum = safeNum(t.plot) + safeNum(t.visuals) + safeNum(t.music) + safeNum(t.world) + safeNum(t.atmosphere);
+            return sum > 0 ? parseFloat((sum / 5).toFixed(1)) : 0;
+        };
 
         function initCharts() {
             if (typeof Chart === 'undefined') return;
@@ -452,377 +293,11 @@
                     labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Атмосфера'], 
                     datasets: [
                         { label: 'Стример', data: [0,0,0,0,0], backgroundColor: radarColors[0].bg, borderColor: radarColors[0].border, pointBackgroundColor: radarColors[0].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 3 }, 
-                        { label: 'Чат', data: [0,0,0,0,0], backgroundColor: radarColors[1].bg, borderColor: radarColors[1].border, pointBackgroundColor: radarColors[1].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 3 }, 
-                        { label: 'Я', data: [0,0,0,0,0], backgroundColor: radarColors[2].bg, borderColor: radarColors[2].border, pointBackgroundColor: radarColors[2].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 3 }
+                        { label: 'Чат', data: [0,0,0,0,0], backgroundColor: radarColors[1].bg, borderColor: radarColors[1].border, pointBackgroundColor: radarColors[1].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 3 }
                     ] 
                 },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { filter: function(item) { return item.raw > 0; } } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: '#283325' }, angleLines: { color: '#283325' }, pointLabels: { font: { size: 13, weight: 'bold' }, color: '#c4d1b8' } } } }
             });
-        }
-
-        function syncModalChart() {
-            if (typeof Chart === 'undefined') return;
-            // Цвет графика при оценке берем условно зеленым для всех зрителей и фиолетовым для админа (для красоты UI)
-            const isStreamer = currentUser && currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
-            const color = isStreamer ? radarColors[0].border : radarColors[2].border; 
-            const bg = isStreamer ? radarColors[0].bg : radarColors[2].bg;
-
-            if (!modalRadarChart) {
-                const ctxModal = document.getElementById('modalChart').getContext('2d');
-                modalRadarChart = new Chart(ctxModal, {
-                    type: 'radar',
-                    data: { labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Атмосфера'], datasets: [{ label: 'Оценка', data: [5,5,5,5,5], backgroundColor: bg, borderColor: color, pointBackgroundColor: color, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 3 }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: '#283325' }, angleLines: { color: '#283325' }, pointLabels: { font: { size: 10, weight: 'bold' }, color: '#c4d1b8' } } } }
-                });
-            }
-
-            modalRadarChart.data.datasets[0].data = [ document.getElementById('msl-plot').value, document.getElementById('msl-vis').value, document.getElementById('msl-mus').value, document.getElementById('msl-wor').value, document.getElementById('msl-atm').value ];
-            modalRadarChart.update();
-        }
-
-        function openRatingModal() {
-            if (!currentUser) { alert("Сначала нужно войти через Twitch!"); return; }
-            const isStreamer = currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
-            let existingData = isStreamer ? (franchiseData[currentSeasonKey].scores || null) : (currentCommunityRatings[currentUser.id] || null);
-
-            if (existingData) {
-                document.getElementById('modal-overall').value = existingData.overall || '';
-                if (existingData.theory) {
-                    ['plot','vis','mus','wor','atm'].forEach(id => {
-                        const val = existingData.theory[id==='vis'?'visuals':id==='mus'?'music':id==='wor'?'world':id==='atm'?'atmosphere':id] || 5;
-                        document.getElementById('msl-'+id).value = val; document.getElementById('m-'+id).innerText = val;
-                    });
-                }
-            } else {
-                document.getElementById('modal-overall').value = '';
-                ['plot','vis','mus','wor','atm'].forEach(id => { document.getElementById('msl-'+id).value = 5; document.getElementById('m-'+id).innerText = 5; });
-            }
-
-            syncModalChart(); document.getElementById('rating-modal').style.display = 'flex';
-        }
-
-        function closeRatingModal() { document.getElementById('rating-modal').style.display = 'none'; }
-
-        async function saveUserRating() {
-            if (!currentUser) return;
-            const btn = document.getElementById('save-rate-btn');
-            btn.innerText = "СОХРАНЕНИЕ..."; btn.style.pointerEvents = "none";
-
-            const overall = parseFloat(document.getElementById('modal-overall').value) || 0;
-            const theory = { plot: parseFloat(document.getElementById('msl-plot').value), visuals: parseFloat(document.getElementById('msl-vis').value), music: parseFloat(document.getElementById('msl-mus').value), world: parseFloat(document.getElementById('msl-wor').value), atmosphere: parseFloat(document.getElementById('msl-atm').value) };
-
-            const isStreamer = currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
-            try {
-                let res;
-                if (isStreamer) {
-                    res = await fetch(`${FIREBASE_BASE}/anime_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/scores.json`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ overall, theory }) });
-                } else {
-                    res = await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/ratings/${currentUser.id}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, overall, theory, timestamp: Date.now() }) });
-                }
-                
-                if (!res.ok) throw new Error("Server error");
-                closeRatingModal(); showToast("✅ Оценка успешно сохранена!"); await loadAnimeData(); 
-            } catch (e) { showToast("❌ Ошибка сохранения!", true); }
-            
-            btn.innerText = "СОХРАНИТЬ"; btn.style.pointerEvents = "auto";
-        }
-
-        async function loadComments() {
-            try {
-                const res = await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/comments.json`, { cache: 'no-store' });
-                currentComments = (await res.json()) || {};
-                renderComments();
-            } catch(e) { console.error(e); }
-        }
-
-        function toggleRepliesList(commentId) {
-            const list = document.getElementById(`replies-list-${commentId}`);
-            const btn = document.getElementById(`toggle-btn-${commentId}`);
-            if (list.style.display === 'none' || list.style.display === '') {
-                list.style.display = 'flex';
-                btn.innerHTML = `▲ Скрыть ответы`;
-            } else {
-                list.style.display = 'none';
-                const count = btn.getAttribute('data-count');
-                btn.innerHTML = `▼ Показать ответы (${count})`;
-            }
-        }
-
-        function toggleReplyBox(commentId, mentionName = '') {
-            const box = document.getElementById(`reply-box-${commentId}`);
-            const textarea = document.getElementById(`reply-text-${commentId}`);
-            
-            box.style.display = 'flex';
-            if (mentionName) {
-                const regex = /^@.*?, /;
-                if (regex.test(textarea.value)) {
-                    textarea.value = textarea.value.replace(regex, `@${mentionName}, `);
-                } else {
-                    textarea.value = `@${mentionName}, ` + textarea.value;
-                }
-            }
-            textarea.focus();
-        }
-
-        function renderComments() {
-            const list = document.getElementById('comments-list'); list.innerHTML = '';
-            const arr = Object.entries(currentComments).map(([id, data]) => ({id, ...data})).sort((a,b) => b.timestamp - a.timestamp);
-
-            if (arr.length === 0) { list.innerHTML = '<div style="color: #6b7a62; text-align: center; padding: 20px; font-size: 18px;">Пока нет рецензий. Будь первым!</div>'; return; }
-
-            arr.forEach(c => {
-                const authorId = c.userId || c.id;
-                const isMe = currentUser && authorId === currentUser.id;
-                const isAdminViewer = currentUser && currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
-                
-                const d = new Date(c.timestamp);
-                const dateStr = `${d.getDate().toString().padStart(2,'0')}.${(d.getMonth()+1).toString().padStart(2,'0')} в ${d.getHours().toString().padStart(2,'0')}:${d.getMinutes().toString().padStart(2,'0')}`;
-                
-                let actions = `<div class="comment-actions">
-                                 <button class="btn-reply" onclick="toggleReplyBox('${c.id}')">Ответить</button>
-                                 ${isMe ? `<button class="btn-edit" onclick="editComment('${c.id}')">Изменить</button>` : ''}
-                                 ${isMe || isAdminViewer ? `<button class="btn-del" onclick="deleteComment('${c.id}')">Удалить</button>` : ''}
-                               </div>`;
-
-                let ratingHtml = '';
-                const userRating = currentCommunityRatings[authorId] || null;
-
-                if (userRating && userRating.overall > 0) {
-                    const ovr = userRating.overall;
-                    const t = userRating.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
-                    ratingHtml = `
-                    <div class="comment-rating-block">
-                        <div class="cr-overall tooltip-element" data-title="Итоговая оценка" style="color:${getScoreColor(ovr)}">${ovr}</div>
-                        <div class="cr-theory">
-                            <span class="tooltip-element" style="color:${getScoreColor(t.plot)}" data-title="Сюжет: ${t.plot}">${t.plot}</span>
-                            <span class="tooltip-element" style="color:${getScoreColor(t.visuals)}" data-title="Визуал: ${t.visuals}">${t.visuals}</span>
-                            <span class="tooltip-element" style="color:${getScoreColor(t.music)}" data-title="Музыка: ${t.music}">${t.music}</span>
-                            <span class="tooltip-element" style="color:${getScoreColor(t.world)}" data-title="Мир: ${t.world}">${t.world}</span>
-                            <span class="tooltip-element" style="color:${getScoreColor(t.atmosphere)}" data-title="Атмосфера: ${t.atmosphere}">${t.atmosphere}</span>
-                        </div>
-                    </div>`;
-                }
-
-                const uInfo = getUserInfo(c.displayName, c.userColor);
-
-                let repliesHtml = '';
-                let toggleRepliesBtn = '';
-                if (c.replies) {
-                    const replArr = Object.entries(c.replies).map(([rid, rdata]) => ({rid, ...rdata})).sort((a,b)=>a.timestamp - b.timestamp);
-                    toggleRepliesBtn = `<button class="toggle-replies-btn" id="toggle-btn-${c.id}" data-count="${replArr.length}" onclick="toggleRepliesList('${c.id}')">▼ Показать ответы (${replArr.length})</button>`;
-                    
-                    repliesHtml = `<div class="replies-list" id="replies-list-${c.id}">` + replArr.map(rep => {
-                        const rd = new Date(rep.timestamp); const rDateStr = `${rd.getDate().toString().padStart(2,'0')}.${(rd.getMonth()+1).toString().padStart(2,'0')} в ${rd.getHours().toString().padStart(2,'0')}:${rd.getMinutes().toString().padStart(2,'0')}`;
-                        
-                        const repInfo = getUserInfo(rep.displayName, rep.userColor);
-                        const isRepMe = currentUser && rep.userId === currentUser.id;
-                        
-                        let repActions = `<div class="comment-actions">
-                                            <button class="btn-reply" onclick="toggleReplyBox('${c.id}', '${rep.displayName}')">Ответить</button>
-                                            ${isRepMe ? `<button class="btn-edit" onclick="editReply('${c.id}', '${rep.rid}')">Изменить</button>` : ''}
-                                            ${isRepMe || isAdminViewer ? `<button class="btn-del" onclick="deleteReply('${c.id}', '${rep.rid}')">Удалить</button>` : ''}
-                                          </div>`;
-
-                        let repRatingHtml = '';
-                        const repUserRating = currentCommunityRatings[rep.userId] || null;
-
-                        if (repUserRating && repUserRating.overall > 0) {
-                            const ovr = repUserRating.overall;
-                            const t = repUserRating.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
-                            repRatingHtml = `
-                            <div class="comment-rating-block">
-                                <div class="cr-overall tooltip-element" data-title="Итоговая оценка" style="font-size: 32px; color:${getScoreColor(ovr)}">${ovr}</div>
-                                <div class="cr-theory" style="font-size: 13px; margin-top: 5px;">
-                                    <span class="tooltip-element" style="color:${getScoreColor(t.plot)}" data-title="Сюжет: ${t.plot}">${t.plot}</span>
-                                    <span class="tooltip-element" style="color:${getScoreColor(t.visuals)}" data-title="Визуал: ${t.visuals}">${t.visuals}</span>
-                                    <span class="tooltip-element" style="color:${getScoreColor(t.music)}" data-title="Музыка: ${t.music}">${t.music}</span>
-                                    <span class="tooltip-element" style="color:${getScoreColor(t.world)}" data-title="Мир: ${t.world}">${t.world}</span>
-                                    <span class="tooltip-element" style="color:${getScoreColor(t.atmosphere)}" data-title="Атмосфера: ${t.atmosphere}">${t.atmosphere}</span>
-                                </div>
-                            </div>`;
-                        }
-
-                        return `<div class="reply-item">
-                                    <div class="comment-top" style="padding: 0 0 12px 0; border-bottom: 1px solid rgba(40,51,37,0.5); margin-bottom: 12px; background: transparent;">
-                                        <div class="comment-author-block">
-                                            <img src="${rep.profileImage}" class="comment-avatar" style="width: 40px; height: 40px; border-width: 1px;">
-                                            <div class="author-details">
-                                                <span class="comment-author" style="color: ${repInfo.color}; font-size: 16px;">${rep.displayName}</span>
-                                                <div>${repInfo.badge}</div>
-                                            </div>
-                                        </div>
-                                        ${repRatingHtml}
-                                    </div>
-                                    <div class="comment-content-wrap" style="padding: 0;">
-                                        <div class="comment-text" style="font-size: 16px; margin-bottom: 10px;">${rep.text}</div>
-                                        <div class="comment-bottom" style="border-top:none; padding-top:0;">
-                                            <span class="comment-date">${rDateStr}</span>
-                                            ${repActions}
-                                        </div>
-                                    </div>
-                                </div>`;
-                    }).join('') + `</div>`;
-                }
-
-                list.innerHTML += `
-                <div class="comment-wrapper">
-                    <div class="comment-item">
-                        <div class="comment-top">
-                            <div class="comment-author-block">
-                                <img src="${c.profileImage}" class="comment-avatar">
-                                <div class="author-details">
-                                    <span class="comment-author" style="color: ${uInfo.color};">${c.displayName}</span>
-                                    <div>${uInfo.badge}</div>
-                                </div>
-                            </div>
-                            ${ratingHtml}
-                        </div>
-                        <div class="comment-content-wrap">
-                            <div class="comment-text">${c.text}</div>
-                            <div class="comment-bottom">
-                                <span class="comment-date">${dateStr}</span>
-                                ${actions}
-                            </div>
-                        </div>
-                    </div>
-                    ${toggleRepliesBtn}
-                    ${repliesHtml}
-                    <div class="reply-input-wrapper" id="reply-box-${c.id}">
-                        <textarea id="reply-text-${c.id}" class="comment-textarea" style="min-height: 50px;" placeholder="Написать ответ..."></textarea>
-                        <button class="send-btn" id="send-reply-btn-${c.id}" style="padding: 8px 20px; font-size: 15px;" onclick="postReply('${c.id}')">Отправить ответ</button>
-                    </div>
-                </div>`;
-            });
-
-            if (!editingTarget.type) {
-                document.getElementById('comment-text').value = ''; 
-                document.getElementById('send-comment-btn').innerText = "Отправить";
-            }
-        }
-
-        async function postComment() {
-            if (!currentUser) { showToast("Сначала войди через Twitch!", true); return; }
-            const text = document.getElementById('comment-text').value.trim();
-            if (!text) return;
-
-            const btn = document.getElementById('send-comment-btn');
-            btn.innerText = "ОТПРАВКА..."; btn.style.pointerEvents = "none";
-            
-            const commentId = editingTarget.type === 'comment' ? editingTarget.id : (Date.now() + '_' + currentUser.id);
-
-            try {
-                if (editingTarget.type === 'comment') {
-                    await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/comments/${commentId}.json`, { 
-                        method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: text }) 
-                    });
-                } else {
-                    const commentData = { userId: currentUser.id, displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, userColor: currentUser.color, text: text, timestamp: Date.now() };
-                    await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/comments/${commentId}.json`, { 
-                        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(commentData) 
-                    });
-                }
-                
-                showToast(editingTarget.type === 'comment' ? "💬 Рецензия изменена!" : "💬 Рецензия добавлена!"); 
-                
-                document.getElementById('comment-text').value = '';
-                editingTarget = { type: null, id: null, parentId: null };
-                btn.innerText = "Отправить";
-                
-                await loadComments();
-            } catch(e) { 
-                showToast("❌ Ошибка при отправке!", true); 
-                btn.innerText = editingTarget.type === 'comment' ? "Сохранить изменения" : "Отправить";
-            }
-            btn.style.pointerEvents = "auto";
-        }
-
-        async function postReply(commentId) {
-            if (!currentUser) { showToast("Сначала войди через Twitch!", true); return; }
-            const inputEl = document.getElementById(`reply-text-${commentId}`);
-            const text = inputEl.value.trim();
-            if (!text) return;
-
-            const btn = document.getElementById(`send-reply-btn-${commentId}`);
-            btn.innerText = "ОТПРАВКА..."; btn.style.pointerEvents = "none";
-
-            try {
-                if (editingTarget.type === 'reply' && editingTarget.parentId === commentId) {
-                    await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/comments/${commentId}/replies/${editingTarget.id}.json`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: text }) });
-                    editingTarget = { type: null, id: null, parentId: null };
-                    showToast("💬 Ответ изменен!");
-                } else {
-                    const replyId = Date.now() + '_' + currentUser.id;
-                    const replyData = { userId: currentUser.id, displayName: currentUser.display_name, profileImage: currentUser.profile_image_url, userColor: currentUser.color, text: text, timestamp: Date.now() };
-                    await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/comments/${commentId}/replies/${replyId}.json`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(replyData) });
-                    showToast("💬 Ответ добавлен!");
-                }
-                
-                inputEl.value = ''; 
-                toggleReplyBox(commentId); 
-                btn.innerText = "Отправить ответ";
-                await loadComments();
-            } catch(e) { 
-                showToast("❌ Ошибка при отправке ответа!", true); 
-                btn.innerText = editingTarget.type === 'reply' ? "Сохранить" : "Отправить ответ";
-            }
-            btn.style.pointerEvents = "auto";
-        }
-
-        async function deleteComment(commentId) {
-            if (!confirm("Точно удалить этот комментарий со всеми ответами?")) return;
-            try {
-                const res = await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/comments/${commentId}.json`, { method: 'DELETE' });
-                if (!res.ok) throw new Error("Server error");
-                
-                if (editingTarget.id === commentId) {
-                    document.getElementById('comment-text').value = '';
-                    editingTarget = { type: null, id: null, parentId: null };
-                    document.getElementById('send-comment-btn').innerText = "Отправить";
-                }
-                
-                showToast("🗑️ Комментарий удален."); await loadComments();
-            } catch(e) { showToast("❌ Ошибка удаления!", true); }
-        }
-
-        async function deleteReply(commentId, replyId) {
-            if (!confirm("Точно удалить этот ответ?")) return;
-            try {
-                const res = await fetch(`${FIREBASE_BASE}/community_db/${encodeURIComponent(currentFranchiseId)}/${encodeURIComponent(currentSeasonKey)}/comments/${commentId}/replies/${replyId}.json`, { method: 'DELETE' });
-                if (!res.ok) throw new Error("Server error");
-                
-                if (editingTarget.id === replyId) {
-                    document.getElementById(`reply-text-${commentId}`).value = '';
-                    editingTarget = { type: null, id: null, parentId: null };
-                    document.getElementById(`send-reply-btn-${commentId}`).innerText = "Отправить ответ";
-                }
-
-                showToast("🗑️ Ответ удален."); await loadComments();
-            } catch(e) { showToast("❌ Ошибка удаления!", true); }
-        }
-
-        function editComment(commentId) {
-            if (currentComments[commentId]) {
-                document.getElementById('comment-text').value = currentComments[commentId].text;
-                document.getElementById('comment-text').focus();
-                document.getElementById('main-comment-area').scrollIntoView({ behavior: 'smooth', block: 'center' });
-                
-                editingTarget = { type: 'comment', id: commentId, parentId: null };
-                document.getElementById('send-comment-btn').innerText = "Сохранить изменения";
-            }
-        }
-
-        function editReply(commentId, replyId) {
-            if (currentComments[commentId] && currentComments[commentId].replies && currentComments[commentId].replies[replyId]) {
-                const textarea = document.getElementById(`reply-text-${commentId}`);
-                textarea.value = currentComments[commentId].replies[replyId].text;
-                
-                const box = document.getElementById(`reply-box-${commentId}`);
-                box.style.display = 'flex';
-                textarea.focus();
-                
-                editingTarget = { type: 'reply', id: replyId, parentId: commentId };
-                document.getElementById(`send-reply-btn-${commentId}`).innerText = "Сохранить";
-            }
         }
 
         function getScoreColor(score) {
@@ -853,15 +328,10 @@
         async function loadAnimeData() {
             try {
                 const loadingScreen = document.getElementById('loading-screen');
+                
                 loadingScreen.innerText = "Авторизация Twitch...";
-                
-                try {
-                    const dbRes = await fetch(`${FIREBASE_BASE}/global_users.json`, { cache: 'no-store' });
-                    if (dbRes.ok) { window.globalUsersDB = (await dbRes.json()) || {}; }
-                } catch(e) { console.warn("Не удалось загрузить базу пользователей", e); }
+                await checkTwitchAuth();
 
-                try { await checkTwitchAuth(); } catch(e) { console.warn(e); }
-                
                 loadingScreen.innerText = "Инициализация графиков...";
                 initCharts();
 
@@ -927,7 +397,6 @@
             currentCommunityRatings = (await commRes.json()) || {};
 
             let chatTotalOvr = 0, chatPlot = 0, chatVis = 0, chatMus = 0, chatWor = 0, chatAtm = 0, chatCount = 0;
-            let meData = null;
 
             for (const [userId, r] of Object.entries(currentCommunityRatings)) {
                 chatTotalOvr += safeNum(r.overall);
@@ -936,16 +405,11 @@
                     chatMus += safeNum(r.theory.music); chatWor += safeNum(r.theory.world); chatAtm += safeNum(r.theory.atmosphere);
                 }
                 chatCount++;
-                if (currentUser && userId === currentUser.id) { meData = r; }
             }
 
             const chatOvr = chatCount > 0 ? parseFloat((chatTotalOvr / chatCount).toFixed(1)) : 0;
             const tChat = { plot: chatCount > 0 ? parseFloat((chatPlot/chatCount).toFixed(1)) : 0, visuals: chatCount > 0 ? parseFloat((chatVis/chatCount).toFixed(1)) : 0, music: chatCount > 0 ? parseFloat((chatMus/chatCount).toFixed(1)) : 0, world: chatCount > 0 ? parseFloat((chatWor/chatCount).toFixed(1)) : 0, atmosphere: chatCount > 0 ? parseFloat((chatAtm/chatCount).toFixed(1)) : 0 };
             const chatTheoryAvg = calcTheoryAvg(tChat);
-
-            const meOvr = meData ? safeNum(meData.overall) : 0;
-            const tMe = meData && meData.theory ? meData.theory : {plot:0, visuals:0, music:0, world:0, atmosphere:0};
-            const meTheoryAvg = calcTheoryAvg(tMe);
 
             const strScores = anime.scores || {}; const strOvr = safeNum(strScores.overall);
             const tStr = strScores.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
@@ -959,25 +423,11 @@
             document.getElementById('avg-chat-score').innerText = chatTheoryAvg; document.getElementById('avg-chat-score').style.color = getScoreColor(chatTheoryAvg);
             document.getElementById('breakdown-chat').innerHTML = generateBreakdownHtml(tChat);
 
-            document.getElementById('my-score-display').innerHTML = `${meOvr}<span> / 10</span>`; document.getElementById('my-score-display').style.color = getScoreColor(meOvr);
-            document.getElementById('avg-viewer-score').innerText = meTheoryAvg; document.getElementById('avg-viewer-score').style.color = getScoreColor(meTheoryAvg);
-            document.getElementById('breakdown-viewer').innerHTML = generateBreakdownHtml(tMe);
-            
             if (radarChart) {
                 radarChart.data.datasets[0].data = [safeNum(tStr.plot), safeNum(tStr.visuals), safeNum(tStr.music), safeNum(tStr.world), safeNum(tStr.atmosphere)]; 
                 radarChart.data.datasets[1].data = [safeNum(tChat.plot), safeNum(tChat.visuals), safeNum(tChat.music), safeNum(tChat.world), safeNum(tChat.atmosphere)]; 
-                radarChart.data.datasets[2].data = [safeNum(tMe.plot), safeNum(tMe.visuals), safeNum(tMe.music), safeNum(tMe.world), safeNum(tMe.atmosphere)]; 
                 radarChart.update();
             }
-
-            const rateBtn = document.getElementById('rate-title-btn');
-            if (currentUser) {
-                const isStreamer = currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
-                let hasRated = (isStreamer && strOvr > 0) || (!isStreamer && meOvr > 0);
-                rateBtn.innerText = hasRated ? "Изменить оценку" : "Оценить тайтл";
-            } else { rateBtn.innerText = "Оценить тайтл"; }
-
-            await loadComments(); 
         }
 
         window.onload = loadAnimeData;
