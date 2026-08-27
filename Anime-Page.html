@@ -8,10 +8,14 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
 
-    <style>
-        :root {
-    --theme-primary: #a6e3a1; /* Базовый зеленый цвет (будет меняться) */
-    --theme-glow: rgba(166, 227, 161, 0.2); /* Базовое свечение (будет меняться) */
+    :root {
+    --theme-primary: #a6e3a1; /* Базовый цвет текста */
+    --theme-glow: rgba(166, 227, 161, 0.2); /* Свечение */
+    /* Новые переменные для самих панелей (по умолчанию темные) */
+    --theme-panel-bg-top: #101411;
+    --theme-panel-bg-bottom: #080a08;
+    --theme-panel-header: #0b0d0a;
+    --theme-panel-border: #283325;
 }
         body { margin: 0; padding: 0 0 20px 0; font-family: 'Neucha', cursive, sans-serif; background-color: #0b0d0a; color: #a4b09c; min-width: 1350px; overflow-x: hidden; }
         body.is-admin .me-element { display: none !important; }
@@ -51,8 +55,8 @@
         .logout-neon:hover { color: #ff5555; text-shadow: 0 0 12px rgba(255, 85, 85, 0.8); transform: scale(1.05); }
 
         .layout { display: flex; gap: 20px; align-items: stretch; padding: 0 20px; }
-        .widget-base { background: linear-gradient(180deg, #101411 0%, #080a08 100%); border: 2px solid #283325; border-radius: 6px; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.8); overflow: hidden; }
-        .widget-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: #0b0d0a; border-bottom: 2px solid #283325; flex-shrink: 0; }
+        .widget-base { background: linear-gradient(180deg, var(--theme-panel-bg-top) 0%, var(--theme-panel-bg-bottom) 100%); border: 2px solid var(--theme-panel-border); border-radius: 6px; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.8); overflow: hidden; transition: background 0.5s, border-color 0.5s; }
+        .widget-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; background: var(--theme-panel-header); border-bottom: 2px solid var(--theme-panel-border); flex-shrink: 0; transition: background 0.5s, border-color 0.5s; }
         .widget-title { color: var(--theme-primary); font-weight: bold; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 10px var(--theme-glow); transition: color 0.5s, text-shadow 0.5s; }
         .widget-content { padding: 15px; overflow-y: auto; flex: 1; position: relative; scrollbar-width: none; }
         
@@ -62,7 +66,6 @@
 
         .cover-img { width: 100%; border-radius: 6px; border: 1px solid #4a5c41; margin-bottom: 12px; }
         .genre-badge { background: #1a2618; color: var(--theme-primary); border: 1px solid var(--theme-primary); padding: 2px 8px; border-radius: 4px; font-size: 12px; font-family: sans-serif; font-weight: bold; text-transform: uppercase; box-shadow: 0 0 5px var(--theme-glow); transition: 0.5s; }
-        .genre-badge { background: #1a2618; color: #a6e3a1; border: 1px solid #4a5c41; padding: 2px 8px; border-radius: 4px; font-size: 12px; font-family: sans-serif; font-weight: bold; text-transform: uppercase; }
         .info-row { display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 8px; border-bottom: 1px dashed #283325; padding-bottom: 4px; }
         .info-label { color: #829c73; } .info-val { color: #c4d1b8; font-weight: bold; text-align: right; }
         
@@ -626,19 +629,26 @@
     const hiddenImg = new Image();
     hiddenImg.crossOrigin = 'Anonymous';
     
-    // Как только невидимая копия загрузится, вытаскиваем цвет
     hiddenImg.onload = function() {
         try {
             const color = colorThief.getColor(hiddenImg);
-            document.documentElement.style.setProperty('--theme-primary', `rgb(${color[0]}, ${color[1]}, ${color[2]})`);
-            document.documentElement.style.setProperty('--theme-glow', `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.25)`);
+            const r = color[0], g = color[1], b = color[2];
+            
+            // Текст и свечение
+            document.documentElement.style.setProperty('--theme-primary', `rgb(${r}, ${g}, ${b})`);
+            document.documentElement.style.setProperty('--theme-glow', `rgba(${r}, ${g}, ${b}, 0.4)`);
+            
+            // Фоновые заливки виджетов (очень легкий оттенок цвета)
+            document.documentElement.style.setProperty('--theme-panel-bg-top', `rgba(${r}, ${g}, ${b}, 0.08)`);
+            document.documentElement.style.setProperty('--theme-panel-bg-bottom', `rgba(${r}, ${g}, ${b}, 0.02)`);
+            document.documentElement.style.setProperty('--theme-panel-header', `rgba(${r}, ${g}, ${b}, 0.12)`);
+            document.documentElement.style.setProperty('--theme-panel-border', `rgba(${r}, ${g}, ${b}, 0.3)`);
         } catch (e) {
-            console.warn("Не удалось вытащить цвет:", e);
+            console.warn("Скрипт не смог прочитать цвет:", e);
         }
     };
 
-    // Грузим невидимую копию через надежный прокси с обходом кеша браузера
-    hiddenImg.src = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(imageUrl) + '&t=' + Date.now();
+    hiddenImg.src = imageUrl + '?bypassCache=' + Date.now();
 }
 
         async function loadAnimeData() {
