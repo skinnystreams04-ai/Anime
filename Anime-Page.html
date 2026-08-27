@@ -833,21 +833,6 @@
 
             const rateBtn = document.getElementById('rate-title-btn');
             if (currentUser) {
-
-    // Применяем цвета к осям
-    radarChart.options.scales.r.pointLabels.color = [
-        getScoreColor(getCritAvg(safeNum(tStr.plot), safeNum(tChat.plot)), 1),
-        getScoreColor(getCritAvg(safeNum(tStr.visuals), safeNum(tChat.visuals)), 1),
-        getScoreColor(getCritAvg(safeNum(tStr.music), safeNum(tChat.music)), 1),
-        getScoreColor(getCritAvg(safeNum(tStr.world), safeNum(tChat.world)), 1),
-        getScoreColor(getCritAvg(safeNum(tStr.atmosphere), safeNum(tChat.atmosphere)), 1)
-    ];
-
-    radarChart.update();
-}
-
-            const rateBtn = document.getElementById('rate-title-btn');
-            if (currentUser) {
                 const isStreamer = currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
                 let hasRated = false;
                 if (isStreamer && strOvr > 0) hasRated = true;
