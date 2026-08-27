@@ -204,7 +204,7 @@
             <div class="widget-base" style="height: 100%;">
                 <div class="widget-header"><div class="widget-title">Информация</div></div>
                 <div class="widget-content">
-                    <img id="cover-img" src="" class="cover-img" crossorigin="anonymous">
+                    <img id="cover-img" src="" class="cover-img">
                     <div style="font-size: 24px; color: #c4d1b8; font-weight: bold; text-align: center; text-transform: uppercase; margin-bottom: 10px;" id="title-display">Название</div>
                     <div class="genre-badges" id="genres-display"></div>
                     <div class="info-row"><span class="info-label">Студия:</span><span class="info-val" id="studio-display">---</span></div>
@@ -621,29 +621,24 @@
                    createRow('Атмосфера', theoryObj.atmosphere);
         }
 
-        function applyDynamicTheme() {
-    const img = document.getElementById('cover-img');
+        function applyDynamicTheme(imageUrl) {
+    const colorThief = new ColorThief();
+    const hiddenImg = new Image();
+    hiddenImg.crossOrigin = 'Anonymous';
     
-    const extractColor = () => {
+    // Как только невидимая копия загрузится, вытаскиваем цвет
+    hiddenImg.onload = function() {
         try {
-            const colorThief = new ColorThief();
-            // Получаем главный цвет (массив RGB)
-            const color = colorThief.getColor(img);
-            
-            // Заливаем цвета в наши CSS-переменные
+            const color = colorThief.getColor(hiddenImg);
             document.documentElement.style.setProperty('--theme-primary', `rgb(${color[0]}, ${color[1]}, ${color[2]})`);
             document.documentElement.style.setProperty('--theme-glow', `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.25)`);
         } catch (e) {
-            console.warn("CORS ограничение: оставляем стандартный цвет.", e);
+            console.warn("Не удалось вытащить цвет:", e);
         }
     };
 
-    // Ждем, пока картинка полностью прогрузится
-    if (img.complete) {
-        extractColor();
-    } else {
-        img.addEventListener('load', extractColor, { once: true });
-    }
+    // Грузим невидимую копию через надежный прокси с обходом кеша браузера
+    hiddenImg.src = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(imageUrl) + '&t=' + Date.now();
 }
 
         async function loadAnimeData() {
@@ -706,8 +701,8 @@
             if (!anime) throw new Error("Данные сезона повреждены!");
 
             // Пропускаем ссылку через прокси для обхода CORS-защиты
-            document.getElementById('cover-img').src = 'https://wsrv.nl/?url=' + encodeURIComponent(anime.coverUrl);
-            applyDynamicTheme();
+            document.getElementById('cover-img').src = anime.coverUrl;
+            applyDynamicTheme(anime.coverUrl);
             document.getElementById('title-display').innerText = anime.title;
             document.getElementById('studio-display').innerText = anime.info.studio;
             document.getElementById('format-display').innerText = anime.info.format;
