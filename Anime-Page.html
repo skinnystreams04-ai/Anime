@@ -67,9 +67,10 @@
 
         .cover-img { width: 100%; border-radius: 6px; border: 1px solid #4a5c41; margin-bottom: 12px; }
         .genre-badge { display: inline-block; background: var(--theme-panel-header); color: #fff; text-shadow: 0 0 8px var(--theme-primary); border: 1px solid var(--theme-primary); padding: 4px 10px; border-radius: 6px; font-size: 13px; font-family: sans-serif; font-weight: bold; text-transform: uppercase; box-shadow: 0 0 5px var(--theme-glow); transition: 0.5s; white-space: nowrap; margin-bottom: 5px; }
-        .info-row { display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 8px; border-bottom: 1px dashed #283325; padding-bottom: 4px; }
-        .info-label { color: #829c73; } .info-val { color: #c4d1b8; font-weight: bold; text-align: right; }
-        
+        .info-row { display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 8px; border-bottom: 1px dashed var(--theme-panel-border); padding-bottom: 4px; }
+        .info-label { color: var(--theme-primary); opacity: 0.8; font-weight: bold; }
+        .info-val { color: #c4d1b8; font-weight: bold; text-align: right; }
+
         .synopsis-text { font-size: 16px; line-height: 1.5; color: #c4d1b8; text-align: justify; }
 
         .player-nav { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; }
@@ -103,20 +104,20 @@
         .rate-btn { width: 100%; background: var(--theme-glow); border: 1px solid var(--theme-primary); color: var(--theme-primary); padding: 12px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 20px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.5s; margin-top: 15px; box-shadow: 0 0 10px var(--theme-glow); }
         .rate-btn:hover { background: var(--theme-primary); color: #0b0d0a; box-shadow: 0 0 20px var(--theme-primary); }
 
-        .comment-input-area { background: rgba(0,0,0,0.3); border: 1px solid #283325; border-radius: 12px; padding: 25px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
-        .comment-textarea { width: 100%; background: #121612; border: 1px solid #4a5c41; color: #c4d1b8; border-radius: 8px; padding: 15px; font-family: 'Neucha', cursive; font-size: 18px; outline: none; transition: 0.2s; resize: vertical; min-height: 100px; box-sizing: border-box; }
-        .comment-textarea:focus { border-color: #a6e3a1; box-shadow: 0 0 15px rgba(166, 227, 161, 0.2); }
-        .send-btn { align-self: flex-end; background: #1a2618; border: 1px solid #a6e3a1; color: #a6e3a1; padding: 10px 30px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px;}
-        .send-btn:hover { background: #a6e3a1; color: #0b0d0a; box-shadow: 0 0 15px rgba(166, 227, 161, 0.4); }
+        .comment-input-area { background: var(--theme-panel-bg-top); border: 1px solid var(--theme-panel-border); border-radius: 12px; padding: 25px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
+        .comment-textarea { width: 100%; background: #121612; border: 1px solid var(--theme-panel-border); color: #c4d1b8; border-radius: 8px; padding: 15px; font-family: 'Neucha', cursive; font-size: 18px; outline: none; transition: 0.2s; resize: vertical; min-height: 100px; box-sizing: border-box; }
+        .comment-textarea:focus { border-color: var(--theme-primary); box-shadow: 0 0 15px var(--theme-glow); }
+        .send-btn { align-self: flex-end; background: #1a2618; border: 1px solid var(--theme-primary); color: var(--theme-primary); padding: 10px 30px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; border-radius: 6px; cursor: pointer; transition: 0.2s; text-transform: uppercase; letter-spacing: 1px;}
+        .send-btn:hover { background: var(--theme-primary); color: #0b0d0a; box-shadow: 0 0 15px var(--theme-glow); }
         
         /* СТРОГИЕ КОММЕНТАРИИ С ЦВЕТНЫМ ТЕКСТОМ */
         .comments-list { display: flex; flex-direction: column; gap: 25px; }
         .comment-wrapper { display: flex; flex-direction: column; gap: 15px; }
         
-        .comment-item { display: flex; flex-direction: column; background: rgba(14, 17, 13, 0.4); border-radius: 12px; border: 1px solid #283325; overflow: hidden; }
-        .comment-top { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(90deg, rgba(26, 34, 24, 0.6) 0%, rgba(11, 13, 10, 0.8) 100%); padding: 15px 25px; border-bottom: 2px solid #283325; border-radius: 12px 12px 0 0; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .comment-item { display: flex; flex-direction: column; background: var(--theme-panel-bg-bottom); border-radius: 12px; border: 1px solid var(--theme-panel-border); overflow: hidden; }
+        .comment-top { display: flex; justify-content: space-between; align-items: center; background: transparent; padding: 15px 25px; border-bottom: 1px dashed var(--theme-panel-border); }
         .comment-author-block { display: flex; align-items: center; gap: 15px; }
-        .comment-avatar { width: 55px; height: 55px; border-radius: 50%; border: 2px solid #4a5c41; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .comment-avatar { width: 55px; height: 55px; border-radius: 50%; border: 2px solid var(--theme-primary); box-shadow: 0 0 10px var(--theme-glow); object-fit: cover; background: #0b0d0a; }
         .author-details { display: flex; flex-direction: column; gap: 6px; }
         .comment-author { font-family: 'Neucha', cursive, sans-serif; font-weight: bold; font-size: 22px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8); letter-spacing: 1px;}
         
@@ -125,8 +126,8 @@
         .cr-overall { font-size: 40px; font-weight: bold; line-height: 1; font-family: 'Neucha', cursive, sans-serif; letter-spacing: -1px; }
         .cr-theory { display: flex; gap: 8px; font-family: 'Neucha', cursive, sans-serif; font-size: 16px; font-weight: bold; margin-top: 5px; }
         
-        .reply-item { display: flex; flex-direction: column; background: rgba(11, 13, 10, 0.6); border-radius: 12px; border: 1px solid rgba(40, 51, 37, 0.5); overflow: hidden;}
-        .reply-item .comment-top { padding: 12px 20px; border-radius: 12px 12px 0 0; background: linear-gradient(90deg, rgba(26, 34, 24, 0.4) 0%, rgba(11, 13, 10, 0.6) 100%); border-bottom: 1px solid rgba(40,51,37,0.5); }
+        .reply-item { display: flex; flex-direction: column; background: var(--theme-panel-bg-bottom); border-radius: 12px; border: 1px solid var(--theme-panel-border); overflow: hidden;}
+        .reply-item .comment-top { padding: 12px 20px; border-radius: 12px 12px 0 0; background: var(--theme-panel-bg-top); border-bottom: 1px solid var(--theme-panel-border); }
         .reply-item .comment-avatar { width: 45px; height: 45px; border-width: 1px; }
         .reply-item .comment-author { font-size: 20px; }
         .reply-item .cr-overall { font-size: 32px; }
@@ -152,8 +153,8 @@
         .comment-actions { display: flex; gap: 20px; align-items: center; }
         .comment-actions button { background: transparent; border: none; cursor: pointer; font-family: 'Neucha', cursive; font-size: 15px; text-transform: uppercase; transition: 0.2s; padding: 0; font-weight: bold; letter-spacing: 1px; }
         .reply-item .comment-actions button { font-size: 14px; }
-        .btn-reply { color: #a4b09c; } .btn-reply:hover { color: #a6e3a1; }
-        .btn-edit { color: #829c73; } .btn-edit:hover { color: #cba6f7; }
+        .btn-reply { color: #a4b09c; } .btn-reply:hover { color: var(--theme-primary); }
+        .btn-edit { color: var(--theme-primary); opacity: 0.8; } .btn-edit:hover { opacity: 1; text-shadow: 0 0 8px var(--theme-glow); }
         .btn-del { color: #ff5555; } .btn-del:hover { text-shadow: 0 0 5px rgba(255,85,85,0.5); }
 
         .toggle-replies-btn { background: transparent; border: none; color: #829c73; font-family: 'Neucha', cursive; font-size: 16px; font-weight: bold; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; gap: 8px; margin-left: 10px; transition: 0.2s; width: fit-content; }
@@ -256,7 +257,7 @@
                 <div class="widget-header"><div class="widget-title">Статистика</div></div>
                 <div class="widget-content" style="display: flex; flex-direction: column;">
                     
-                    <div style="color: #829c73; font-size: 16px; text-transform: uppercase; margin-bottom: 10px; text-align: center; font-weight: bold; letter-spacing: 1px;">Итоговая оценка</div>
+                    <div style="color: var(--theme-primary); text-shadow: 0 0 10px var(--theme-glow); font-size: 16px; text-transform: uppercase; margin-bottom: 10px; text-align: center; font-weight: bold; letter-spacing: 1px;">Итоговая оценка</div>
                     
                     <div class="scores-row">
                         <div class="score-box streamer-element" id="box-streamer" onmouseover="highlightChart(0)" onmouseout="resetChart()">
@@ -275,7 +276,7 @@
 
                     <div style="border-top: 1px dashed #283325; margin: 5px 0 15px 0;"></div>
 
-                    <div style="color: #829c73; font-size: 16px; text-transform: uppercase; margin-bottom: 15px; text-align: center; font-weight: bold; letter-spacing: 1px;">Анализ критериев</div>
+                    <div style="color: var(--theme-primary); text-shadow: 0 0 10px var(--theme-glow); font-size: 16px; text-transform: uppercase; margin-bottom: 15px; text-align: center; font-weight: bold; letter-spacing: 1px;">Анализ критериев</div>
                     
                     <div class="chart-wrapper"><canvas id="detailsChart"></canvas></div>
                     
@@ -617,7 +618,7 @@
 
         function generateBreakdownHtml(theoryObj) {
             if (!theoryObj) theoryObj = {plot:0, visuals:0, music:0, world:0, atmosphere:0};
-            const createRow = (name, val) => `<div class="crit-row" style="${getGlassRowStyle(val)}"><span style="color:#c4d1b8">${name}</span><span style="color:#fff; text-shadow: ${getScoreShadow(val, false)};">${val}</span></div>`;
+            const createRow = (name, val) => `<div class="crit-row" style="${getGlassRowStyle(val)}"><span style="color:${getScoreColor(val, 1)}; text-shadow: ${getScoreShadow(val, false)};">${name}</span><span style="color:#fff; text-shadow: ${getScoreShadow(val, false)};">${val}</span></div>`;
             return createRow('Сюжет', theoryObj.plot) + 
                    createRow('Визуал', theoryObj.visuals) + 
                    createRow('Музыка', theoryObj.music) + 
@@ -788,24 +789,24 @@
 
             // СТЕКЛЯННЫЕ ПЛАШКИ ЛЕГЕНДЫ (ПОД ГРАФИКОМ)
             document.getElementById('legend-box-streamer').style.cssText = getGlassBoxStyle(strTheoryAvg);
-            document.getElementById('legend-label-streamer').style.color = radarColors[0].border;
-            document.getElementById('legend-label-streamer').style.textShadow = '1px 1px 2px #000';
+            document.getElementById('legend-label-streamer').style.color = getScoreColor(strTheoryAvg, 1);
+            document.getElementById('legend-label-streamer').style.textShadow = getScoreShadow(strTheoryAvg, false);
             document.getElementById('dot-streamer').style.background = radarColors[0].border;
             document.getElementById('dot-streamer').style.boxShadow = `0 0 5px ${radarColors[0].border}`;
             document.getElementById('avg-streamer-score').innerText = strTheoryAvg;
             document.getElementById('avg-streamer-score').style.cssText = `color: #fff; text-shadow: ${getScoreShadow(strTheoryAvg, false)};`;
 
             document.getElementById('legend-box-chat').style.cssText = getGlassBoxStyle(chatTheoryAvg);
-            document.getElementById('legend-label-chat').style.color = radarColors[1].border;
-            document.getElementById('legend-label-chat').style.textShadow = '1px 1px 2px #000';
+            document.getElementById('legend-label-chat').style.color = getScoreColor(chatTheoryAvg, 1);
+            document.getElementById('legend-label-chat').style.textShadow = getScoreShadow(chatTheoryAvg, false);
             document.getElementById('dot-chat').style.background = radarColors[1].border;
             document.getElementById('dot-chat').style.boxShadow = `0 0 5px ${radarColors[1].border}`;
             document.getElementById('avg-chat-score').innerText = chatTheoryAvg;
             document.getElementById('avg-chat-score').style.cssText = `color: #fff; text-shadow: ${getScoreShadow(chatTheoryAvg, false)};`;
 
             document.getElementById('legend-box-me').style.cssText = getGlassBoxStyle(meTheoryAvg);
-            document.getElementById('legend-label-me').style.color = radarColors[2].border;
-            document.getElementById('legend-label-me').style.textShadow = '1px 1px 2px #000';
+            document.getElementById('legend-label-me').style.color = getScoreColor(meTheoryAvg, 1);
+            document.getElementById('legend-label-me').style.textShadow = getScoreShadow(meTheoryAvg, false);
             document.getElementById('dot-me').style.background = radarColors[2].border;
             document.getElementById('dot-me').style.boxShadow = `0 0 5px ${radarColors[2].border}`;
             document.getElementById('avg-viewer-score').innerText = meTheoryAvg;
@@ -817,11 +818,30 @@
             document.getElementById('breakdown-viewer').innerHTML = generateBreakdownHtml(tMe);
             
             if (radarChart) {
-                radarChart.data.datasets[0].data = [safeNum(tStr.plot), safeNum(tStr.visuals), safeNum(tStr.music), safeNum(tStr.world), safeNum(tStr.atmosphere)]; 
-                radarChart.data.datasets[1].data = [safeNum(tChat.plot), safeNum(tChat.visuals), safeNum(tChat.music), safeNum(tChat.world), safeNum(tChat.atmosphere)]; 
-                radarChart.data.datasets[2].data = [safeNum(tMe.plot), safeNum(tMe.visuals), safeNum(tMe.music), safeNum(tMe.world), safeNum(tMe.atmosphere)]; 
-                radarChart.update();
-            }
+    radarChart.data.datasets[0].data = [safeNum(tStr.plot), safeNum(tStr.visuals), safeNum(tStr.music), safeNum(tStr.world), safeNum(tStr.atmosphere)]; 
+    radarChart.data.datasets[1].data = [safeNum(tChat.plot), safeNum(tChat.visuals), safeNum(tChat.music), safeNum(tChat.world), safeNum(tChat.atmosphere)]; 
+    radarChart.data.datasets[2].data = [safeNum(tMe.plot), safeNum(tMe.visuals), safeNum(tMe.music), safeNum(tMe.world), safeNum(tMe.atmosphere)]; 
+    
+    // Берем наш красивый динамический цвет темы
+    const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--theme-primary').trim();
+    
+    // Красим текст диаграммы в цвет обложки
+    radarChart.options.scales.r.pointLabels.color = themeColor || '#c4d1b8';
+
+    radarChart.update();
+}
+
+    // Применяем цвета к осям
+    radarChart.options.scales.r.pointLabels.color = [
+        getScoreColor(getCritAvg(safeNum(tStr.plot), safeNum(tChat.plot)), 1),
+        getScoreColor(getCritAvg(safeNum(tStr.visuals), safeNum(tChat.visuals)), 1),
+        getScoreColor(getCritAvg(safeNum(tStr.music), safeNum(tChat.music)), 1),
+        getScoreColor(getCritAvg(safeNum(tStr.world), safeNum(tChat.world)), 1),
+        getScoreColor(getCritAvg(safeNum(tStr.atmosphere), safeNum(tChat.atmosphere)), 1)
+    ];
+
+    radarChart.update();
+}
 
             const rateBtn = document.getElementById('rate-title-btn');
             if (currentUser) {
