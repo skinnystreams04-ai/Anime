@@ -8,6 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
 
+    <style> /* <--- ПРОПУЩЕН ИМЕННО ЭТОТ ТЕГ */
     :root {
     --theme-primary: #a6e3a1; /* Базовый цвет текста */
     --theme-glow: rgba(166, 227, 161, 0.2); /* Свечение */
@@ -65,7 +66,7 @@
         .col-right { width: 420px; display: flex; flex-direction: column; gap: 20px; }
 
         .cover-img { width: 100%; border-radius: 6px; border: 1px solid #4a5c41; margin-bottom: 12px; }
-        .genre-badge { background: #1a2618; color: var(--theme-primary); border: 1px solid var(--theme-primary); padding: 2px 8px; border-radius: 4px; font-size: 12px; font-family: sans-serif; font-weight: bold; text-transform: uppercase; box-shadow: 0 0 5px var(--theme-glow); transition: 0.5s; }
+        .genre-badge { display: inline-block; background: var(--theme-panel-header); color: #fff; text-shadow: 0 0 8px var(--theme-primary); border: 1px solid var(--theme-primary); padding: 4px 10px; border-radius: 6px; font-size: 13px; font-family: sans-serif; font-weight: bold; text-transform: uppercase; box-shadow: 0 0 5px var(--theme-glow); transition: 0.5s; white-space: nowrap; margin-bottom: 5px; }
         .info-row { display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 8px; border-bottom: 1px dashed #283325; padding-bottom: 4px; }
         .info-label { color: #829c73; } .info-val { color: #c4d1b8; font-weight: bold; text-align: right; }
         
@@ -625,30 +626,42 @@
         }
 
         function applyDynamicTheme(imageUrl) {
-    const colorThief = new ColorThief();
-    const hiddenImg = new Image();
-    hiddenImg.crossOrigin = 'Anonymous';
-    
-    hiddenImg.onload = function() {
-        try {
-            const color = colorThief.getColor(hiddenImg);
-            const r = color[0], g = color[1], b = color[2];
-            
-            // Текст и свечение
-            document.documentElement.style.setProperty('--theme-primary', `rgb(${r}, ${g}, ${b})`);
-            document.documentElement.style.setProperty('--theme-glow', `rgba(${r}, ${g}, ${b}, 0.4)`);
-            
-            // Фоновые заливки виджетов (очень легкий оттенок цвета)
-            document.documentElement.style.setProperty('--theme-panel-bg-top', `rgba(${r}, ${g}, ${b}, 0.08)`);
-            document.documentElement.style.setProperty('--theme-panel-bg-bottom', `rgba(${r}, ${g}, ${b}, 0.02)`);
-            document.documentElement.style.setProperty('--theme-panel-header', `rgba(${r}, ${g}, ${b}, 0.12)`);
-            document.documentElement.style.setProperty('--theme-panel-border', `rgba(${r}, ${g}, ${b}, 0.3)`);
-        } catch (e) {
-            console.warn("Скрипт не смог прочитать цвет:", e);
-        }
-    };
+    return new Promise((resolve) => {
+        const colorThief = new ColorThief();
+        const hiddenImg = new Image();
+        hiddenImg.crossOrigin = 'Anonymous';
+        
+        hiddenImg.onload = function() {
+            try {
+                const color = colorThief.getColor(hiddenImg);
+                let r = color[0], g = color[1], b = color[2];
+                
+                // Проверяем яркость. Если цвет слишком темный - искусственно его осветляем для текста
+                const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
+                if (luminance < 90) {
+                    r = Math.min(255, r + 80);
+                    g = Math.min(255, g + 80);
+                    b = Math.min(255, b + 80);
+                }
 
-    hiddenImg.src = imageUrl + '?bypassCache=' + Date.now();
+                // Светлый цвет для текста и свечения
+                document.documentElement.style.setProperty('--theme-primary', `rgb(${r}, ${g}, ${b})`);
+                document.documentElement.style.setProperty('--theme-glow', `rgba(${r}, ${g}, ${b}, 0.5)`);
+                
+                // Оригинальный темный цвет для заливки панелей
+                document.documentElement.style.setProperty('--theme-panel-bg-top', `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.08)`);
+                document.documentElement.style.setProperty('--theme-panel-bg-bottom', `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.02)`);
+                document.documentElement.style.setProperty('--theme-panel-header', `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.15)`);
+                document.documentElement.style.setProperty('--theme-panel-border', `rgba(${color[0]}, ${color[1]}, ${color[2]}, 0.4)`);
+            } catch (e) {
+                console.warn("Скрипт не смог прочитать цвет:", e);
+            }
+            resolve(); // Даем сигнал, что тема готова
+        };
+
+        hiddenImg.onerror = resolve; // Если ошибка - все равно открываем сайт
+        hiddenImg.src = imageUrl + '?bypassCache=' + Date.now();
+    });
 }
 
         async function loadAnimeData() {
@@ -712,7 +725,7 @@
 
             // Пропускаем ссылку через прокси для обхода CORS-защиты
             document.getElementById('cover-img').src = anime.coverUrl;
-            applyDynamicTheme(anime.coverUrl);
+            await applyDynamicTheme(anime.coverUrl);
             document.getElementById('title-display').innerText = anime.title;
             document.getElementById('studio-display').innerText = anime.info.studio;
             document.getElementById('format-display').innerText = anime.info.format;
