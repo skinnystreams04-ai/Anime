@@ -61,8 +61,9 @@
         .card-inner { width: 100%; height: 100%; position: relative; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
         .card-container.is-flipped .card-inner { transform: rotateY(180deg); }
 
-        .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; border: 2px solid #283325; overflow: hidden; background: linear-gradient(180deg, #121612 0%, #0a0d0a 100%); display: flex; flex-direction: column; box-shadow: 0 0 15px rgba(166, 227, 161, 0.08); transition: 0.3s; }
-        .card-container:hover .card-face { box-shadow: 0 0 25px rgba(166, 227, 161, 0.25); border-color: #3d5236; }
+        /* ИЗМЕНЕНА СВЕТИМОСТЬ КАРТОЧЕК НА ОСНОВЕ ОЦЕНКИ */
+        .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; overflow: hidden; background: linear-gradient(180deg, #121612 0%, #0a0d0a 100%); display: flex; flex-direction: column; transition: 0.3s; border: 2px solid var(--card-border); box-shadow: 0 0 15px var(--card-shadow); }
+        .card-container:hover .card-face { border-color: var(--card-color); box-shadow: 0 0 30px var(--card-shadow-hover); }
         
         .card-front { background-size: cover; background-position: center; cursor: pointer; }
         .ep-badge { position: absolute; top: 15px; left: 15px; background: rgba(11, 13, 10, 0.85); border: 1px solid #4a5c41; color: #c4d1b8; font-size: 15px; font-weight: bold; padding: 4px 10px; border-radius: 6px; z-index: 10; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); text-transform: uppercase;}
@@ -72,9 +73,8 @@
 
         .front-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 30px 15px 15px 15px; box-sizing: border-box; background: linear-gradient(0deg, rgba(11, 13, 10, 1) 0%, rgba(11, 13, 10, 0.95) 40%, rgba(11, 13, 10, 0) 100%); display: flex; flex-direction: column; justify-content: flex-end; }
         
-        /* СТЕКЛЯННЫЕ ПЛАШКИ ОЦЕНОК */
-        .scores-row { display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 8px; gap: 8px; }
-        .score-box { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 4px; border-radius: 8px; flex: 1; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: 0.3s;}
+        .scores-row { display: flex; justify-content: center; align-items: stretch; margin-bottom: 8px; gap: 8px; }
+        .score-box { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 4px; border-radius: 8px; flex: 1 1 0; max-width: 90px; width: 100%; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: 0.3s;}
         
         .score-label { width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; text-shadow: 1px 1px 2px #000; text-align: center; }
         .main-score { font-size: 30px; font-weight: bold; line-height: 1; letter-spacing: 2px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 4px #000; text-align: center; font-family: 'Neucha', cursive, sans-serif;}
@@ -199,7 +199,7 @@
                 glow += `, 0 0 ${blur2}px ${color}`;
             }
             if (numScore === 10) {
-                glow += `, 0 0 15px rgba(255,255,255,0.3)`;
+                glow += `, 0 0 15px rgba(255,255,255,0.3)`; 
             }
             return glow;
         }
@@ -456,8 +456,27 @@
                 const safeCoverUrl = f.coverUrl.replace(/'/g, "\\'");
                 const s = f.scores;
 
+                let validScoresCount = 0;
+                let sumOverall = 0;
+                if (s.streamer.overall > 0) { sumOverall += s.streamer.overall; validScoresCount++; }
+                if (s.chat.overall > 0) { sumOverall += s.chat.overall; validScoresCount++; }
+                if (s.me.overall > 0) { sumOverall += s.me.overall; validScoresCount++; }
+                const avgOverall = validScoresCount > 0 ? (sumOverall / validScoresCount) : 0;
+                
+                let cardColor = '#283325';
+                let cardBorder = 'rgba(40, 51, 37, 0.8)';
+                let cardShadow = 'rgba(0,0,0,0.5)';
+                let cardShadowHover = 'rgba(166, 227, 161, 0.25)';
+
+                if (avgOverall > 0) {
+                    cardColor = getScoreColor(avgOverall, 1);
+                    cardBorder = getScoreColor(avgOverall, 0.6);
+                    cardShadow = getScoreColor(avgOverall, 0.2);
+                    cardShadowHover = getScoreColor(avgOverall, 0.8);
+                }
+
                 const cardHtml = `
-                <div class="card-container" id="card-${safeDomId}" onmouseleave="this.classList.remove('is-flipped')">
+                <div class="card-container" id="card-${safeDomId}" onmouseleave="this.classList.remove('is-flipped')" style="--card-color: ${cardColor}; --card-border: ${cardBorder}; --card-shadow: ${cardShadow}; --card-shadow-hover: ${cardShadowHover};">
                     <div class="card-inner">
                         <div class="card-face card-front" style="background-image: url('${safeCoverUrl}');" onclick="if(!event.target.closest('.flip-btn')) window.location.href='${detailsLink}'">
                             <div class="ep-badge">${f.badgeText}</div>
