@@ -818,18 +818,21 @@
             document.getElementById('breakdown-viewer').innerHTML = generateBreakdownHtml(tMe);
             
             if (radarChart) {
-    radarChart.data.datasets[0].data = [safeNum(tStr.plot), safeNum(tStr.visuals), safeNum(tStr.music), safeNum(tStr.world), safeNum(tStr.atmosphere)]; 
-    radarChart.data.datasets[1].data = [safeNum(tChat.plot), safeNum(tChat.visuals), safeNum(tChat.music), safeNum(tChat.world), safeNum(tChat.atmosphere)]; 
-    radarChart.data.datasets[2].data = [safeNum(tMe.plot), safeNum(tMe.visuals), safeNum(tMe.music), safeNum(tMe.world), safeNum(tMe.atmosphere)]; 
-    
-    // Берем наш красивый динамический цвет темы
-    const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--theme-primary').trim();
-    
-    // Красим текст диаграммы в цвет обложки
-    radarChart.options.scales.r.pointLabels.color = themeColor || '#c4d1b8';
+                radarChart.data.datasets[0].data = [safeNum(tStr.plot), safeNum(tStr.visuals), safeNum(tStr.music), safeNum(tStr.world), safeNum(tStr.atmosphere)]; 
+                radarChart.data.datasets[1].data = [safeNum(tChat.plot), safeNum(tChat.visuals), safeNum(tChat.music), safeNum(tChat.world), safeNum(tChat.atmosphere)]; 
+                radarChart.data.datasets[2].data = [safeNum(tMe.plot), safeNum(tMe.visuals), safeNum(tMe.music), safeNum(tMe.world), safeNum(tMe.atmosphere)]; 
+                
+                // Берем наш красивый динамический цвет темы
+                const themeColor = getComputedStyle(document.documentElement).getPropertyValue('--theme-primary').trim();
+                
+                // Красим текст диаграммы в цвет обложки
+                radarChart.options.scales.r.pointLabels.color = themeColor || '#c4d1b8';
 
-    radarChart.update();
-}
+                radarChart.update();
+            }
+
+            const rateBtn = document.getElementById('rate-title-btn');
+            if (currentUser) {
 
     // Применяем цвета к осям
     radarChart.options.scales.r.pointLabels.color = [
