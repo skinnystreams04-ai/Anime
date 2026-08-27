@@ -705,7 +705,8 @@
             const anime = franchiseData[seasonKey];
             if (!anime) throw new Error("Данные сезона повреждены!");
 
-            document.getElementById('cover-img').src = anime.coverUrl;
+            // Пропускаем ссылку через прокси для обхода CORS-защиты
+            document.getElementById('cover-img').src = 'https://wsrv.nl/?url=' + encodeURIComponent(anime.coverUrl);
             applyDynamicTheme();
             document.getElementById('title-display').innerText = anime.title;
             document.getElementById('studio-display').innerText = anime.info.studio;
