@@ -6,10 +6,10 @@
     <title>Skinwalker Аниме</title>
     <link href="https://fonts.googleapis.com/css2?family=Neucha&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
 
     <style>
-        body { margin: 0; padding: 0 0 40px 0; font-family: 'Neucha', cursive, sans-serif; background-color: #050605; color: #a4b09c; min-height: 100vh; overflow-x: hidden;}
-        body.is-admin .me-element { display: none !important; }
+        body { margin: 0; padding: 0 0 40px 0; font-family: 'Neucha', cursive, sans-serif; background-color: #050605; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E"); color: #a4b09c; min-height: 100vh; overflow-x: hidden; }
 
         .top-nav { background: #0b0d0a; border-bottom: 2px solid #283325; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
         .nav-logo { color: #a6e3a1; font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; transition: 0.2s; cursor: pointer; }
@@ -45,7 +45,7 @@
         .logout-neon { background: transparent; border: none; color: rgba(255, 85, 85, 0.6); font-family: 'Neucha', cursive; font-size: 15px; text-transform: uppercase; font-weight: bold; cursor: pointer; transition: 0.3s; padding: 0; line-height: 1; letter-spacing: 1px;}
         .logout-neon:hover { color: #ff5555; text-shadow: 0 0 12px rgba(255, 85, 85, 0.8); transform: scale(1.05); }
 
-        .controls-bar { display: flex; justify-content: flex-start; align-items: center; gap: 20px; padding: 0 40px; margin-bottom: 30px; }
+        .controls-bar { display: flex; justify-content: flex-start; align-items: center; gap: 20px; padding: 15px 40px; margin: 0 40px 30px 40px; background: rgba(14, 17, 13, 0.4); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(40, 51, 37, 0.5); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
         .search-input, .sort-select { background: rgba(14, 17, 13, 0.8); border: 1px solid #283325; color: #c4d1b8; padding: 10px 15px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 18px; outline: none; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
         .search-input { width: 250px; }
         .search-input::placeholder { color: #6b7a62; }
@@ -57,8 +57,10 @@
         .sort-dir-btn:hover { border-color: #a6e3a1; box-shadow: 0 0 15px rgba(166, 227, 161, 0.2); }
 
         .trophy-room { display: flex; justify-content: flex-start; align-items: flex-start; flex-wrap: wrap; gap: 40px; padding: 0 40px; }
-        .card-container { width: 320px; height: 480px; perspective: 1000px; }
+        .card-container { width: 320px; height: 480px; perspective: 1000px; position: relative; }
         .card-inner { width: 100%; height: 100%; position: relative; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
+        .card-container::before { content: ''; position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; background: var(--card-color); filter: blur(50px); opacity: 0.15; z-index: -1; transition: opacity 0.5s, transform 0.5s; border-radius: 50%; }
+        .card-container:hover::before { opacity: 0.3; transform: scale(1.05); }
         .card-container.is-flipped .card-inner { transform: rotateY(180deg); }
 
         /* ИЗМЕНЕНА СВЕТИМОСТЬ КАРТОЧЕК НА ОСНОВЕ ОЦЕНКИ */
@@ -71,7 +73,7 @@
         .flip-btn { position: absolute; top: 15px; right: 15px; background: rgba(11, 13, 10, 0.85); border: 1px solid #4a5c41; color: #a4b09c; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; z-index: 20; }
         .flip-btn:hover { background: #161a15; color: #a6e3a1; border-color: #a6e3a1; transform: scale(1.1); }
 
-        .front-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 30px 15px 15px 15px; box-sizing: border-box; background: linear-gradient(0deg, rgba(11, 13, 10, 1) 0%, rgba(11, 13, 10, 0.95) 40%, rgba(11, 13, 10, 0) 100%); display: flex; flex-direction: column; justify-content: flex-end; }
+        .front-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 30px 15px 15px 15px; box-sizing: border-box; background: linear-gradient(0deg, var(--overlay-solid, rgba(11, 13, 10, 1)) 0%, var(--overlay-fade, rgba(11, 13, 10, 0.95)) 50%, rgba(11, 13, 10, 0) 100%); display: flex; flex-direction: column; justify-content: flex-end; }
         
         .scores-row { display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 8px; gap: 8px; }
         .score-box { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 4px; border-radius: 8px; flex: 1; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: 0.3s;}
@@ -445,106 +447,111 @@
         }
 
         function renderCards(arr) {
-            const room = document.getElementById('trophy-room');
-            Object.values(allCharts).forEach(chart => chart.destroy()); allCharts = {}; room.innerHTML = "";
-            if (arr.length === 0) { room.innerHTML = "<div class='loading'>Ничего не найдено...</div>"; return; }
+    const room = document.getElementById('trophy-room');
+    Object.values(allCharts).forEach(chart => chart.destroy()); allCharts = {}; room.innerHTML = "";
+    if (arr.length === 0) { room.innerHTML = "<div class='loading'>Ничего не найдено...</div>"; return; }
 
-            arr.forEach(f => {
-                const safeIdForLink = encodeURIComponent(f.id).replace(/'/g, "%27");
-                const safeDomId = f.id.replace(/[^a-zA-Z0-9_-]/g, "_");
-                const detailsLink = `Anime-Page.html?id=${safeIdForLink}`;
-                const safeCoverUrl = f.coverUrl.replace(/'/g, "\\'");
-                const s = f.scores;
+    arr.forEach(f => {
+        const safeIdForLink = encodeURIComponent(f.id).replace(/'/g, "%27");
+        const safeDomId = f.id.replace(/[^a-zA-Z0-9_-]/g, "_");
+        const detailsLink = `Anime-Page.html?id=${safeIdForLink}`;
+        const safeCoverUrl = f.coverUrl.replace(/'/g, "\\'");
+        const s = f.scores;
 
-                let validScoresCount = 0;
-                let sumOverall = 0;
-                if (s.streamer.overall > 0) { sumOverall += s.streamer.overall; validScoresCount++; }
-                if (s.chat.overall > 0) { sumOverall += s.chat.overall; validScoresCount++; }
-                if (s.me.overall > 0) { sumOverall += s.me.overall; validScoresCount++; }
-                const avgOverall = validScoresCount > 0 ? (sumOverall / validScoresCount) : 0;
-                
-                let cardColor = '#283325';
-                let cardBorder = 'rgba(40, 51, 37, 0.8)';
-                let cardShadow = 'rgba(0,0,0,0.5)';
-                let cardShadowHover = 'rgba(166, 227, 161, 0.25)';
-
-                if (avgOverall > 0) {
-                    cardColor = getScoreColor(avgOverall, 1);
-                    cardBorder = getScoreColor(avgOverall, 0.6);
-                    cardShadow = getScoreColor(avgOverall, 0.2);
-                    cardShadowHover = getScoreColor(avgOverall, 0.8);
-                }
-
-                const cardHtml = `
-                <div class="card-container" id="card-${safeDomId}" onmouseleave="this.classList.remove('is-flipped')" style="--card-color: ${cardColor}; --card-border: ${cardBorder}; --card-shadow: ${cardShadow}; --card-shadow-hover: ${cardShadowHover};">
-                    <div class="card-inner">
-                        <div class="card-face card-front" style="background-image: url('${safeCoverUrl}');" onclick="if(!event.target.closest('.flip-btn')) window.location.href='${detailsLink}'">
-                            <div class="ep-badge">${f.badgeText}</div>
-                            <div class="flip-btn" onmouseenter="document.getElementById('card-${safeDomId}').classList.add('is-flipped')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.13 15.57a10 10 0 1 0 3.1-8.91L2 9M2.5 22v-6h6M21.87 8.43a10 10 0 1 0-3.1 8.91l3.23-2.34"/></svg></div>
-                            <div class="front-overlay">
-                                <div class="scores-row">
-                                    <div class="score-box" style="${getGlassBoxStyle(s.streamer.overall)}">
-                                        <div class="score-label streamer" style="color:${getScoreColor(s.streamer.overall, 1)}; border-bottom-color:${getScoreColor(s.streamer.overall, 0.4)}; text-shadow:0 0 8px ${getScoreColor(s.streamer.overall, 0.6)};">Стример</div>
-                                        <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(s.streamer.overall, true)};">${s.streamer.overall}<span> / 10</span></div>
-                                    </div>
-                                    <div class="score-box me-element" style="${getGlassBoxStyle(s.me.overall)}">
-                                        <div class="score-label me" style="color:${getScoreColor(s.me.overall, 1)}; border-bottom-color:${getScoreColor(s.me.overall, 0.4)}; text-shadow:0 0 8px ${getScoreColor(s.me.overall, 0.6)};">Я</div>
-                                        <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(s.me.overall, true)};">${s.me.overall}<span> / 10</span></div>
-                                    </div>
-                                    <div class="score-box" style="${getGlassBoxStyle(s.chat.overall)}">
-                                        <div class="score-label chat" style="color:${getScoreColor(s.chat.overall, 1)}; border-bottom-color:${getScoreColor(s.chat.overall, 0.4)}; text-shadow:0 0 8px ${getScoreColor(s.chat.overall, 0.6)};">Чат</div>
-                                        <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(s.chat.overall, true)};">${s.chat.overall}<span> / 10</span></div>
-                                    </div>
-                                </div>
-                                <div class="divider"></div>
-                                <div class="anime-title">${f.title}</div>
+        const cardHtml = `
+        <div class="card-container" id="card-${safeDomId}" data-cover="${safeCoverUrl}" onmouseleave="this.classList.remove('is-flipped')" style="--card-color: #283325; --card-border: rgba(40, 51, 37, 0.8); --card-shadow: rgba(0,0,0,0.5); --card-shadow-hover: rgba(166, 227, 161, 0.25);">
+            <div class="card-inner">
+                <div class="card-face card-front" style="background-image: url('${safeCoverUrl}');" onclick="if(!event.target.closest('.flip-btn')) window.location.href='${detailsLink}'">
+                    <div class="ep-badge">${f.badgeText}</div>
+                    <div class="flip-btn" onmouseenter="document.getElementById('card-${safeDomId}').classList.add('is-flipped')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.13 15.57a10 10 0 1 0 3.1-8.91L2 9M2.5 22v-6h6M21.87 8.43a10 10 0 1 0-3.1 8.91l3.23-2.34"/></svg></div>
+                    <div class="front-overlay">
+                        <div class="scores-row">
+                            <div class="score-box" style="${getGlassBoxStyle(s.streamer.overall)}">
+                                <div class="score-label streamer" style="color:${getScoreColor(s.streamer.overall, 1)}; border-bottom-color:${getScoreColor(s.streamer.overall, 0.4)}; text-shadow:0 0 8px ${getScoreColor(s.streamer.overall, 0.6)};">Стример</div>
+                                <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(s.streamer.overall, true)};">${s.streamer.overall}<span> / 10</span></div>
+                            </div>
+                            <div class="score-box me-element" style="${getGlassBoxStyle(s.me.overall)}">
+                                <div class="score-label me" style="color:${getScoreColor(s.me.overall, 1)}; border-bottom-color:${getScoreColor(s.me.overall, 0.4)}; text-shadow:0 0 8px ${getScoreColor(s.me.overall, 0.6)};">Я</div>
+                                <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(s.me.overall, true)};">${s.me.overall}<span> / 10</span></div>
+                            </div>
+                            <div class="score-box" style="${getGlassBoxStyle(s.chat.overall)}">
+                                <div class="score-label chat" style="color:${getScoreColor(s.chat.overall, 1)}; border-bottom-color:${getScoreColor(s.chat.overall, 0.4)}; text-shadow:0 0 8px ${getScoreColor(s.chat.overall, 0.6)};">Чат</div>
+                                <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(s.chat.overall, true)};">${s.chat.overall}<span> / 10</span></div>
                             </div>
                         </div>
-                        <div class="card-face card-back">
-                            <h3 class="back-title" onclick="window.location.href='${detailsLink}'">Критерии</h3>
-                            <div class="chart-container" onclick="window.location.href='${detailsLink}'"><canvas id="chart-${safeDomId}"></canvas></div>
-                            <div class="custom-legend">
-                                <div class="legend-item" style="color: ${radarColors[0].border};" onmouseover="highlightChart('${safeDomId}', 0)" onmouseout="resetChart('${safeDomId}')"><div class="dot" style="background: ${radarColors[0].border};"></div>Стример</div>
-                                <div class="legend-item me-element" style="color: ${radarColors[2].border};" onmouseover="highlightChart('${safeDomId}', 2)" onmouseout="resetChart('${safeDomId}')"><div class="dot" style="background: ${radarColors[2].border};"></div>Я</div>
-                                <div class="legend-item" style="color: ${radarColors[1].border};" onmouseover="highlightChart('${safeDomId}', 1)" onmouseout="resetChart('${safeDomId}')"><div class="dot" style="background: ${radarColors[1].border};"></div>Чат</div>
-                            </div>
-                            <div class="theory-container">
-                                <div class="crit-row" style="${getGlassRowStyle(s.streamer.avgTheory)}">
-                                    <span style="color:${getScoreColor(s.streamer.avgTheory, 1)}; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: ${getScoreShadow(s.streamer.avgTheory, false)};">Стример</span>
-                                    <span style="color:#fff; text-shadow: ${getScoreShadow(s.streamer.avgTheory, false)};">${s.streamer.avgTheory}/10</span>
-                                </div>
-                                <div class="crit-row" style="${getGlassRowStyle(s.chat.avgTheory)}">
-                                    <span style="color:${getScoreColor(s.chat.avgTheory, 1)}; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: ${getScoreShadow(s.chat.avgTheory, false)};">Чат</span>
-                                    <span style="color:#fff; text-shadow: ${getScoreShadow(s.chat.avgTheory, false)};">${s.chat.avgTheory}/10</span>
-                                </div>
-                                <div class="crit-row me-element" style="${getGlassRowStyle(s.me.avgTheory)}">
-                                    <span style="color:${getScoreColor(s.me.avgTheory, 1)}; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: ${getScoreShadow(s.me.avgTheory, false)};">Я</span>
-                                    <span style="color:#fff; text-shadow: ${getScoreShadow(s.me.avgTheory, false)};">${s.me.avgTheory}/10</span>
-                                </div>
-                            </div>
-                            <button onclick="window.location.href='${detailsLink}'" style="margin-top: 10px; width: 100%; background: #222b20; border: 1px solid #4a5c41; color: #a4b09c; padding: 6px; font-family: 'Neucha', cursive; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase;">Медиатека ▶</button>
-                        </div>
+                        <div class="divider"></div>
+                        <div class="anime-title">${f.title}</div>
                     </div>
                 </div>
-                `;
-                room.insertAdjacentHTML('beforeend', cardHtml);
+                <div class="card-face card-back">
+                    <h3 class="back-title" onclick="window.location.href='${detailsLink}'">Критерии</h3>
+                    <div class="chart-container" onclick="window.location.href='${detailsLink}'"><canvas id="chart-${safeDomId}"></canvas></div>
+                    <div class="custom-legend">
+                        <div class="legend-item" style="color: ${radarColors[0].border};" onmouseover="highlightChart('${safeDomId}', 0)" onmouseout="resetChart('${safeDomId}')"><div class="dot" style="background: ${radarColors[0].border};"></div>Стример</div>
+                        <div class="legend-item me-element" style="color: ${radarColors[2].border};" onmouseover="highlightChart('${safeDomId}', 2)" onmouseout="resetChart('${safeDomId}')"><div class="dot" style="background: ${radarColors[2].border};"></div>Я</div>
+                        <div class="legend-item" style="color: ${radarColors[1].border};" onmouseover="highlightChart('${safeDomId}', 1)" onmouseout="resetChart('${safeDomId}')"><div class="dot" style="background: ${radarColors[1].border};"></div>Чат</div>
+                    </div>
+                    <div class="theory-container">
+                        <div class="crit-row" style="${getGlassRowStyle(s.streamer.avgTheory)}">
+                            <span style="color:${getScoreColor(s.streamer.avgTheory, 1)}; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: ${getScoreShadow(s.streamer.avgTheory, false)};">Стример</span>
+                            <span style="color:#fff; text-shadow: ${getScoreShadow(s.streamer.avgTheory, false)};">${s.streamer.avgTheory}/10</span>
+                        </div>
+                        <div class="crit-row" style="${getGlassRowStyle(s.chat.avgTheory)}">
+                            <span style="color:${getScoreColor(s.chat.avgTheory, 1)}; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: ${getScoreShadow(s.chat.avgTheory, false)};">Чат</span>
+                            <span style="color:#fff; text-shadow: ${getScoreShadow(s.chat.avgTheory, false)};">${s.chat.avgTheory}/10</span>
+                        </div>
+                        <div class="crit-row me-element" style="${getGlassRowStyle(s.me.avgTheory)}">
+                            <span style="color:${getScoreColor(s.me.avgTheory, 1)}; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: ${getScoreShadow(s.me.avgTheory, false)};">Я</span>
+                            <span style="color:#fff; text-shadow: ${getScoreShadow(s.me.avgTheory, false)};">${s.me.avgTheory}/10</span>
+                        </div>
+                    </div>
+                    <button onclick="window.location.href='${detailsLink}'" style="margin-top: 10px; width: 100%; background: #222b20; border: 1px solid #4a5c41; color: #a4b09c; padding: 6px; font-family: 'Neucha', cursive; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase;">Медиатека ▶</button>
+                </div>
+            </div>
+        </div>
+        `;
+        room.insertAdjacentHTML('beforeend', cardHtml);
 
-                if (typeof Chart !== 'undefined') {
-                    allCharts[safeDomId] = new Chart(document.getElementById(`chart-${safeDomId}`).getContext('2d'), {
-                        type: 'radar',
-                        data: {
-                            labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Атмосфера'],
-                            datasets: [
-                                { data: [s.streamer.plot, s.streamer.visuals, s.streamer.music, s.streamer.world, s.streamer.atmosphere], backgroundColor: radarColors[0].bg, borderColor: radarColors[0].border, pointBackgroundColor: radarColors[0].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 },
-                                { data: [s.chat.plot, s.chat.visuals, s.chat.music, s.chat.world, s.chat.atmosphere], backgroundColor: radarColors[1].bg, borderColor: radarColors[1].border, pointBackgroundColor: radarColors[1].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 },
-                                { data: [s.me.plot, s.me.visuals, s.me.music, s.me.world, s.me.atmosphere], backgroundColor: radarColors[2].bg, borderColor: radarColors[2].border, pointBackgroundColor: radarColors[2].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 }
-                            ]
-                        },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { filter: function(item) { return item.raw > 0; }, displayColors: false } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: '#283325' }, angleLines: { color: '#283325' }, pointLabels: { font: { size: 12, weight: 'bold' }, color: '#c4d1b8' } } } }
-                    });
-                }
+        if (typeof Chart !== 'undefined') {
+            allCharts[safeDomId] = new Chart(document.getElementById(`chart-${safeDomId}`).getContext('2d'), {
+                type: 'radar',
+                data: {
+                    labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Атмосфера'],
+                    datasets: [
+                        { data: [s.streamer.plot, s.streamer.visuals, s.streamer.music, s.streamer.world, s.streamer.atmosphere], backgroundColor: radarColors[0].bg, borderColor: radarColors[0].border, pointBackgroundColor: radarColors[0].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 },
+                        { data: [s.chat.plot, s.chat.visuals, s.chat.music, s.chat.world, s.chat.atmosphere], backgroundColor: radarColors[1].bg, borderColor: radarColors[1].border, pointBackgroundColor: radarColors[1].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 },
+                        { data: [s.me.plot, s.me.visuals, s.me.music, s.me.world, s.me.atmosphere], backgroundColor: radarColors[2].bg, borderColor: radarColors[2].border, pointBackgroundColor: radarColors[2].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { filter: function(item) { return item.raw > 0; }, displayColors: false } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: '#283325' }, angleLines: { color: '#283325' }, pointLabels: { font: { size: 10, weight: 'bold' }, color: '#c4d1b8' } } } }
             });
         }
+    });
+
+    extractHubColors();
+}
+
+function extractHubColors() {
+    const colorThief = new ColorThief();
+    document.querySelectorAll('.card-container').forEach(card => {
+        const imgUrl = card.getAttribute('data-cover');
+        const hiddenImg = new Image();
+        hiddenImg.crossOrigin = 'Anonymous';
+        hiddenImg.onload = function() {
+            try {
+                const color = colorThief.getColor(hiddenImg);
+                let r = color[0], g = color[1], b = color[2];
+                card.style.setProperty('--card-color', `rgb(${r}, ${g}, ${b})`);
+                card.style.setProperty('--card-border', `rgba(${r}, ${g}, ${b}, 0.6)`);
+                card.style.setProperty('--card-shadow', `rgba(${r}, ${g}, ${b}, 0.2)`);
+                card.style.setProperty('--card-shadow-hover', `rgba(${r}, ${g}, ${b}, 0.8)`);
+                card.style.setProperty('--overlay-solid', `rgba(${Math.floor(r*0.15)}, ${Math.floor(g*0.15)}, ${Math.floor(b*0.15)}, 0.98)`);
+                card.style.setProperty('--overlay-fade', `rgba(${Math.floor(r*0.15)}, ${Math.floor(g*0.15)}, ${Math.floor(b*0.15)}, 0.8)`);
+            } catch(e) {}
+        };
+        hiddenImg.src = imgUrl + '?bypassCache=' + Date.now();
+    });
+}
         
         function highlightChart(domId, index) {
             if(!allCharts[domId]) return;
