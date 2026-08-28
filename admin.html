@@ -41,6 +41,8 @@
         .btn { background: #222b20; border: 1px solid #4a5c41; color: #a4b09c; padding: 12px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: 0.2s; text-align: center; }
         .btn-primary { background: #1a2618; border-color: #a6e3a1; color: #a6e3a1; margin-top: 10px; }
         .btn-primary:hover { background: #a6e3a1; color: #121612; box-shadow: 0 0 15px rgba(166, 227, 161, 0.4); }
+        .btn-danger { background: #331a1a; border-color: #ff5555; color: #ff5555; display: none; }
+        .btn-danger:hover { background: #ff5555; color: #121612; box-shadow: 0 0 15px rgba(255, 85, 85, 0.4); }
 
         .preview-cover { width: 100%; border-radius: 6px; border: 1px dashed #4a5c41; aspect-ratio: 2/3; object-fit: cover; background: #0b0d0a; display: flex; justify-content: center; align-items: center; color: #4a5c41;}
         .preview-title { color: #c4d1b8; font-size: 20px; font-weight: bold; text-align: center; margin-top: 10px; }
@@ -164,7 +166,10 @@
                         <div class="slider-group"><div class="slider-header"><span>Персонажи</span><span id="v-atm">5</span></div><input type="range" id="sl-atm" min="1" max="10" value="5" oninput="document.getElementById('v-atm').innerText=this.value"></div>
                     </div>
 
-                    <button class="btn btn-primary" onclick="saveToDatabase()">Сохранить в базу</button>
+                    <div style="display: flex; gap: 15px; margin-top: 10px;">
+                        <button class="btn btn-primary" style="flex: 1; margin-top: 0;" onclick="saveToDatabase()">Сохранить в базу</button>
+                        <button class="btn btn-danger" id="btn-delete" style="flex: 1; margin-top: 0;" onclick="deleteFromDatabase()">Удалить сезон</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -193,10 +198,12 @@
                 document.getElementById('btn-mode-new').classList.add('active');
                 document.getElementById('block-new').style.display = 'block';
                 document.getElementById('block-edit').style.display = 'none';
+                document.getElementById('btn-delete').style.display = 'none'; // Скрываем удаление
             } else {
                 document.getElementById('btn-mode-edit').classList.add('active');
                 document.getElementById('block-new').style.display = 'none';
                 document.getElementById('block-edit').style.display = 'block';
+                document.getElementById('btn-delete').style.display = 'block'; // Показываем удаление
                 await loadDatabaseList();
             }
         }
@@ -387,6 +394,53 @@
                     btn.innerText = "Сохранить в базу"; btn.style.pointerEvents = "auto";
                 } else { alert("Ошибка сохранения!"); btn.innerText = "Ошибка"; }
             } catch(e) { alert("Ошибка подключения!"); btn.innerText = "Сохранить в базу"; btn.style.pointerEvents = "auto"; }
+        }
+
+        async function deleteFromDatabase() {
+            const franchiseKey = document.getElementById('db-select-franchise').value;
+            const seasonKey = document.getElementById('db-select-season').value;
+
+            if(!franchiseKey || !seasonKey) { 
+                alert("Сначала выберите сезон для удаления из выпадающего списка!"); 
+                return; 
+            }
+
+            if(!confirm(`Точно удалить сезон "${seasonKey.replace(/_/g, ' ')}" из франшизы "${franchiseKey.replace(/_/g, ' ')}"?\n\nЭто действие удалит и саму карточку, и все оценки/комментарии зрителей к ней. Отменить это нельзя!`)) {
+                return;
+            }
+
+            const btn = document.getElementById('btn-delete'); 
+            const originalText = btn.innerText;
+            btn.innerText = "Удаление..."; 
+            btn.style.pointerEvents = "none";
+
+            try {
+                // Удаляем саму карточку из anime_db
+                await fetch(`https://skinwalkerauction-default-rtdb.europe-west1.firebasedatabase.app/anime_db/${franchiseKey}/${seasonKey}.json`, { method: 'DELETE' });
+                // Удаляем комменты и оценки из community_db
+                await fetch(`https://skinwalkerauction-default-rtdb.europe-west1.firebasedatabase.app/community_db/${franchiseKey}/${seasonKey}.json`, { method: 'DELETE' });
+
+                const toast = document.getElementById('toast'); 
+                toast.innerText = "🗑️ Сезон успешно удален!";
+                toast.style.background = "#ff5555";
+                toast.classList.add('show'); 
+                setTimeout(() => { toast.classList.remove('show'); toast.style.background = "#a6e3a1"; toast.innerText = "✅ Сезон успешно отправлен в базу!"; }, 3000);
+                
+                // Очищаем форму и перезагружаем списки
+                await loadDatabaseList();
+                document.getElementById('db-select-season').innerHTML = '<option value="">Сначала выбери франшизу</option>';
+                document.getElementById('db-franchise').value = '';
+                document.getElementById('season-name').value = '1 Сезон';
+                document.getElementById('preview-no-img').style.display = 'flex';
+                document.getElementById('preview-img').style.display = 'none';
+                document.getElementById('preview-title').innerText = 'Название';
+                
+            } catch(e) { 
+                alert("Ошибка подключения!"); 
+            }
+            
+            btn.innerText = originalText; 
+            btn.style.pointerEvents = "auto";
         }
     </script>
 </body>
