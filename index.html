@@ -45,19 +45,22 @@
         .logout-neon { background: transparent; border: none; color: rgba(255, 85, 85, 0.6); font-family: 'Neucha', cursive; font-size: 15px; text-transform: uppercase; font-weight: bold; cursor: pointer; transition: 0.3s; padding: 0; line-height: 1; letter-spacing: 1px;}
         .logout-neon:hover { color: #ff5555; text-shadow: 0 0 12px rgba(255, 85, 85, 0.8); transform: scale(1.05); }
 
-        .controls-bar { display: flex; justify-content: flex-start; align-items: center; gap: 20px; padding: 15px 40px; margin: 0 40px 30px 40px; background: rgba(14, 17, 13, 0.4); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(40, 51, 37, 0.5); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-        .search-input, .sort-select { background: rgba(14, 17, 13, 0.8); border: 1px solid #283325; color: #c4d1b8; padding: 10px 15px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 18px; outline: none; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+        .controls-bar { display: flex; justify-content: flex-start; align-items: center; gap: 15px; padding: 12px 25px; margin: 0 40px 30px 40px; background: rgba(14, 17, 13, 0.4); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(166, 227, 161, 0.2); border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+        .controls-divider { width: 1px; height: 30px; background: rgba(166, 227, 161, 0.2); margin: 0 10px; }
+        
+        .search-input, .sort-select { background: transparent; border: none; border-bottom: 1px solid rgba(166, 227, 161, 0.2); color: #c4d1b8; padding: 8px 12px; font-family: 'Neucha', cursive; font-size: 18px; outline: none; transition: 0.3s; border-radius: 0; }
         .search-input { width: 250px; }
         .search-input::placeholder { color: #6b7a62; }
-        .search-input:focus, .sort-select:focus { border-color: #a6e3a1; box-shadow: 0 0 15px rgba(166, 227, 161, 0.2); }
+        
         .sort-select { cursor: pointer; appearance: none; padding-right: 30px; background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23829c73%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E"); background-repeat: no-repeat; background-position: right 10px top 50%; background-size: 12px auto; }
         .sort-select option { background: #0b0d0a; color: #c4d1b8; }
         
-        .sort-dir-btn { background: rgba(14, 17, 13, 0.8); border: 1px solid #283325; color: #a6e3a1; width: 44px; height: 44px; border-radius: 8px; font-family: sans-serif; font-size: 20px; font-weight: bold; cursor: pointer; outline: none; transition: 0.2s; box-shadow: 0 4px 10px rgba(0,0,0,0.3); display: flex; justify-content: center; align-items: center; }
-        .sort-dir-btn:hover { border-color: #a6e3a1; box-shadow: 0 0 15px rgba(166, 227, 161, 0.2); }
+        .search-input:focus, .sort-select:focus { border-bottom: 1px solid #a6e3a1; box-shadow: 0 5px 15px -5px rgba(166, 227, 161, 0.3); }
+        .sort-dir-btn { background: transparent; border: none; color: #6b7a62; padding: 0 5px 0 15px; font-family: sans-serif; font-size: 24px; font-weight: bold; cursor: pointer; outline: none; transition: 0.2s; display: flex; justify-content: center; align-items: center; line-height: 1; }
+        .sort-dir-btn:hover { color: #a6e3a1; text-shadow: 0 0 10px rgba(166, 227, 161, 0.5); transform: translateY(-3px); }
 
-        .trophy-room { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 40px; padding: 0 40px; }
-        .card-container { width: 100%; aspect-ratio: 2 / 3; perspective: 1000px; position: relative; max-width: 380px; justify-self: center; }
+        .trophy-room { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; padding: 0 40px; }
+        .card-container { width: 100%; aspect-ratio: 2 / 3; perspective: 1000px; position: relative; max-width: 300px; justify-self: center; }
         .card-inner { width: 100%; height: 100%; position: relative; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
         .card-container::before { content: ''; position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; background: var(--card-color); filter: blur(50px); opacity: 0.15; z-index: -1; transition: opacity 0.5s, transform 0.5s; border-radius: 50%; }
         .card-container:hover::before { opacity: 0.3; transform: scale(1.05); }
@@ -85,17 +88,17 @@
         .divider { border-top: 1px dashed #4a5c41; margin: 8px 0 12px 0; }
         .anime-title { color: #c4d1b8; font-size: 17px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; text-align: center; text-shadow: 2px 2px 5px #000; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; width: 100%; line-height: 1.2; }
 
-        .card-back { transform: rotateY(180deg); padding: 20px; box-sizing: border-box; justify-content: space-between; }
-        .back-title { text-align: center; font-size: 20px; color: #829c73; text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid #283325; padding-bottom: 10px; margin: 0; cursor: pointer; }
-        .chart-container { width: 100%; height: 180px; position: relative; margin: 5px 0; cursor: pointer; }
+        .card-back { transform: rotateY(180deg); padding: 15px; box-sizing: border-box; justify-content: space-between; }
+        .back-title { text-align: center; font-size: 18px; color: var(--theme-primary); text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid var(--theme-panel-border); padding-bottom: 5px; margin: 0; cursor: pointer; text-shadow: 0 0 8px var(--theme-glow); }
+        .chart-container { width: 100%; height: 220px; position: relative; margin: 0; cursor: pointer; }
         
-        .custom-legend { display: flex; justify-content: center; gap: 12px; margin-bottom: 10px; }
+        .custom-legend { display: flex; justify-content: center; gap: 10px; margin-bottom: 5px; }
         .legend-item { display: flex; align-items: center; gap: 4px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s;}
         .legend-item:hover { filter: brightness(1.3); transform: scale(1.05); }
         .dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #0b0d0a; }
 
         .theory-container { background: transparent; border: none; padding: 0; }
-        .crit-row { display: flex; justify-content: space-between; font-size: 14px; color: #a4b09c; padding: 4px 8px; border-radius: 0 6px 6px 0; margin-bottom: 6px; transition: 0.2s;}
+        .crit-row { display: flex; justify-content: space-between; font-size: 13px; color: #a4b09c; padding: 2px 8px; border-radius: 0 6px 6px 0; margin-bottom: 4px; transition: 0.2s;}
         .crit-row span:last-child { font-weight: bold; font-family: 'Neucha', cursive, sans-serif; }
         
         .loading { font-size: 24px; color: #829c73; text-align: center; margin-top: 50px; width: 100%; }
@@ -115,28 +118,31 @@
     <div class="controls-bar" style="display: none;" id="controls-bar">
         <input type="text" id="search-input" class="search-input" placeholder="Поиск по названию..." oninput="applyFiltersAndSort()">
         
-        <div style="display: flex; gap: 10px;">
-            <select id="sort-select" class="sort-select" onchange="toggleRoleSelect(); applyFiltersAndSort();">
-                <option value="overall">По Итоговой оценке</option>
-                <option value="plot">По Сюжету</option>
-                <option value="visuals">По Визуалу</option>
-                <option value="music">По Музыке</option>
-                <option value="world">По Миру</option>
-                <option value="atmosphere">По Атмосфере</option>
-                <option value="az">По алфавиту (A-Z)</option>
-                <option value="date_watched">По дате просмотра</option>
-                <option value="release_year">По дате выпуска</option>
-                <option value="episodes">По количеству серий</option>
-            </select>
-            
-            <select id="role-select" class="sort-select" onchange="applyFiltersAndSort()">
-                <option value="streamer">Стример</option>
-                <option value="me" class="me-element">Я</option>
-                <option value="chat">Чат</option>
-            </select>
+        <div class="controls-divider"></div>
+        
+        <select id="sort-select" class="sort-select" onchange="toggleRoleSelect(); applyFiltersAndSort();">
+            <option value="overall">По Итоговой оценке</option>
+            <option value="avgTheory">По среднему Критериев</option>
+            <option value="plot">По Сюжету</option>
+            <option value="visuals">По Визуалу</option>
+            <option value="music">По Музыке</option>
+            <option value="world">По Миру</option>
+            <option value="atmosphere">По Персонажам</option>
+            <option value="az">По алфавиту (A-Z)</option>
+            <option value="date_watched">По дате просмотра</option>
+            <option value="release_year">По дате выпуска</option>
+            <option value="episodes">По количеству серий</option>
+        </select>
+        
+        <div class="controls-divider" id="role-divider"></div>
+        
+        <select id="role-select" class="sort-select" onchange="applyFiltersAndSort()">
+            <option value="streamer">Стример</option>
+            <option value="me" class="me-element">Я</option>
+            <option value="chat">Чат</option>
+        </select>
 
-            <button id="sort-dir-btn" class="sort-dir-btn" onclick="toggleSortDir()" title="Изменить направление">↓</button>
-        </div>
+        <button id="sort-dir-btn" class="sort-dir-btn" onclick="toggleSortDir()" title="Изменить направление">↓</button>
     </div>
 
     <div id="trophy-room" class="trophy-room"><div class="loading">Синхронизация с базой...</div></div>
@@ -229,9 +235,11 @@
 
         function toggleRoleSelect() {
             const sortVal = document.getElementById('sort-select').value;
-            const needsRole = ['overall', 'plot', 'visuals', 'music', 'world', 'atmosphere'].includes(sortVal);
+            const needsRole = ['overall', 'avgTheory', 'plot', 'visuals', 'music', 'world', 'atmosphere'].includes(sortVal);
             const rs = document.getElementById('role-select');
+            const rd = document.getElementById('role-divider');
             if(rs) rs.style.display = needsRole ? 'block' : 'none';
+            if(rd) rd.style.display = needsRole ? 'block' : 'none';
         }
 
         function toggleSortDir() {
@@ -427,16 +435,21 @@
             const sortVal = document.getElementById('sort-select').value;
             const roleVal = document.getElementById('role-select').value;
             const mult = currentSortDir === 'desc' ? 1 : -1;
-            const needsRole = ['overall', 'plot', 'visuals', 'music', 'world', 'atmosphere'].includes(sortVal);
+            
+            // Если это критерий или итоговая оценка - ищем внутри объекта scores
+            const needsRole = ['overall', 'avgTheory', 'plot', 'visuals', 'music', 'world', 'atmosphere'].includes(sortVal);
 
             let filtered = globalFranchises.filter(f => f.title.toLowerCase().includes(query));
 
             filtered.sort((a, b) => {
                 let valA, valB;
                 if (needsRole) {
-                    valA = a.scores[roleVal][sortVal]; valB = b.scores[roleVal][sortVal];
+                    // Берем оценку в зависимости от выбранной роли (Стример/Чат/Я)
+                    valA = safeNum(a.scores[roleVal][sortVal]);
+                    valB = safeNum(b.scores[roleVal][sortVal]);
                 } else {
-                    valA = a[sortVal]; valB = b[sortVal];
+                    valA = a[sortVal]; 
+                    valB = b[sortVal];
                 }
 
                 if (typeof valA === 'string') return valA.localeCompare(valB) * (mult === 1 ? 1 : -1);
@@ -505,7 +518,7 @@
                             <span style="color:#fff; text-shadow: ${getScoreShadow(s.me.avgTheory, false)};">${s.me.avgTheory}/10</span>
                         </div>
                     </div>
-                    <button onclick="window.location.href='${detailsLink}'" style="margin-top: 10px; width: 100%; background: #222b20; border: 1px solid #4a5c41; color: #a4b09c; padding: 6px; font-family: 'Neucha', cursive; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase;">Медиатека ▶</button>
+                    <button onclick="window.location.href='${detailsLink}'" style="margin-top: 5px; width: 100%; background: var(--theme-panel-bg-top); border: 1px solid var(--theme-panel-border); color: #fff; padding: 6px; font-family: 'Neucha', cursive; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; text-shadow: 0 0 5px var(--theme-primary);">Медиатека ▶</button>
                 </div>
             </div>
         </div>
@@ -523,7 +536,12 @@
                         { data: [s.me.plot, s.me.visuals, s.me.music, s.me.world, s.me.atmosphere], backgroundColor: radarColors[2].bg, borderColor: radarColors[2].border, pointBackgroundColor: radarColors[2].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 }
                     ]
                 },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { filter: function(item) { return item.raw > 0; }, displayColors: false } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: '#283325' }, angleLines: { color: '#283325' }, pointLabels: { font: { size: 10, weight: 'bold' }, color: '#c4d1b8' } } } }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { legend: { display: false }, tooltip: { filter: function(item) { return item.raw > 0; }, displayColors: false } }, 
+                    scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: 'rgba(255,255,255,0.05)' }, angleLines: { color: 'rgba(255,255,255,0.05)' }, pointLabels: { font: { size: 12, weight: 'bold' }, color: '#c4d1b8' } } } 
+                }
             });
         }
     });
