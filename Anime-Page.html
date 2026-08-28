@@ -322,7 +322,7 @@
                     <div class="slider-group"><div class="slider-header"><span>Визуал</span><span id="m-vis">5</span></div><input type="range" id="msl-vis" min="1" max="10" value="5" oninput="document.getElementById('m-vis').innerText=this.value; syncModalChart();"></div>
                     <div class="slider-group"><div class="slider-header"><span>Музыка</span><span id="m-mus">5</span></div><input type="range" id="msl-mus" min="1" max="10" value="5" oninput="document.getElementById('m-mus').innerText=this.value; syncModalChart();"></div>
                     <div class="slider-group"><div class="slider-header"><span>Мир</span><span id="m-wor">5</span></div><input type="range" id="msl-wor" min="1" max="10" value="5" oninput="document.getElementById('m-wor').innerText=this.value; syncModalChart();"></div>
-                    <div class="slider-group"><div class="slider-header"><span>Атмосфера</span><span id="m-atm">5</span></div><input type="range" id="msl-atm" min="1" max="10" value="5" oninput="document.getElementById('m-atm').innerText=this.value; syncModalChart();"></div>
+                    <div class="slider-group"><div class="slider-header"><span>Персонажи</span><span id="m-atm">5</span></div><input type="range" id="msl-atm" min="1" max="10" value="5" oninput="document.getElementById('m-atm').innerText=this.value; syncModalChart();"></div>
                 </div>
 
                 <div class="modal-chart-area">
@@ -524,7 +524,7 @@
             radarChart = new Chart(ctx, {
                 type: 'radar',
                 data: { 
-                    labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Атмосфера'], 
+                    labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Персонажи'], 
                     datasets: [
                         { label: 'Стример', data: [0,0,0,0,0], backgroundColor: radarColors[0].bg, borderColor: radarColors[0].border, pointBackgroundColor: radarColors[0].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 3 }, 
                         { label: 'Чат', data: [0,0,0,0,0], backgroundColor: radarColors[1].bg, borderColor: radarColors[1].border, pointBackgroundColor: radarColors[1].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 3 }, 
@@ -545,7 +545,7 @@
                 const ctxModal = document.getElementById('modalChart').getContext('2d');
                 modalRadarChart = new Chart(ctxModal, {
                     type: 'radar',
-                    data: { labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Атмосфера'], datasets: [{ label: 'Оценка', data: [5,5,5,5,5], backgroundColor: bg, borderColor: color, pointBackgroundColor: color, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 3 }] },
+                    data: { labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Персонажи'], datasets: [{ label: 'Оценка', data: [5,5,5,5,5], backgroundColor: bg, borderColor: color, pointBackgroundColor: color, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 3 }] },
                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: '#283325' }, angleLines: { color: '#283325' }, pointLabels: { font: { size: 10, weight: 'bold' }, color: '#c4d1b8' } } } }
                 });
             }
@@ -623,7 +623,7 @@
                    createRow('Визуал', theoryObj.visuals) + 
                    createRow('Музыка', theoryObj.music) + 
                    createRow('Мир', theoryObj.world) + 
-                   createRow('Атмосфера', theoryObj.atmosphere);
+                   createRow('Персонажи', theoryObj.atmosphere);
         }
 
         function applyDynamicTheme(imageUrl) {
@@ -884,7 +884,7 @@
                         <span class="tooltip-element" style="color:${getScoreColor(t.visuals, 1)}; text-shadow:${getScoreShadow(t.visuals, false)};" data-title="Визуал: ${t.visuals}">${t.visuals}</span>
                         <span class="tooltip-element" style="color:${getScoreColor(t.music, 1)}; text-shadow:${getScoreShadow(t.music, false)};" data-title="Музыка: ${t.music}">${t.music}</span>
                         <span class="tooltip-element" style="color:${getScoreColor(t.world, 1)}; text-shadow:${getScoreShadow(t.world, false)};" data-title="Мир: ${t.world}">${t.world}</span>
-                        <span class="tooltip-element" style="color:${getScoreColor(t.atmosphere, 1)}; text-shadow:${getScoreShadow(t.atmosphere, false)};" data-title="Атмосфера: ${t.atmosphere}">${t.atmosphere}</span>
+                        <span class="tooltip-element" style="color:${getScoreColor(t.atmosphere, 1)}; text-shadow:${getScoreShadow(t.atmosphere, false)};" data-title="Персонажи: ${t.atmosphere}">${t.atmosphere}</span>
                     </div>
                 </div>`;
             }
