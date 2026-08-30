@@ -115,6 +115,10 @@
                     <div class="input-group">
                         <span class="input-label" style="color:#a6e3a1;">Название Сезона</span>
                         <input type="text" id="season-name" value="1 Сезон" style="border-color: #a6e3a1;">
+                        <div class="input-group">
+                        <span class="input-label" style="color:#a6e3a1;">Ссылка на видео (Прямая .mp4)</span>
+                        <input type="text" id="video-url" placeholder="https://..." style="border-color: #a6e3a1;">
+                    </div>
                     </div>
                 </div>
             </div>
@@ -243,6 +247,7 @@
 
             document.getElementById('db-franchise').value = frKey.replace(/_/g, ' ');
             document.getElementById('season-name').value = anime.seasonTab;
+            document.getElementById('video-url').value = anime.videoUrl || ''; // <-- Добавили эту строку
             
             document.getElementById('preview-no-img').style.display = 'none'; 
             document.getElementById('preview-img').style.display = 'block';
@@ -368,7 +373,10 @@
             if(!franchiseKey || !seasonKey) { alert("Укажите Франшизу и Сезон!"); btn.innerText = "Сохранить в базу"; btn.style.pointerEvents = "auto"; return; }
 
             const animeData = {
-                title: document.getElementById('preview-title').innerText, seasonTab: seasonKey, coverUrl: document.getElementById('db-img-url').value,
+                title: document.getElementById('preview-title').innerText, 
+                seasonTab: seasonKey, 
+                coverUrl: document.getElementById('db-img-url').value,
+                videoUrl: document.getElementById('video-url').value.trim(), // <-- Добавили эту строку
                 info: {
                     studio: document.getElementById('db-studio').value, year: document.getElementById('db-year').value,
                     format: document.getElementById('db-format').value, rating: document.getElementById('db-rating').value,
