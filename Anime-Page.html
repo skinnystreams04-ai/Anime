@@ -781,6 +781,7 @@
                 player.source = { type: 'video', sources: [] }; 
             }
             await applyDynamicTheme(anime.coverUrl);
+            document.getElementById('cover-img').src = anime.coverUrl; // <-- Эта строка вернет картинку
             document.getElementById('title-display').innerText = anime.title;
             document.getElementById('studio-display').innerText = anime.info.studio;
             document.getElementById('format-display').innerText = anime.info.format;
