@@ -743,16 +743,22 @@
             if (urls.length > 0) {
                 if (urls.length > 1 && epContainer) {
                     urls.forEach((url, index) => {
+                        // Понимаем новый формат кнопок из базы
+                        const isObj = typeof url === 'object';
+                        const linkUrl = isObj ? url.url : url;
+                        const linkLabel = isObj ? url.label : `Часть ${index + 1}`;
+
                         const btn = document.createElement('button');
                         btn.className = `season-btn ${index === 0 ? 'active' : ''}`;
-                        btn.innerText = `Часть ${index + 1}`;
+                        btn.innerText = linkLabel;
                         btn.style.fontSize = '14px';
                         btn.style.padding = '4px 12px';
                         
                         btn.onclick = () => {
                             document.querySelectorAll('#episodes-container .season-btn').forEach(b => b.classList.remove('active'));
                             btn.classList.add('active');
-                            document.getElementById('main-player').src = url;
+                            // Загружаем первую серию по умолчанию
+                document.getElementById('main-player').src = typeof urls[0] === 'object' ? urls[0].url : urls[0];
                         };
                         epContainer.appendChild(btn);
                     });

@@ -410,7 +410,17 @@ function removeLinkRow(btn) { btn.parentElement.remove(); }
                 title: document.getElementById('preview-title').innerText, 
                 seasonTab: seasonKey, 
                 coverUrl: document.getElementById('db-img-url').value,
-                videoUrls: document.getElementById('video-url').value.trim().split('\n').map(u => {
+                videoUrls: Array.from(document.querySelectorAll('#links-container > div')).map(row => {
+                    const name = row.querySelector('.link-name').value.trim();
+                    const type = row.querySelector('.link-type').value;
+                    let url = row.querySelector('.link-url').value.trim();
+                    
+                    if (url && url.includes('odysee.com/') && !url.includes('$/embed/')) { 
+                        url = url.replace('odysee.com/', 'odysee.com/$/embed/'); 
+                    }
+                    
+                    return url ? { label: `${name} ${type}`.trim(), url: url } : null;
+                }).filter(u => u),
                     let link = u.trim();
                     // Если это ссылка Odysee и в ней еще нет /embed/ - добавляем автоматически
                     if (link.includes('odysee.com/') && !link.includes('$/embed/')) {
