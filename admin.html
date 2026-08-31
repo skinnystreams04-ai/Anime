@@ -86,11 +86,10 @@
 
                     <!-- РЕЖИМ: ДОБАВЛЕНИЕ НОВОГО -->
                     <div id="block-new">
-                        <div class="input-group" style="margin-top: 10px;">
-                        <span class="input-label" style="color:#a6e3a1;">Медиафайлы (Odysee)</span>
-                        <div id="links-container" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;"></div>
-                        <button class="btn" style="padding: 8px; font-size: 15px; background: #1a2618; border-color: #4a5c41;" onclick="addLinkRow(event)">+ Добавить видео</button>
-                    </div>
+                        <div class="input-group">
+                            <span class="input-label">Поиск в AniList:</span>
+                            <input type="text" id="search-query" placeholder="Например: Cyberpunk" oninput="liveSearch()" autocomplete="off">
+                            <div id="autocomplete-results" class="autocomplete-dropdown"></div>
                         </div>
                     </div>
 
@@ -116,11 +115,14 @@
                     <div class="input-group">
                         <span class="input-label" style="color:#a6e3a1;">Название Сезона</span>
                         <input type="text" id="season-name" value="1 Сезон" style="border-color: #a6e3a1;">
-                        <div class="input-group">
-                        <span class="input-label" style="color:#a6e3a1;">Ссылка на видео (Прямая .mp4)</span>
-                        <input type="text" id="video-url" placeholder="https://..." style="border-color: #a6e3a1;">
                     </div>
+
+                    <div class="input-group" style="margin-top: 10px;">
+                        <span class="input-label" style="color:#a6e3a1;">Медиафайлы (Odysee)</span>
+                        <div id="links-container" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;"></div>
+                        <button class="btn" style="padding: 8px; font-size: 15px; background: #1a2618; border-color: #4a5c41;" onclick="addLinkRow(event)">+ Добавить видео</button>
                     </div>
+
                 </div>
             </div>
         </div>
