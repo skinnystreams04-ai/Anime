@@ -742,11 +742,11 @@
 
             if (urls.length > 0) {
                 if (urls.length > 1 && epContainer) {
-                    urls.forEach((url, index) => {
-                        // Понимаем новый формат кнопок из базы
-                        const isObj = typeof url === 'object';
-                        const linkUrl = isObj ? url.url : url;
-                        const linkLabel = isObj ? url.label : `Часть ${index + 1}`;
+                    urls.forEach((urlItem, index) => {
+                        // Расшифровываем новый формат из базы
+                        const isObj = typeof urlItem === 'object';
+                        const linkUrl = isObj ? urlItem.url : urlItem;
+                        const linkLabel = isObj ? urlItem.label : `Часть ${index + 1}`;
 
                         const btn = document.createElement('button');
                         btn.className = `season-btn ${index === 0 ? 'active' : ''}`;
@@ -757,13 +757,15 @@
                         btn.onclick = () => {
                             document.querySelectorAll('#episodes-container .season-btn').forEach(b => b.classList.remove('active'));
                             btn.classList.add('active');
-                            // Загружаем первую серию по умолчанию
-                document.getElementById('main-player').src = typeof urls[0] === 'object' ? urls[0].url : urls[0];
+                            document.getElementById('main-player').src = linkUrl;
                         };
                         epContainer.appendChild(btn);
                     });
                 }
-                document.getElementById('main-player').src = urls[0];
+                
+                // Достаем самую первую ссылку для автозапуска
+                const firstUrl = typeof urls[0] === 'object' ? urls[0].url : urls[0];
+                document.getElementById('main-player').src = firstUrl;
             } else {
                 document.getElementById('main-player').src = ""; 
             }
