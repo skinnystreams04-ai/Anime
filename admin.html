@@ -423,13 +423,6 @@ function removeLinkRow(btn) { btn.parentElement.remove(); }
                     
                     return url ? { label: `${name} ${type}`.trim(), url: url } : null;
                 }).filter(u => u),
-                    let link = u.trim();
-                    // Если это ссылка Odysee и в ней еще нет /embed/ - добавляем автоматически
-                    if (link.includes('odysee.com/') && !link.includes('$/embed/')) {
-                        link = link.replace('odysee.com/', 'odysee.com/$/embed/');
-                    }
-                    return link;
-                }).filter(u => u),
                 info: {
                     studio: document.getElementById('db-studio').value, year: document.getElementById('db-year').value,
                     format: document.getElementById('db-format').value, rating: document.getElementById('db-rating').value,
@@ -445,7 +438,6 @@ function removeLinkRow(btn) { btn.parentElement.remove(); }
                 }, addedAt: Date.now() 
             };
 
-            // ИСПОЛЬЗУЕМ МЕТОД PATCH: Он обновит информацию аниме, но НЕ ТРОНЕТ ветку с комментариями пользователей, если она там будет.
             const targetUrl = `https://skinwalkerauction-default-rtdb.europe-west1.firebasedatabase.app/anime_db/${franchiseKey}/${seasonKey}.json`;
 
             try {
