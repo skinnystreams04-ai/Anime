@@ -87,9 +87,10 @@
                     <!-- РЕЖИМ: ДОБАВЛЕНИЕ НОВОГО -->
                     <div id="block-new">
                         <div class="input-group">
-                            <span class="input-label">Поиск в AniList:</span>
-                            <input type="text" id="search-query" placeholder="Например: Cyberpunk" oninput="liveSearch()" autocomplete="off">
-                            <div id="autocomplete-results" class="autocomplete-dropdown"></div>
+                            <div class="input-group">
+                        <span class="input-label" style="color:#a6e3a1;">Ссылки на видео (Odysee)</span>
+                        <textarea id="video-url" placeholder="Вставляй ссылки сюда, каждую с новой строки..." style="width: 100%; height: 80px; background: #121612; border: 1px solid #a6e3a1; color: #c4d1b8; border-radius: 6px; padding: 10px; font-family: 'Neucha', cursive; font-size: 16px; outline: none; resize: vertical; box-sizing: border-box;"></textarea>
+                    </div>
                         </div>
                     </div>
 
@@ -247,7 +248,7 @@
 
             document.getElementById('db-franchise').value = frKey.replace(/_/g, ' ');
             document.getElementById('season-name').value = anime.seasonTab;
-            document.getElementById('video-url').value = anime.videoUrl || ''; // <-- Добавили эту строку
+            document.getElementById('video-url').value = anime.videoUrls ? anime.videoUrls.join('\n') : (anime.videoUrl || '');
             
             document.getElementById('preview-no-img').style.display = 'none'; 
             document.getElementById('preview-img').style.display = 'block';
@@ -376,7 +377,7 @@
                 title: document.getElementById('preview-title').innerText, 
                 seasonTab: seasonKey, 
                 coverUrl: document.getElementById('db-img-url').value,
-                videoUrl: document.getElementById('video-url').value.trim(), // <-- Добавили эту строку
+                videoUrls: document.getElementById('video-url').value.trim().split('\n').map(u => u.trim()).filter(u => u),
                 info: {
                     studio: document.getElementById('db-studio').value, year: document.getElementById('db-year').value,
                     format: document.getElementById('db-format').value, rating: document.getElementById('db-rating').value,
