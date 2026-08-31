@@ -7,8 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Neucha&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
-    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
-    <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
 
     <style> /* <--- ПРОПУЩЕН ИМЕННО ЭТОТ ТЕГ */
     :root {
@@ -233,9 +231,9 @@
     <div class="season-tabs" id="season-tabs-container"></div>
     <div class="episodes-container" id="episodes-container" style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;"></div>
 </div>
-                    <video id="main-player" playsinline controls>
-                        <source src="" type="video/mp4" id="video-source">
-                    </video>
+                    <div style="position: relative; width: 100%; aspect-ratio: 16/9; border-radius: 6px; overflow: hidden; border: 1px solid var(--theme-panel-border); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+    <iframe id="main-player" src="" style="width: 100%; height: 100%; border: none;" allowfullscreen allow="autoplay"></iframe>
+</div>
                 </div>
             </div>
 
@@ -359,9 +357,6 @@
         let editingTarget = { type: null, id: null, parentId: null }; 
 
         // Инициализация плеера Plyr
-        const player = new Plyr('#main-player', {
-            i18n: { speed: 'Скорость', normal: 'Обычная', quality: 'Качество', play: 'Играть', pause: 'Пауза', mute: 'Звук', unmute: 'Без звука', enterFullscreen: 'На весь экран', exitFullscreen: 'Выйти из полноэкранного' }
-        }); 
 
         window.globalUsersDB = {};
 
@@ -743,11 +738,9 @@
             const epContainer = document.getElementById('episodes-container');
             if (epContainer) epContainer.innerHTML = '';
             
-            // Подхватываем массив ссылок (если их несколько) или одиночную ссылку
             const urls = anime.videoUrls || (anime.videoUrl ? [anime.videoUrl] : []);
 
             if (urls.length > 0) {
-                // Если ссылок больше одной - рисуем кнопки под плеером
                 if (urls.length > 1 && epContainer) {
                     urls.forEach((url, index) => {
                         const btn = document.createElement('button');
@@ -759,27 +752,16 @@
                         btn.onclick = () => {
                             document.querySelectorAll('#episodes-container .season-btn').forEach(b => b.classList.remove('active'));
                             btn.classList.add('active');
-                            // Меняем исходник и оставляем обложку постера
-                            player.source = { 
-                                type: 'video', 
-                                sources: [{ src: url, type: 'video/mp4' }],
-                                poster: anime.coverUrl 
-                            };
-                            player.play();
+                            document.getElementById('main-player').src = url;
                         };
                         epContainer.appendChild(btn);
                     });
                 }
-                
-                // Загружаем первую серию по умолчанию (и ставим картинку постера)
-                player.source = { 
-                    type: 'video', 
-                    sources: [{ src: urls[0], type: 'video/mp4' }],
-                    poster: anime.coverUrl 
-                };
+                document.getElementById('main-player').src = urls[0];
             } else {
-                player.source = { type: 'video', sources: [] }; 
+                document.getElementById('main-player').src = ""; 
             }
+
             await applyDynamicTheme(anime.coverUrl);
             document.getElementById('cover-img').src = anime.coverUrl; // <-- Эта строка вернет картинку
             document.getElementById('title-display').innerText = anime.title;
