@@ -377,7 +377,14 @@
                 title: document.getElementById('preview-title').innerText, 
                 seasonTab: seasonKey, 
                 coverUrl: document.getElementById('db-img-url').value,
-                videoUrls: document.getElementById('video-url').value.trim().split('\n').map(u => u.trim()).filter(u => u),
+                videoUrls: document.getElementById('video-url').value.trim().split('\n').map(u => {
+                    let link = u.trim();
+                    // Если это ссылка Odysee и в ней еще нет /embed/ - добавляем автоматически
+                    if (link.includes('odysee.com/') && !link.includes('$/embed/')) {
+                        link = link.replace('odysee.com/', 'odysee.com/$/embed/');
+                    }
+                    return link;
+                }).filter(u => u),
                 info: {
                     studio: document.getElementById('db-studio').value, year: document.getElementById('db-year').value,
                     format: document.getElementById('db-format').value, rating: document.getElementById('db-rating').value,
