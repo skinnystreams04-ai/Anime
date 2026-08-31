@@ -86,10 +86,10 @@
 
                     <!-- РЕЖИМ: ДОБАВЛЕНИЕ НОВОГО -->
                     <div id="block-new">
-                        <div class="input-group">
-                            <div class="input-group">
-                        <span class="input-label" style="color:#a6e3a1;">Ссылки на видео (Odysee)</span>
-                        <textarea id="video-url" placeholder="Вставляй ссылки сюда, каждую с новой строки..." style="width: 100%; height: 80px; background: #121612; border: 1px solid #a6e3a1; color: #c4d1b8; border-radius: 6px; padding: 10px; font-family: 'Neucha', cursive; font-size: 16px; outline: none; resize: vertical; box-sizing: border-box;"></textarea>
+                        <div class="input-group" style="margin-top: 10px;">
+                        <span class="input-label" style="color:#a6e3a1;">Медиафайлы (Odysee)</span>
+                        <div id="links-container" style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;"></div>
+                        <button class="btn" style="padding: 8px; font-size: 15px; background: #1a2618; border-color: #4a5c41;" onclick="addLinkRow(event)">+ Добавить видео</button>
                     </div>
                         </div>
                     </div>
@@ -188,6 +188,27 @@
         const FIREBASE_DB_URL = "https://skinwalkerauction-default-rtdb.europe-west1.firebasedatabase.app/anime_db.json";
         let fullDatabaseData = {}; // Храним всю базу для режима редактирования
 
+function removeLinkRow(btn) { btn.parentElement.remove(); }
+
+        function addLinkRow(e, nameVal = '', typeVal = 'Серия', urlVal = '') {
+            if(e) e.preventDefault();
+            const container = document.getElementById('links-container');
+            const row = document.createElement('div');
+            row.style.cssText = "display: flex; gap: 8px; align-items: center; background: #121612; padding: 10px; border-radius: 6px; border: 1px solid #283325;";
+            row.innerHTML = `
+                <input type="text" class="link-name" placeholder="1-12" value="${nameVal}" style="width: 60px; font-size: 14px; padding: 6px;">
+                <select class="link-type" style="padding: 6px; font-size: 14px;">
+                    <option value="Серия" ${typeVal === 'Серия' ? 'selected' : ''}>Серия</option>
+                    <option value="Часть" ${typeVal === 'Часть' ? 'selected' : ''}>Часть</option>
+                    <option value="Фильм" ${typeVal === 'Фильм' ? 'selected' : ''}>Фильм</option>
+                    <option value="OVA" ${typeVal === 'OVA' ? 'selected' : ''}>OVA</option>
+                </select>
+                <input type="text" class="link-url" placeholder="https://odysee.com/..." value="${urlVal}" style="flex: 1; font-size: 14px; padding: 6px;">
+                <button onclick="removeLinkRow(this)" style="background: #331a1a; border: 1px solid #ff5555; color: #ff5555; border-radius: 6px; cursor: pointer; padding: 6px 12px; font-weight: bold; font-family: 'Neucha', cursive;">X</button>
+            `;
+            container.appendChild(row);
+        }
+
         function toggleBlock(blockId, isChecked) {
             const block = document.getElementById(blockId);
             if(isChecked) { block.classList.remove('disabled-block'); if(block.tagName === 'INPUT') block.disabled = false; } 
@@ -248,7 +269,19 @@
 
             document.getElementById('db-franchise').value = frKey.replace(/_/g, ' ');
             document.getElementById('season-name').value = anime.seasonTab;
-            document.getElementById('video-url').value = anime.videoUrls ? anime.videoUrls.join('\n') : (anime.videoUrl || '');
+            const container = document.getElementById('links-container');
+            container.innerHTML = ''; 
+            if (anime.videoUrls && anime.videoUrls.length > 0) {
+                anime.videoUrls.forEach((item) => {
+                    if (typeof item === 'string') { addLinkRow(null, '', 'Серия', item); } 
+                    else {
+                        const parts = item.label.split(' ');
+                        const type = parts.pop(); 
+                        addLinkRow(null, parts.join(' '), type, item.url);
+                    }
+                });
+            } else if (anime.videoUrl) { addLinkRow(null, '1', 'Серия', anime.videoUrl); }
+            else { addLinkRow(null); }
             
             document.getElementById('preview-no-img').style.display = 'none'; 
             document.getElementById('preview-img').style.display = 'block';
