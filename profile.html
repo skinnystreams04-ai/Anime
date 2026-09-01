@@ -121,7 +121,14 @@
 
         <div class="col-right">
             <div class="widget-base">
-                <div class="widget-header"><div class="widget-title">Зал Славы (Оценка 9-10)</div></div>
+                <div class="widget-header" style="display: flex; gap: 10px;">
+                    <div class="widget-title">Оценки</div>
+                    <select id="sort-ratings" onchange="renderRatings()" style="background: #121612; color: #a6e3a1; border: 1px solid #4a5c41; border-radius: 6px; font-family: 'Neucha', cursive; font-weight: bold; outline: none; cursor: pointer; padding: 2px 8px;">
+                        <option value="high">Сначала высокие</option>
+                        <option value="low">Сначала низкие</option>
+                        <option value="new">Сначала новые</option>
+                    </select>
+                </div>
                 <div class="widget-content">
                     <div class="hof-grid" id="hof-grid">
                         <!-- Топ тайтлы -->
@@ -143,6 +150,7 @@
 
     <script>
         const FIREBASE_BASE = 'https://skinwalkerauction-default-rtdb.europe-west1.firebasedatabase.app';
+        let allRatedAnime = [];
         let targetUserId = null;
         let radarChart = null;
 
@@ -220,8 +228,8 @@
                                 th.plot += r.theory.plot || 0; th.vis += r.theory.visuals || 0;
                                 th.mus += r.theory.music || 0; th.wor += r.theory.world || 0; th.atm += r.theory.atmosphere || 0;
                             }
-                            if (r.overall >= 9) {
-                                hofAnime.push({ title: titleName, cover: cover, score: r.overall, link: linkUrl });
+                            
+                                hofAnime.push({ title: titleName, cover: cover, score: r.overall, link: linkUrl, timestamp: r.timestamp });
                             }
                             
                             allActivity.push({
@@ -277,7 +285,6 @@
                 <div class="profile-name" style="color: ${userColor}; text-shadow: 0 0 15px ${userColor}80;">${userName}</div>
                 <div class="badges-row">
                     ${badgeHtml}
-                    <div class="wallet-item gold"><img src="icons/BILET_GOLD.png"> <span>${gold}</span></div>
                 </div>
             `;
 
@@ -310,24 +317,9 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: '#283325' }, angleLines: { color: '#283325' }, pointLabels: { font: { size: 13, weight: 'bold' }, color: '#c4d1b8' } } } }
             });
 
-            // Рендер Зала Славы
-            const hofContainer = document.getElementById('hof-grid');
-            hofAnime.sort((a,b) => b.score - a.score);
-            if (hofAnime.length === 0) {
-                hofContainer.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #6b7a62;">Пока нет оценок 9+</div>`;
-            } else {
-                // Убираем дубликаты (если оценил несколько сезонов высоко)
-                const uniqueHof = []; const seen = new Set();
-                hofAnime.forEach(a => { if(!seen.has(a.title)) { seen.add(a.title); uniqueHof.push(a); }});
-                
-                hofContainer.innerHTML = uniqueHof.map(a => `
-                    <a href="${a.link}" class="hof-item">
-                        <img src="${a.cover}" class="hof-img">
-                        <div class="hof-score">★ ${a.score}</div>
-                        <div class="hof-title-overlay">${a.title}</div>
-                    </a>
-                `).join('');
-            }
+            // Рендер всех оценок с сортировкой
+            allRatedAnime = hofAnime; // Передаем собранные данные в глобальный массив (в цикле выше замени hofAnime на сбор всех оценок)
+            renderRatings();
 
             // Рендер Активности
             const actContainer = document.getElementById('activity-feed');
@@ -349,7 +341,34 @@
                 }).join('');
             }
         }
+function renderRatings() {
+            const container = document.getElementById('hof-grid');
+            const sortType = document.getElementById('sort-ratings').value;
+            
+            // Убираем дубликаты (оставляем самую свежую оценку, если человек оценил 2 сезона)
+            let uniqueList = [];
+            const seen = new Set();
+            let sortedByTime = [...allRatedAnime].sort((a, b) => b.timestamp - a.timestamp);
+            sortedByTime.forEach(a => { if(!seen.has(a.title)) { seen.add(a.title); uniqueList.push(a); } });
 
+            // Применяем выбранную сортировку
+            if (sortType === 'high') uniqueList.sort((a, b) => b.score - a.score);
+            else if (sortType === 'low') uniqueList.sort((a, b) => a.score - b.score);
+            else if (sortType === 'new') uniqueList.sort((a, b) => b.timestamp - a.timestamp);
+
+            if (uniqueList.length === 0) {
+                container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #6b7a62;">Пользователь еще ничего не оценил</div>`;
+                return;
+            }
+
+            container.innerHTML = uniqueList.map(a => `
+                <a href="${a.link}" class="hof-item">
+                    <img src="${a.cover}" class="hof-img">
+                    <div class="hof-score">★ ${a.score}</div>
+                    <div class="hof-title-overlay">${a.title}</div>
+                </a>
+            `).join('');
+        }
         window.onload = initProfile;
     </script>
 </body>
