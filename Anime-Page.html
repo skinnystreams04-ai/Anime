@@ -9,6 +9,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
 
     <style> /* <--- ПРОПУЩЕН ИМЕННО ЭТОТ ТЕГ */
+
+    ::-webkit-scrollbar { width: 8px; }
+    ::-webkit-scrollbar-track { background: #0b0d0a; border-left: 1px solid #283325; }
+    ::-webkit-scrollbar-thumb { background: #4a5c41; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--theme-primary, #a6e3a1); box-shadow: 0 0 10px var(--theme-glow, rgba(166, 227, 161, 0.5)); }
+
     :root {
     --theme-primary: #a6e3a1; /* Базовый цвет текста */
     --theme-glow: rgba(166, 227, 161, 0.2); /* Свечение */
@@ -938,9 +944,11 @@
             <div class="comment-item ${isReply ? 'reply-item' : ''}">
                 <div class="comment-top">
                     <div class="comment-author-block">
-                        <img src="${c.profileImage}" class="comment-avatar">
+                        <a href="profile.html?user=${authorId}" style="text-decoration: none;">
+                            <img src="${c.profileImage}" class="comment-avatar" style="cursor: pointer; transition: 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'">
+                        </a>
                         <div class="author-details">
-                            <span class="comment-author" style="color: ${uInfo.color};">${c.displayName}</span>
+                            <a href="profile.html?user=${authorId}" class="comment-author" style="color: ${uInfo.color}; text-decoration: none; cursor: pointer;">${c.displayName}</a>
                             <div>${uInfo.badge}</div>
                         </div>
                     </div>
