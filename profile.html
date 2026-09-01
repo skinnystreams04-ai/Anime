@@ -229,8 +229,7 @@
                                 th.mus += r.theory.music || 0; th.wor += r.theory.world || 0; th.atm += r.theory.atmosphere || 0;
                             }
                             
-                                hofAnime.push({ title: titleName, cover: cover, score: r.overall, link: linkUrl, timestamp: r.timestamp });
-                            }
+                            hofAnime.push({ title: titleName, cover: cover, score: r.overall, link: linkUrl, timestamp: r.timestamp });
                             
                             allActivity.push({
                                 type: 'rating',
@@ -267,10 +266,9 @@
             // Достаем данные с Twitch/Аукциона
             const lowerName = userName.toLowerCase();
             const dbUser = usersDb[lowerName];
-            let role = "F"; let gold = 0;
+            let role = "F"; 
             if (dbUser) {
                 if (dbUser.role) role = dbUser.role.toUpperCase();
-                if (dbUser.wallet_gold) gold = dbUser.wallet_gold;
                 if (dbUser.color && dbUser.color.trim() !== "") userColor = dbUser.color;
             }
 
@@ -278,7 +276,7 @@
             if (role === 'SUB' || role === 'SUBSCRIBER') badgeHtml = `<span class="role-badge role-sub">SUB</span>`;
             else if (role === 'VIP') badgeHtml = `<span class="role-badge role-vip">VIP</span>`;
 
-            // Рендер Профиля (Без билетов)
+            // Рендер Профиля
             document.documentElement.style.setProperty('--user-color', userColor);
             document.getElementById('profile-card').innerHTML = `
                 <div class="avatar-wrap"><img src="${userAvatar}" class="profile-avatar"></div>
@@ -318,7 +316,7 @@
             });
 
             // Рендер всех оценок с сортировкой
-            allRatedAnime = hofAnime; // Передаем собранные данные в глобальный массив (в цикле выше замени hofAnime на сбор всех оценок)
+            allRatedAnime = hofAnime; 
             renderRatings();
 
             // Рендер Активности
