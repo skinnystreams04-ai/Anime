@@ -325,9 +325,10 @@
             
             <div class="modal-content-wrapper">
                 <div class="modal-sliders">
-                    <div class="input-label">Итоговое впечатление</div>
-                    <label>Итоговое впечатление:</label>
-                    <input type="number" id="modal-overall" min="1" max="10" step="0.5" placeholder="От 1.0 до 10.0">
+                    <div class="slider-group" style="margin-bottom: 25px;">
+                        <div class="slider-header"><span style="color: var(--theme-primary); font-size: 18px; text-transform: uppercase;">Итоговая оценка</span><span id="m-overall" style="color: var(--theme-primary); font-size: 20px;">5.0</span></div>
+                        <input type="range" id="modal-overall" min="1" max="10" step="0.5" value="5" oninput="document.getElementById('m-overall').innerText=parseFloat(this.value).toFixed(1);">
+                    </div>
 
                     <label style="margin-top: 15px; border-top: 1px dashed #283325; padding-top: 15px;">Оценка по критериям:</label>
                     <div class="slider-group"><div class="slider-header"><span>Сюжет</span><span id="m-plot">5.0</span></div><input type="range" id="msl-plot" min="1" max="10" step="0.5" value="5" oninput="document.getElementById('m-plot').innerText=parseFloat(this.value).toFixed(1); syncModalChart();"></div>
@@ -617,7 +618,10 @@
             }
 
             if (existingData) {
-                document.getElementById('modal-overall').value = existingData.overall || '';
+                const ovrVal = existingData.overall || 5;
+                document.getElementById('modal-overall').value = ovrVal;
+                document.getElementById('m-overall').innerText = parseFloat(ovrVal).toFixed(1);
+                
                 if (existingData.theory) {
                     ['plot','vis','mus','wor','atm'].forEach(id => {
                         const val = existingData.theory[id==='vis'?'visuals':id==='mus'?'music':id==='wor'?'world':id==='atm'?'atmosphere':id] || 5;
@@ -625,7 +629,9 @@
                     });
                 }
             } else {
-                document.getElementById('modal-overall').value = '';
+                document.getElementById('modal-overall').value = 5;
+                document.getElementById('m-overall').innerText = '5.0';
+                
                 ['plot','vis','mus','wor','atm'].forEach(id => { document.getElementById('msl-'+id).value = 5; document.getElementById('m-'+id).innerText = '5.0'; });
             }
 
