@@ -172,24 +172,20 @@
 
         /* МОДАЛЬНЫЕ ОКНА И UI */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; display: flex; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
-        .modal-box { background: linear-gradient(180deg, #101411 0%, #080a08 100%); border: 2px solid #a6e3a1; border-radius: 12px; padding: 30px; width: 750px; box-shadow: 0 0 30px rgba(166, 227, 161, 0.2); position: relative; }
-        .modal-title { color: #a6e3a1; font-size: 24px; text-transform: uppercase; margin: 0 0 20px 0; text-align: center; font-weight: bold; letter-spacing: 1px;}
-        .close-btn { position: absolute; top: 15px; right: 20px; color: #829c73; font-size: 28px; cursor: pointer; transition: 0.2s; font-family: sans-serif; line-height: 1; }
-        .close-btn:hover { color: #ff5555; transform: scale(1.1); }
+        .modal-box { background: linear-gradient(180deg, var(--theme-panel-bg-top) 0%, var(--theme-panel-bg-bottom) 100%); border: 2px solid var(--theme-primary); border-radius: 12px; padding: 30px; width: 750px; box-shadow: 0 0 30px var(--theme-glow); position: relative; transition: background 0.5s, border-color 0.5s, box-shadow 0.5s; }
+        .modal-title { color: var(--theme-primary); font-size: 24px; text-transform: uppercase; margin: 0 0 20px 0; text-align: center; font-weight: bold; letter-spacing: 1px; text-shadow: 0 0 10px var(--theme-glow); transition: 0.5s; }
+        .close-btn { position: absolute; top: 15px; right: 20px; color: var(--theme-primary); font-size: 28px; cursor: pointer; transition: 0.2s; font-family: sans-serif; line-height: 1; opacity: 0.7; }
+        .close-btn:hover { color: #ff5555; transform: scale(1.1); opacity: 1; text-shadow: 0 0 10px rgba(255,85,85,0.8); }
         
         .modal-content-wrapper { display: flex; gap: 30px; align-items: center; }
         .modal-sliders { flex: 1; }
         .modal-chart-area { width: 260px; height: 260px; display: flex; justify-content: center; align-items: center; }
 
-        .modal-box .input-label { color: #829c73; font-size: 15px; text-transform: uppercase; font-weight: bold; display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;}
-        .modal-box input[type="number"] { width: 100%; background: #121612; border: 1px solid #4a5c41; color: #c4d1b8; border-radius: 6px; padding: 10px; font-family: 'Neucha', cursive; font-size: 18px; outline: none; transition: 0.2s; box-sizing: border-box; margin-bottom: 20px; text-align: center;}
-        .modal-box input:focus { border-color: #a6e3a1; box-shadow: 0 0 10px rgba(166, 227, 161, 0.2); }
-        
         .slider-group { margin-bottom: 15px; }
         .slider-header { display: flex; justify-content: space-between; font-size: 16px; margin-bottom: 5px; color: #c4d1b8; font-weight: bold;}
         .modal-box input[type=range] { -webkit-appearance: none; width: 100%; background: transparent; }
-        .modal-box input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: #121612; border-radius: 3px; border: 1px solid #283325; }
-        .modal-box input[type=range]::-webkit-slider-thumb { height: 18px; width: 18px; border-radius: 50%; background: #a6e3a1; cursor: pointer; -webkit-appearance: none; margin-top: -7px; box-shadow: 0 0 10px rgba(166, 227, 161, 0.5); }
+        .modal-box input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 6px; cursor: pointer; background: var(--theme-panel-header); border-radius: 3px; border: 1px solid var(--theme-panel-border); transition: 0.5s; }
+        .modal-box input[type=range]::-webkit-slider-thumb { height: 18px; width: 18px; border-radius: 50%; background: var(--theme-primary); cursor: pointer; -webkit-appearance: none; margin-top: -7px; box-shadow: 0 0 10px var(--theme-glow); transition: background 0.5s, box-shadow 0.5s; }
 
         .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b0d0a; z-index: 9999; display: flex; justify-content: center; align-items: center; color: #a6e3a1; font-size: 24px; flex-direction: column; text-align: center; padding: 20px; }
 
