@@ -104,6 +104,14 @@
         .loading { font-size: 24px; color: #829c73; text-align: center; margin-top: 50px; width: 100%; }
         .secret-admin-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 40px; height: 40px; background: rgba(11, 13, 10, 0.3); border: 1px solid #283325; color: #4a5c41; border-radius: 50%; justify-content: center; align-items: center; cursor: pointer; z-index: 9999; transition: 0.3s; opacity: 0.2; font-size: 18px; }
         .secret-admin-btn:hover { opacity: 1; background: #1a2618; color: #a6e3a1; border-color: #a6e3a1; box-shadow: 0 0 10px rgba(166,227,161,0.3); }
+        }
+        /* ИНДИКАТОР НАЛИЧИЯ ПЛЕЕРА (КАМЕРА) */
+        .vod-badge { position: absolute; top: 10px; right: 45px; background: rgba(11, 13, 10, 0.85); border: 1px solid #4a5c41; color: #a6e3a1; padding: 6px; border-radius: 6px; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; pointer-events: none; }
+        .vod-badge::before { content: ''; display: inline-block; width: 6px; height: 6px; background: #fff; border-radius: 50%; animation: pulseVod 1.5s infinite; }
+        @keyframes pulseVod { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        
+        /* Прячем колонку "Я" для стримера (админа) */
+        body.is-admin .me-element { display: none !important; }
     </style>
 </head>
 <body>
@@ -459,95 +467,250 @@
             renderCards(filtered);
         }
 
-        function renderCards(arr) {
-    const room = document.getElementById('trophy-room');
-    Object.values(allCharts).forEach(chart => chart.destroy()); allCharts = {}; room.innerHTML = "";
-    if (arr.length === 0) { room.innerHTML = "<div class='loading'>Ничего не найдено...</div>"; return; }
+        async function initApp() {
+            try {
+                const dbRes = await fetch(`${FIREBASE_BASE}/global_users.json`, { cache: 'no-store' });
+                if (dbRes.ok) { window.globalUsersDB = (await dbRes.json()) || {}; }
+            } catch(e) { console.warn("Не удалось загрузить базу пользователей", e); }
 
-    arr.forEach(f => {
-        const safeIdForLink = encodeURIComponent(f.id).replace(/'/g, "%27");
-        const safeDomId = f.id.replace(/[^a-zA-Z0-9_-]/g, "_");
-        const detailsLink = `Anime-Page.html?id=${safeIdForLink}`;
-        const safeCoverUrl = f.coverUrl.replace(/'/g, "\\'");
-        const s = f.scores;
+            await checkTwitchAuth();
 
-        const cardHtml = `
-        <div class="card-container" id="card-${safeDomId}" data-cover="${safeCoverUrl}" onmouseleave="this.classList.remove('is-flipped')" style="--card-color: #283325; --card-border: rgba(40, 51, 37, 0.8); --card-shadow: rgba(0,0,0,0.5); --card-shadow-hover: rgba(166, 227, 161, 0.25);">
-            <div class="card-inner">
-                <div class="card-face card-front" style="background-image: url('${safeCoverUrl}');" onclick="if(!event.target.closest('.flip-btn')) window.location.href='${detailsLink}'">
-                    <div class="ep-badge">${f.badgeText}</div>
-                    <div class="flip-btn" onmouseenter="document.getElementById('card-${safeDomId}').classList.add('is-flipped')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.13 15.57a10 10 0 1 0 3.1-8.91L2 9M2.5 22v-6h6M21.87 8.43a10 10 0 1 0-3.1 8.91l3.23-2.34"/></svg></div>
-                    <div class="front-overlay">
-                        <div class="scores-row">
-                            <div class="score-box" style="${getGlassBoxStyle(s.streamer.overall)}">
-                                <div class="score-label streamer" style="color:${getScoreColor(s.streamer.overall, 1)}; border-bottom-color:${getScoreColor(s.streamer.overall, 0.4)}; text-shadow:0 0 8px ${getScoreColor(s.streamer.overall, 0.6)};">Стример</div>
-                                <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(s.streamer.overall, true)};">${s.streamer.overall}<span> / 10</span></div>
-                            </div>
-                            <div class="score-box me-element" style="${getGlassBoxStyle(s.me.overall)}">
-                                <div class="score-label me" style="color:${getScoreColor(s.me.overall, 1)}; border-bottom-color:${getScoreColor(s.me.overall, 0.4)}; text-shadow:0 0 8px ${getScoreColor(s.me.overall, 0.6)};">Я</div>
-                                <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(s.me.overall, true)};">${s.me.overall}<span> / 10</span></div>
-                            </div>
-                            <div class="score-box" style="${getGlassBoxStyle(s.chat.overall)}">
-                                <div class="score-label chat" style="color:${getScoreColor(s.chat.overall, 1)}; border-bottom-color:${getScoreColor(s.chat.overall, 0.4)}; text-shadow:0 0 8px ${getScoreColor(s.chat.overall, 0.6)};">Чат</div>
-                                <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(s.chat.overall, true)};">${s.chat.overall}<span> / 10</span></div>
+            try {
+                const [animeRes, commRes] = await Promise.all([
+                    fetch(`${FIREBASE_BASE}/anime_db.json`, { cache: 'no-store' }),
+                    fetch(`${FIREBASE_BASE}/community_db.json`, { cache: 'no-store' })
+                ]);
+                const data = await animeRes.json();
+                const commData = (await commRes.json()) || {};
+
+                const room = document.getElementById('trophy-room');
+                if (!data) { room.innerHTML = "<div class='loading'>Коллекция пуста.</div>"; return; }
+                
+                globalFranchises = []; 
+
+                for (const [franchiseId, seasonsObj] of Object.entries(data)) {
+                    const seasons = Object.entries(seasonsObj).map(([seasonId, sData]) => ({seasonId, ...sData}));
+                    let totalEp = 0;
+                    
+                    let streamer = { overall:0, plot:0, vis:0, mus:0, wor:0, atm:0, countOv:0, countTh:0 };
+                    let chat = { overall:0, plot:0, vis:0, mus:0, wor:0, atm:0, count:0 };
+                    let me = { overall:0, plot:0, vis:0, mus:0, wor:0, atm:0, count:0 };
+
+                    seasons.forEach(s => {
+                        totalEp += parseInt(s.info.episodesTotal) || 0;
+                        
+                        if (s.scores && safeNum(s.scores.overall) > 0) { streamer.overall += safeNum(s.scores.overall); streamer.countOv++; }
+                        if (s.scores && s.scores.theory) {
+                            streamer.plot += safeNum(s.scores.theory.plot); streamer.vis += safeNum(s.scores.theory.visuals);
+                            streamer.mus += safeNum(s.scores.theory.music); streamer.wor += safeNum(s.scores.theory.world);
+                            streamer.atm += safeNum(s.scores.theory.atmosphere); streamer.countTh++;
+                        }
+
+                        const sComm = commData[franchiseId] && commData[franchiseId][s.seasonId] ? commData[franchiseId][s.seasonId].ratings : null;
+                        if (sComm) {
+                            for (const [uid, r] of Object.entries(sComm)) {
+                                chat.overall += safeNum(r.overall);
+                                if (r.theory) {
+                                    chat.plot += safeNum(r.theory.plot); chat.vis += safeNum(r.theory.visuals);
+                                    chat.mus += safeNum(r.theory.music); chat.wor += safeNum(r.theory.world); chat.atm += safeNum(r.theory.atmosphere);
+                                }
+                                chat.count++;
+                                
+                                if (currentUser && uid === currentUser.id) {
+                                    me.overall += safeNum(r.overall);
+                                    if (r.theory) {
+                                        me.plot += safeNum(r.theory.plot); me.vis += safeNum(r.theory.visuals);
+                                        me.mus += safeNum(r.theory.music); me.wor += safeNum(r.theory.world); me.atm += safeNum(r.theory.atmosphere);
+                                    }
+                                    me.count++;
+                                }
+                            }
+                        }
+                    });
+
+                    const scoresObj = {
+                        streamer: {
+                            overall: getAvg(streamer.overall, streamer.countOv),
+                            plot: getAvg(streamer.plot, streamer.countTh), visuals: getAvg(streamer.vis, streamer.countTh),
+                            music: getAvg(streamer.mus, streamer.countTh), world: getAvg(streamer.wor, streamer.countTh), atmosphere: getAvg(streamer.atm, streamer.countTh)
+                        },
+                        chat: {
+                            overall: getAvg(chat.overall, chat.count),
+                            plot: getAvg(chat.plot, chat.count), visuals: getAvg(chat.vis, chat.count),
+                            music: getAvg(chat.mus, chat.count), world: getAvg(chat.wor, chat.count), atmosphere: getAvg(chat.atm, chat.count)
+                        },
+                        me: {
+                            overall: getAvg(me.overall, me.count),
+                            plot: getAvg(me.plot, me.count), visuals: getAvg(me.vis, me.count),
+                            music: getAvg(me.mus, me.count), world: getAvg(me.wor, me.count), atmosphere: getAvg(me.atm, me.count)
+                        }
+                    };
+
+                    scoresObj.streamer.avgTheory = getAvg(scoresObj.streamer.plot + scoresObj.streamer.visuals + scoresObj.streamer.music + scoresObj.streamer.world + scoresObj.streamer.atmosphere, 5);
+                    scoresObj.chat.avgTheory = getAvg(scoresObj.chat.plot + scoresObj.chat.visuals + scoresObj.chat.music + scoresObj.chat.world + scoresObj.chat.atmosphere, 5);
+                    scoresObj.me.avgTheory = getAvg(scoresObj.me.plot + scoresObj.me.visuals + scoresObj.me.music + scoresObj.me.world + scoresObj.me.atmosphere, 5);
+
+                    const baseSeason = seasons[0];
+                    // Проверяем наличие видео хотя бы в первом сезоне
+                    const seasonUrls = baseSeason.videoUrls || (baseSeason.videoUrl ? [baseSeason.videoUrl] : []);
+                    
+                    globalFranchises.push({
+                        id: franchiseId, title: franchiseId.replace(/_/g, ' '), coverUrl: baseSeason.coverUrl,
+                        episodes: totalEp, badgeText: `${seasons.length}S ${totalEp}EP`,
+                        release_year: parseInt(baseSeason.info.year) || 0, date_watched: baseSeason.info.dateWatched ? new Date(baseSeason.info.dateWatched).getTime() : 0,
+                        az: franchiseId.replace(/_/g, ' ').toLowerCase(),
+                        scores: scoresObj,
+                        hasVod: seasonUrls.length > 0 // Флажок записи
+                    });
+                }
+
+                document.getElementById('controls-bar').style.display = 'flex';
+                toggleRoleSelect();
+                applyFiltersAndSort();
+
+            } catch (e) { console.error(e); }
+        }
+
+        function applyFiltersAndSort() {
+            const query = document.getElementById('search-input').value.toLowerCase();
+            const sortVal = document.getElementById('sort-select').value;
+            const roleVal = document.getElementById('role-select').value;
+            const mult = currentSortDir === 'desc' ? 1 : -1;
+            
+            const needsRole = ['overall', 'avgTheory', 'plot', 'visuals', 'music', 'world', 'atmosphere'].includes(sortVal);
+
+            let filtered = globalFranchises.filter(f => f.title.toLowerCase().includes(query));
+
+            filtered.sort((a, b) => {
+                let valA, valB;
+                if (needsRole) {
+                    valA = safeNum(a.scores[roleVal][sortVal]);
+                    valB = safeNum(b.scores[roleVal][sortVal]);
+                } else {
+                    valA = a[sortVal]; 
+                    valB = b[sortVal];
+                }
+
+                if (typeof valA === 'string') return valA.localeCompare(valB) * (mult === 1 ? 1 : -1);
+                return (valB - valA) * mult;
+            });
+
+            // ПЕРЕДАЕМ ВЫБРАННЫЙ КРИТЕРИЙ В РЕНДЕР
+            renderCards(filtered, sortVal);
+        }
+
+        function renderCards(arr, sortVal = 'overall') {
+            const room = document.getElementById('trophy-room');
+            Object.values(allCharts).forEach(chart => chart.destroy()); allCharts = {}; room.innerHTML = "";
+            if (arr.length === 0) { room.innerHTML = "<div class='loading'>Ничего не найдено...</div>"; return; }
+
+            const isStreamer = currentUser && currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
+
+            // Определяем, какую оценку выводить на карточке
+            const validKeys = ['overall', 'avgTheory', 'plot', 'visuals', 'music', 'world', 'atmosphere'];
+            const scoreKey = validKeys.includes(sortVal) ? sortVal : 'overall';
+            
+            // Названия критериев для красивой плашки
+            const sortNames = { 'avgTheory': 'СРЕДНЕМУ КРИТЕРИЮ', 'plot': 'СЮЖЕТУ', 'visuals': 'ВИЗУАЛУ', 'music': 'МУЗЫКЕ', 'world': 'МИРУ', 'atmosphere': 'ПЕРСОНАЖАМ' };
+            const labelHtml = scoreKey !== 'overall' ? `<div style="text-align: center; color: #829c73; font-size: 11px; font-weight: bold; letter-spacing: 1px; margin-bottom: 4px; text-shadow: 1px 1px 2px #000;">ОЦЕНКА ПО ${sortNames[scoreKey]}</div>` : '';
+
+            arr.forEach((f, index) => {
+                const safeIdForLink = encodeURIComponent(f.id).replace(/'/g, "%27");
+                const safeDomId = f.id.replace(/[^a-zA-Z0-9_-]/g, "_");
+                const detailsLink = `Anime-Page.html?id=${safeIdForLink}`;
+                const safeCoverUrl = f.coverUrl.replace(/'/g, "\\'");
+                const s = f.scores;
+
+                // ДОСТАЕМ НУЖНЫЕ ЦИФРЫ В ЗАВИСИМОСТИ ОТ ВЫБРАННОГО ФИЛЬТРА
+                const valStr = s.streamer[scoreKey] || 0;
+                const valChat = s.chat[scoreKey] || 0;
+                const valMe = s.me[scoreKey] || 0;
+
+                const vodHtml = f.hasVod ? `<div class="vod-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14v-4z"/><rect x="3" y="6" width="12" height="12" rx="2" ry="2"/></svg></div>` : '';
+
+                const meBoxHtml = isStreamer ? '' : `
+                    <div class="score-box me-element" style="${getGlassBoxStyle(valMe)}">
+                        <div class="score-label me" style="color:${getScoreColor(valMe, 1)}; border-bottom-color:${getScoreColor(valMe, 0.4)}; text-shadow:0 0 8px ${getScoreColor(valMe, 0.6)};">Я</div>
+                        <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(valMe, true)};">${valMe}<span> / 10</span></div>
+                    </div>`;
+
+                const meLegendHtml = isStreamer ? '' : `
+                    <div class="legend-item me-element" style="color: ${radarColors[2].border};" onmouseover="highlightChart('${safeDomId}', 2)" onmouseout="resetChart('${safeDomId}')"><div class="dot" style="background: ${radarColors[2].border};"></div>Я</div>`;
+
+                const meTheoryHtml = isStreamer ? '' : `
+                    <div class="crit-row me-element" style="${getGlassRowStyle(s.me.avgTheory)}">
+                        <span style="color:${getScoreColor(s.me.avgTheory, 1)}; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: ${getScoreShadow(s.me.avgTheory, false)};">Я</span>
+                        <span style="color:#fff; text-shadow: ${getScoreShadow(s.me.avgTheory, false)};">${s.me.avgTheory}/10</span>
+                    </div>`;
+
+                const cardHtml = `
+                <div class="card-container" id="card-${safeDomId}" data-cover="${safeCoverUrl}" onmouseleave="this.classList.remove('is-flipped')" style="--card-color: #283325; --card-border: rgba(40, 51, 37, 0.8); --card-shadow: rgba(0,0,0,0.5); --card-shadow-hover: rgba(166, 227, 161, 0.25);">
+                    <div class="card-number">${index + 1}</div>
+                    <div class="card-inner">
+                        <div class="card-face card-front" style="background-image: url('${safeCoverUrl}');" onclick="if(!event.target.closest('.flip-btn')) window.location.href='${detailsLink}'">
+                            <div class="ep-badge">${f.badgeText}</div>
+                            ${vodHtml}
+                            <div class="flip-btn" onmouseenter="document.getElementById('card-${safeDomId}').classList.add('is-flipped')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.13 15.57a10 10 0 1 0 3.1-8.91L2 9M2.5 22v-6h6M21.87 8.43a10 10 0 1 0-3.1 8.91l3.23-2.34"/></svg></div>
+                            <div class="front-overlay">
+                                ${labelHtml}
+                                <div class="scores-row">
+                                    <div class="score-box" style="${getGlassBoxStyle(valStr)}">
+                                        <div class="score-label streamer" style="color:${getScoreColor(valStr, 1)}; border-bottom-color:${getScoreColor(valStr, 0.4)}; text-shadow:0 0 8px ${getScoreColor(valStr, 0.6)};">Стример</div>
+                                        <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(valStr, true)};">${valStr}<span> / 10</span></div>
+                                    </div>
+                                    ${meBoxHtml}
+                                    <div class="score-box" style="${getGlassBoxStyle(valChat)}">
+                                        <div class="score-label chat" style="color:${getScoreColor(valChat, 1)}; border-bottom-color:${getScoreColor(valChat, 0.4)}; text-shadow:0 0 8px ${getScoreColor(valChat, 0.6)};">Чат</div>
+                                        <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(valChat, true)};">${valChat}<span> / 10</span></div>
+                                    </div>
+                                </div>
+                                <div class="divider"></div>
+                                <div class="anime-title">${f.title}</div>
                             </div>
                         </div>
-                        <div class="divider"></div>
-                        <div class="anime-title">${f.title}</div>
+                        <div class="card-face card-back">
+                            <h3 class="back-title" onclick="window.location.href='${detailsLink}'">Критерии</h3>
+                            <div class="chart-container" onclick="window.location.href='${detailsLink}'"><canvas id="chart-${safeDomId}"></canvas></div>
+                            <div class="custom-legend">
+                                <div class="legend-item" style="color: ${radarColors[0].border};" onmouseover="highlightChart('${safeDomId}', 0)" onmouseout="resetChart('${safeDomId}')"><div class="dot" style="background: ${radarColors[0].border};"></div>Стример</div>
+                                ${meLegendHtml}
+                                <div class="legend-item" style="color: ${radarColors[1].border};" onmouseover="highlightChart('${safeDomId}', ${isStreamer ? 1 : 2})" onmouseout="resetChart('${safeDomId}')"><div class="dot" style="background: ${radarColors[1].border};"></div>Чат</div>
+                            </div>
+                            <div class="theory-container">
+                                <div class="crit-row" style="${getGlassRowStyle(s.streamer.avgTheory)}">
+                                    <span style="color:${getScoreColor(s.streamer.avgTheory, 1)}; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: ${getScoreShadow(s.streamer.avgTheory, false)};">Стример</span>
+                                    <span style="color:#fff; text-shadow: ${getScoreShadow(s.streamer.avgTheory, false)};">${s.streamer.avgTheory}/10</span>
+                                </div>
+                                <div class="crit-row" style="${getGlassRowStyle(s.chat.avgTheory)}">
+                                    <span style="color:${getScoreColor(s.chat.avgTheory, 1)}; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: ${getScoreShadow(s.chat.avgTheory, false)};">Чат</span>
+                                    <span style="color:#fff; text-shadow: ${getScoreShadow(s.chat.avgTheory, false)};">${s.chat.avgTheory}/10</span>
+                                </div>
+                                ${meTheoryHtml}
+                            </div>
+                            <button onclick="window.location.href='${detailsLink}'" style="margin-top: 5px; width: 100%; background: var(--theme-panel-bg-top); border: 1px solid var(--theme-panel-border); color: #fff; padding: 6px; font-family: 'Neucha', cursive; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; text-shadow: 0 0 5px var(--theme-primary);">Медиатека ▶</button>
+                        </div>
                     </div>
                 </div>
-                <div class="card-face card-back">
-                    <h3 class="back-title" onclick="window.location.href='${detailsLink}'">Критерии</h3>
-                    <div class="chart-container" onclick="window.location.href='${detailsLink}'"><canvas id="chart-${safeDomId}"></canvas></div>
-                    <div class="custom-legend">
-                        <div class="legend-item" style="color: ${radarColors[0].border};" onmouseover="highlightChart('${safeDomId}', 0)" onmouseout="resetChart('${safeDomId}')"><div class="dot" style="background: ${radarColors[0].border};"></div>Стример</div>
-                        <div class="legend-item me-element" style="color: ${radarColors[2].border};" onmouseover="highlightChart('${safeDomId}', 2)" onmouseout="resetChart('${safeDomId}')"><div class="dot" style="background: ${radarColors[2].border};"></div>Я</div>
-                        <div class="legend-item" style="color: ${radarColors[1].border};" onmouseover="highlightChart('${safeDomId}', 1)" onmouseout="resetChart('${safeDomId}')"><div class="dot" style="background: ${radarColors[1].border};"></div>Чат</div>
-                    </div>
-                    <div class="theory-container">
-                        <div class="crit-row" style="${getGlassRowStyle(s.streamer.avgTheory)}">
-                            <span style="color:${getScoreColor(s.streamer.avgTheory, 1)}; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: ${getScoreShadow(s.streamer.avgTheory, false)};">Стример</span>
-                            <span style="color:#fff; text-shadow: ${getScoreShadow(s.streamer.avgTheory, false)};">${s.streamer.avgTheory}/10</span>
-                        </div>
-                        <div class="crit-row" style="${getGlassRowStyle(s.chat.avgTheory)}">
-                            <span style="color:${getScoreColor(s.chat.avgTheory, 1)}; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: ${getScoreShadow(s.chat.avgTheory, false)};">Чат</span>
-                            <span style="color:#fff; text-shadow: ${getScoreShadow(s.chat.avgTheory, false)};">${s.chat.avgTheory}/10</span>
-                        </div>
-                        <div class="crit-row me-element" style="${getGlassRowStyle(s.me.avgTheory)}">
-                            <span style="color:${getScoreColor(s.me.avgTheory, 1)}; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: ${getScoreShadow(s.me.avgTheory, false)};">Я</span>
-                            <span style="color:#fff; text-shadow: ${getScoreShadow(s.me.avgTheory, false)};">${s.me.avgTheory}/10</span>
-                        </div>
-                    </div>
-                    <button onclick="window.location.href='${detailsLink}'" style="margin-top: 5px; width: 100%; background: var(--theme-panel-bg-top); border: 1px solid var(--theme-panel-border); color: #fff; padding: 6px; font-family: 'Neucha', cursive; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; text-shadow: 0 0 5px var(--theme-primary);">Медиатека ▶</button>
-                </div>
-            </div>
-        </div>
-        `;
-        room.insertAdjacentHTML('beforeend', cardHtml);
+                `;
+                room.insertAdjacentHTML('beforeend', cardHtml);
 
-        if (typeof Chart !== 'undefined') {
-            allCharts[safeDomId] = new Chart(document.getElementById(`chart-${safeDomId}`).getContext('2d'), {
-                type: 'radar',
-                data: {
-                    labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Персонажи'],
-                    datasets: [
+                if (typeof Chart !== 'undefined') {
+                    const datasets = [
                         { data: [s.streamer.plot, s.streamer.visuals, s.streamer.music, s.streamer.world, s.streamer.atmosphere], backgroundColor: radarColors[0].bg, borderColor: radarColors[0].border, pointBackgroundColor: radarColors[0].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 },
-                        { data: [s.chat.plot, s.chat.visuals, s.chat.music, s.chat.world, s.chat.atmosphere], backgroundColor: radarColors[1].bg, borderColor: radarColors[1].border, pointBackgroundColor: radarColors[1].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 },
-                        { data: [s.me.plot, s.me.visuals, s.me.music, s.me.world, s.me.atmosphere], backgroundColor: radarColors[2].bg, borderColor: radarColors[2].border, pointBackgroundColor: radarColors[2].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 }
-                    ]
-                },
-                options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false, 
-                    plugins: { legend: { display: false }, tooltip: { filter: function(item) { return item.raw > 0; }, displayColors: false } }, 
-                    scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: 'rgba(255,255,255,0.05)' }, angleLines: { color: 'rgba(255,255,255,0.05)' }, pointLabels: { font: { size: 12, weight: 'bold' }, color: '#c4d1b8' } } } 
+                        { data: [s.chat.plot, s.chat.visuals, s.chat.music, s.chat.world, s.chat.atmosphere], backgroundColor: radarColors[1].bg, borderColor: radarColors[1].border, pointBackgroundColor: radarColors[1].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 }
+                    ];
+                    if (!isStreamer) datasets.push({ data: [s.me.plot, s.me.visuals, s.me.music, s.me.world, s.me.atmosphere], backgroundColor: radarColors[2].bg, borderColor: radarColors[2].border, pointBackgroundColor: radarColors[2].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 });
+
+                    allCharts[safeDomId] = new Chart(document.getElementById(`chart-${safeDomId}`).getContext('2d'), {
+                        type: 'radar',
+                        data: { labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Персонажи'], datasets: datasets },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { filter: function(item) { return item.raw > 0; }, displayColors: false } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: 'rgba(255,255,255,0.05)' }, angleLines: { color: 'rgba(255,255,255,0.05)' }, pointLabels: { font: { size: 12, weight: 'bold' }, color: '#c4d1b8' } } } }
+                    });
                 }
             });
-        }
-    });
 
-    extractHubColors();
-}
+            extractHubColors();
+        }
 
 function extractHubColors() {
     const colorThief = new ColorThief();
