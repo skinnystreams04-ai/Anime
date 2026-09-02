@@ -326,15 +326,15 @@
             <div class="modal-content-wrapper">
                 <div class="modal-sliders">
                     <div class="input-label">Итоговое впечатление</div>
-                    <input type="number" id="modal-overall" min="1" max="10" placeholder="От 1 до 10">
+                    <input type="number" id="modal-overall" min="1" max="10" step="0.5" placeholder="От 1.0 до 10.0">
 
                     <div style="border-top: 1px dashed #283325; margin: 15px 0;"></div>
 
-                    <div class="slider-group"><div class="slider-header"><span>Сюжет</span><span id="m-plot">5</span></div><input type="range" id="msl-plot" min="1" max="10" value="5" oninput="document.getElementById('m-plot').innerText=this.value; syncModalChart();"></div>
-                    <div class="slider-group"><div class="slider-header"><span>Визуал</span><span id="m-vis">5</span></div><input type="range" id="msl-vis" min="1" max="10" value="5" oninput="document.getElementById('m-vis').innerText=this.value; syncModalChart();"></div>
-                    <div class="slider-group"><div class="slider-header"><span>Музыка</span><span id="m-mus">5</span></div><input type="range" id="msl-mus" min="1" max="10" value="5" oninput="document.getElementById('m-mus').innerText=this.value; syncModalChart();"></div>
-                    <div class="slider-group"><div class="slider-header"><span>Мир</span><span id="m-wor">5</span></div><input type="range" id="msl-wor" min="1" max="10" value="5" oninput="document.getElementById('m-wor').innerText=this.value; syncModalChart();"></div>
-                    <div class="slider-group"><div class="slider-header"><span>Персонажи</span><span id="m-atm">5</span></div><input type="range" id="msl-atm" min="1" max="10" value="5" oninput="document.getElementById('m-atm').innerText=this.value; syncModalChart();"></div>
+                    <div class="slider-group"><div class="slider-header"><span>Сюжет</span><span id="m-plot">5.0</span></div><input type="range" id="msl-plot" min="1" max="10" step="0.5" value="5" oninput="document.getElementById('m-plot').innerText=parseFloat(this.value).toFixed(1); syncModalChart();"></div>
+                    <div class="slider-group"><div class="slider-header"><span>Визуал</span><span id="m-vis">5.0</span></div><input type="range" id="msl-vis" min="1" max="10" step="0.5" value="5" oninput="document.getElementById('m-vis').innerText=parseFloat(this.value).toFixed(1); syncModalChart();"></div>
+                    <div class="slider-group"><div class="slider-header"><span>Музыка</span><span id="m-mus">5.0</span></div><input type="range" id="msl-mus" min="1" max="10" step="0.5" value="5" oninput="document.getElementById('m-mus').innerText=parseFloat(this.value).toFixed(1); syncModalChart();"></div>
+                    <div class="slider-group"><div class="slider-header"><span>Мир</span><span id="m-wor">5.0</span></div><input type="range" id="msl-wor" min="1" max="10" step="0.5" value="5" oninput="document.getElementById('m-wor').innerText=parseFloat(this.value).toFixed(1); syncModalChart();"></div>
+                    <div class="slider-group"><div class="slider-header"><span>Персонажи</span><span id="m-atm">5.0</span></div><input type="range" id="msl-atm" min="1" max="10" step="0.5" value="5" oninput="document.getElementById('m-atm').innerText=parseFloat(this.value).toFixed(1); syncModalChart();"></div>
                 </div>
 
                 <div class="modal-chart-area">
@@ -568,21 +568,17 @@
         }
 
         function openRatingModal() {
-            if (!currentUser) { alert("Сначала нужно войти через Twitch!"); return; }
-            const isStreamer = currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
-            let existingData = isStreamer ? (franchiseData[currentSeasonKey].scores || null) : (currentCommunityRatings[currentUser.id] || null);
-
             if (existingData) {
                 document.getElementById('modal-overall').value = existingData.overall || '';
                 if (existingData.theory) {
                     ['plot','vis','mus','wor','atm'].forEach(id => {
                         const val = existingData.theory[id==='vis'?'visuals':id==='mus'?'music':id==='wor'?'world':id==='atm'?'atmosphere':id] || 5;
-                        document.getElementById('msl-'+id).value = val; document.getElementById('m-'+id).innerText = val;
+                        document.getElementById('msl-'+id).value = val; document.getElementById('m-'+id).innerText = parseFloat(val).toFixed(1);
                     });
                 }
             } else {
                 document.getElementById('modal-overall').value = '';
-                ['plot','vis','mus','wor','atm'].forEach(id => { document.getElementById('msl-'+id).value = 5; document.getElementById('m-'+id).innerText = 5; });
+                ['plot','vis','mus','wor','atm'].forEach(id => { document.getElementById('msl-'+id).value = 5; document.getElementById('m-'+id).innerText = '5.0'; });
             }
 
             syncModalChart(); document.getElementById('rating-modal').style.display = 'flex';
