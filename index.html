@@ -71,10 +71,10 @@
         .card-container:hover .card-face { border-color: var(--card-color); box-shadow: 0 0 30px var(--card-shadow-hover); }
         
         .card-front { background-size: cover; background-position: center; cursor: pointer; }
-        .ep-badge { position: absolute; top: 15px; left: 15px; background: rgba(11, 13, 10, 0.85); border: 1px solid #4a5c41; color: #c4d1b8; font-size: 15px; font-weight: bold; padding: 4px 10px; border-radius: 6px; z-index: 10; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0,0,0,0.5); text-transform: uppercase;}
+        .ep-badge { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); background: rgba(11, 13, 10, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--card-border); color: var(--theme-light, #c4d1b8); font-size: 12px; font-weight: bold; padding: 4px 10px; border-radius: 6px; z-index: 10; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0,0,0,0.8), 0 0 10px var(--card-shadow); text-transform: uppercase; text-shadow: 1px 1px 2px #000; transition: 0.5s; }
         
-        .flip-btn { position: absolute; top: 15px; right: 15px; background: rgba(11, 13, 10, 0.85); border: 1px solid #4a5c41; color: #a4b09c; width: 36px; height: 36px; border-radius: 8px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.2s; z-index: 20; }
-        .flip-btn:hover { background: #161a15; color: #a6e3a1; border-color: #a6e3a1; transform: scale(1.1); }
+        .flip-btn { position: absolute; top: 8px; right: 8px; background: rgba(11, 13, 10, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--card-border); color: var(--theme-light, #a4b09c); width: 28px; height: 28px; border-radius: 6px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.3s; z-index: 20; box-shadow: 0 4px 10px rgba(0,0,0,0.8), 0 0 10px var(--card-shadow); }
+        .flip-btn:hover { background: var(--card-shadow-hover); color: #fff; border-color: var(--theme-light); transform: scale(1.1); box-shadow: 0 0 15px var(--theme-light); }
 
         .front-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 30px 15px 15px 15px; box-sizing: border-box; background: linear-gradient(0deg, var(--overlay-solid, rgba(11, 13, 10, 1)) 0%, var(--overlay-fade, rgba(11, 13, 10, 0.95)) 50%, rgba(11, 13, 10, 0) 100%); display: flex; flex-direction: column; justify-content: flex-end; }
         
@@ -86,7 +86,7 @@
         .main-score span { font-size: 13px; color: #c4d1b8; text-shadow: none !important; letter-spacing: normal; }
 
         .divider { border-top: 1px dashed #4a5c41; margin: 8px 0 12px 0; }
-        .anime-title { color: #c4d1b8; font-size: 17px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; text-align: center; text-shadow: 2px 2px 5px #000; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; width: 100%; line-height: 1.2; }
+        .anime-title { color: var(--theme-light, #c4d1b8); font-size: 17px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; text-align: center; text-shadow: 0 0 10px var(--card-shadow-hover), 2px 2px 5px #000; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; width: 100%; line-height: 1.2; transition: 0.5s; }
 
         .card-back { transform: rotateY(180deg); padding: 15px; box-sizing: border-box; justify-content: space-between; }
         .back-title { text-align: center; font-size: 18px; color: var(--theme-primary); text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid var(--theme-panel-border); padding-bottom: 5px; margin: 0; cursor: pointer; text-shadow: 0 0 8px var(--theme-glow); }
@@ -106,7 +106,7 @@
         .secret-admin-btn:hover { opacity: 1; background: #1a2618; color: #a6e3a1; border-color: #a6e3a1; box-shadow: 0 0 10px rgba(166,227,161,0.3); }
         }
         /* ИНДИКАТОР НАЛИЧИЯ ПЛЕЕРА (КАМЕРА) */
-        .vod-badge { position: absolute; top: 10px; right: 45px; background: rgba(11, 13, 10, 0.85); border: 1px solid #4a5c41; color: #a6e3a1; padding: 6px; border-radius: 6px; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; pointer-events: none; }
+        .vod-badge { position: absolute; top: 12px; left: 12px; background: rgba(11, 13, 10, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--card-border); color: var(--theme-light, #a6e3a1); width: 32px; height: 32px; border-radius: 8px; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.8), 0 0 10px var(--card-shadow); display: flex; justify-content: center; align-items: center; pointer-events: none; transition: 0.5s; }
         .vod-badge::before { content: ''; display: inline-block; width: 6px; height: 6px; background: #fff; border-radius: 50%; animation: pulseVod 1.5s infinite; }
         @keyframes pulseVod { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
         
@@ -626,7 +626,7 @@
                 const valChat = s.chat[scoreKey] || 0;
                 const valMe = s.me[scoreKey] || 0;
 
-                const vodHtml = f.hasVod ? `<div class="vod-badge"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14v-4z"/><rect x="3" y="6" width="12" height="12" rx="2" ry="2"/></svg></div>` : '';
+               const vodHtml = f.hasVod ? `<div class="vod-badge"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14v-4z"/><rect x="3" y="6" width="12" height="12" rx="2" ry="2"/></svg></div>` : '';
 
                 const meBoxHtml = isStreamer ? '' : `
                     <div class="score-box me-element" style="${getGlassBoxStyle(valMe)}">
@@ -713,26 +713,37 @@
         }
 
 function extractHubColors() {
-    const colorThief = new ColorThief();
-    document.querySelectorAll('.card-container').forEach(card => {
-        const imgUrl = card.getAttribute('data-cover');
-        const hiddenImg = new Image();
-        hiddenImg.crossOrigin = 'Anonymous';
-        hiddenImg.onload = function() {
-            try {
-                const color = colorThief.getColor(hiddenImg);
-                let r = color[0], g = color[1], b = color[2];
-                card.style.setProperty('--card-color', `rgb(${r}, ${g}, ${b})`);
-                card.style.setProperty('--card-border', `rgba(${r}, ${g}, ${b}, 0.6)`);
-                card.style.setProperty('--card-shadow', `rgba(${r}, ${g}, ${b}, 0.2)`);
-                card.style.setProperty('--card-shadow-hover', `rgba(${r}, ${g}, ${b}, 0.8)`);
-                card.style.setProperty('--overlay-solid', `rgba(${Math.floor(r*0.15)}, ${Math.floor(g*0.15)}, ${Math.floor(b*0.15)}, 0.98)`);
-                card.style.setProperty('--overlay-fade', `rgba(${Math.floor(r*0.15)}, ${Math.floor(g*0.15)}, ${Math.floor(b*0.15)}, 0.8)`);
-            } catch(e) {}
-        };
-        hiddenImg.src = imgUrl + '?bypassCache=' + Date.now();
-    });
-}
+            const colorThief = new ColorThief();
+            document.querySelectorAll('.card-container').forEach(card => {
+                const imgUrl = card.getAttribute('data-cover');
+                const hiddenImg = new Image();
+                hiddenImg.crossOrigin = 'Anonymous';
+                hiddenImg.onload = function() {
+                    try {
+                        const color = colorThief.getColor(hiddenImg);
+                        let r = color[0], g = color[1], b = color[2];
+                        
+                        // Защита текста от сливания с фоном: высветляем акцентный цвет, если постер темный
+                        const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
+                        let tr = r, tg = g, tb = b;
+                        if (luminance < 90) {
+                            tr = Math.min(255, r + 80);
+                            tg = Math.min(255, g + 80);
+                            tb = Math.min(255, b + 80);
+                        }
+
+                        card.style.setProperty('--card-color', `rgb(${r}, ${g}, ${b})`);
+                        card.style.setProperty('--card-border', `rgba(${r}, ${g}, ${b}, 0.6)`);
+                        card.style.setProperty('--card-shadow', `rgba(${r}, ${g}, ${b}, 0.2)`);
+                        card.style.setProperty('--card-shadow-hover', `rgba(${r}, ${g}, ${b}, 0.8)`);
+                        card.style.setProperty('--overlay-solid', `rgba(${Math.floor(r*0.15)}, ${Math.floor(g*0.15)}, ${Math.floor(b*0.15)}, 0.98)`);
+                        card.style.setProperty('--overlay-fade', `rgba(${Math.floor(r*0.15)}, ${Math.floor(g*0.15)}, ${Math.floor(b*0.15)}, 0.8)`);
+                        card.style.setProperty('--theme-light', `rgb(${tr}, ${tg}, ${tb})`); // Новый цвет для иконок и текста
+                    } catch(e) {}
+                };
+                hiddenImg.src = imgUrl + '?bypassCache=' + Date.now();
+            });
+        }
         
         function highlightChart(domId, index) {
             if(!allCharts[domId]) return;
