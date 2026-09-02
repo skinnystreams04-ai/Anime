@@ -326,10 +326,10 @@
             <div class="modal-content-wrapper">
                 <div class="modal-sliders">
                     <div class="input-label">Итоговое впечатление</div>
+                    <label>Итоговое впечатление:</label>
                     <input type="number" id="modal-overall" min="1" max="10" step="0.5" placeholder="От 1.0 до 10.0">
 
-                    <div style="border-top: 1px dashed #283325; margin: 15px 0;"></div>
-
+                    <label style="margin-top: 15px; border-top: 1px dashed #283325; padding-top: 15px;">Оценка по критериям:</label>
                     <div class="slider-group"><div class="slider-header"><span>Сюжет</span><span id="m-plot">5.0</span></div><input type="range" id="msl-plot" min="1" max="10" step="0.5" value="5" oninput="document.getElementById('m-plot').innerText=parseFloat(this.value).toFixed(1); syncModalChart();"></div>
                     <div class="slider-group"><div class="slider-header"><span>Визуал</span><span id="m-vis">5.0</span></div><input type="range" id="msl-vis" min="1" max="10" step="0.5" value="5" oninput="document.getElementById('m-vis').innerText=parseFloat(this.value).toFixed(1); syncModalChart();"></div>
                     <div class="slider-group"><div class="slider-header"><span>Музыка</span><span id="m-mus">5.0</span></div><input type="range" id="msl-mus" min="1" max="10" step="0.5" value="5" oninput="document.getElementById('m-mus').innerText=parseFloat(this.value).toFixed(1); syncModalChart();"></div>
@@ -455,10 +455,12 @@
             setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        function loginTwitch() { window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=`; }
+        function loginTwitch() { window.location.href = `https://id.twitch.tv/oauth2/authorize?client_id=${TWITCH_CLIENT_ID}&redirect_uri=${REDIRECT_URI}&response_type=token&scope=user:read:follows`; }
         function logoutTwitch() { try { localStorage.removeItem('twitch_token'); } catch(e){} location.reload(); }
 
         function getUserInfo(username, fallbackTwitchColor) {
+            if (!username) return { role: "F", gold: 0, tickets: 0, color: '#a4b09c', badge: `<span class="role-badge role-f">VIEWER</span>` };
+            
             const lowerName = username.toLowerCase();
             const dbUser = window.globalUsersDB[lowerName]; 
 
@@ -502,6 +504,40 @@
                     } catch(e) {}
                     
                     const uInfo = getUserInfo(currentUser.login, currentUser.color);
+
+                    // --- ПРОВЕРКА НА ФОЛЛОУ ---
+                    let isFollower = false;
+                    try {
+                        const bRes = await fetch(`https://api.twitch.tv/helix/users?login=${ADMIN_USERNAME}`, { headers: { 'Client-ID': TWITCH_CLIENT_ID, 'Authorization': `Bearer ${token}` } });
+                        const broadcasterId = (await bRes.json()).data[0].id;
+
+                        if (currentUser.id === broadcasterId) {
+                            isFollower = true; // Стримеру можно всё
+                        } else {
+                            const fRes = await fetch(`https://api.twitch.tv/helix/channels/followed?user_id=${currentUser.id}&broadcaster_id=${broadcasterId}`, { headers: { 'Client-ID': TWITCH_CLIENT_ID, 'Authorization': `Bearer ${token}` } });
+                            
+                            // Если у юзера старый токен без новых прав - принудительно разлогиниваем его
+                            if (fRes.status === 401 || fRes.status === 403) { logoutTwitch(); return; }
+                            
+                            const fData = await fRes.json();
+                            if (fData.data && fData.data.length > 0) isFollower = true;
+                        }
+                    } catch(e) { console.warn("Ошибка проверки фоллоува:", e); }
+                    
+                    window.isUserFollower = isFollower;
+
+                    // Блокируем кнопки для левых типов
+                    if (!isFollower) {
+                        setTimeout(() => {
+                            const rateBtn = document.querySelector('button[onclick*="openRatingModal"]');
+                            if (rateBtn) { rateBtn.innerText = "ФОЛЛОВЕРЫ (ОБНОВИ СТРАНИЦУ)"; rateBtn.style.opacity = "0.5"; rateBtn.style.pointerEvents = "none"; }
+                            
+                            const commInput = document.getElementById('comment-input');
+                            const commSubmit = document.querySelector('button[onclick*="submitComment"]');
+                            if (commInput) { commInput.placeholder = "Подпишись на канал и обнови страницу (F5), чтобы писать..."; commInput.disabled = true; }
+                            if (commSubmit) commSubmit.style.display = "none";
+                        }, 800);
+                    }
                     
                     document.getElementById('nav-auth').innerHTML = `
                         <div class="user-profile-neon">
