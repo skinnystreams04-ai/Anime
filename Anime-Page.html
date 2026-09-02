@@ -604,6 +604,18 @@
         }
 
         function openRatingModal() {
+            let existingData = null;
+            
+            if (currentUser) {
+                const isStreamer = currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
+                if (isStreamer) {
+                    const strScores = franchiseData[currentSeasonKey]?.scores;
+                    if (strScores && strScores.overall > 0) existingData = strScores;
+                } else {
+                    existingData = currentCommunityRatings[currentUser.id];
+                }
+            }
+
             if (existingData) {
                 document.getElementById('modal-overall').value = existingData.overall || '';
                 if (existingData.theory) {
