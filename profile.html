@@ -137,7 +137,7 @@
         </div>
 
         <div class="col-center">
-            <div class="widget-base" style="flex: 1;"> <!-- Эта колонка теперь растягивается на всю высоту -->
+            <div class="widget-base">
                 <div class="widget-header" style="display: flex; gap: 10px;">
                     <div class="widget-title">Оценки</div>
                     <select id="sort-ratings" onchange="renderRatings()" style="background: #121612; color: #a6e3a1; border: 1px solid #4a5c41; border-radius: 6px; font-family: 'Neucha', cursive; font-weight: bold; outline: none; cursor: pointer; padding: 2px 8px;">
@@ -149,6 +149,16 @@
                 <div class="widget-content">
                     <div class="hof-grid" id="hof-grid">
                         <!-- Топ тайтлы -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- ЭТОТ БЛОК МЫ СЛУЧАЙНО УДАЛИЛИ В ПРОШЛЫЙ РАЗ -->
+            <div class="widget-base" style="flex: 1;">
+                <div class="widget-header"><div class="widget-title">Последняя активность</div></div>
+                <div class="widget-content" style="background: var(--theme-panel-bg-bottom);">
+                    <div class="activity-feed" id="activity-feed">
+                        <!-- Активность -->
                     </div>
                 </div>
             </div>
