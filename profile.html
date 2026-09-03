@@ -378,22 +378,28 @@
                 try {
                     const color = colorThief.getColor(hiddenImg);
                     const r = color[0], g = color[1], b = color[2];
-                    const panel = document.getElementById('dynamic-right-panel');
                     
                     const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
                     let tr = r, tg = g, tb = b;
                     if (luminance < 90) { tr = Math.min(255, r+80); tg = Math.min(255, g+80); tb = Math.min(255, b+80); }
 
-                    // Красим рамку и тень панели
-                    panel.style.borderColor = `rgba(${r}, ${g}, ${b}, 0.8)`;
+                    const themeColor = `rgb(${tr}, ${tg}, ${tb})`;
+                    const rawColor = `rgba(${r}, ${g}, ${b}, 0.8)`;
+
+                    // Перекрашиваем саму панель (рамка и свечение)
+                    const panel = document.getElementById('dynamic-right-panel');
+                    panel.style.borderColor = rawColor;
                     panel.style.boxShadow = `0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(${r}, ${g}, ${b}, 0.3)`;
 
-                    // Красим заголовок
-                    document.getElementById('preview-title').style.color = `rgb(${tr}, ${tg}, ${tb})`;
+                    // Перекрашиваем обложку (нижняя рамка) и коммент (левая рамка)
+                    document.getElementById('preview-cover').style.borderColor = themeColor;
+                    document.getElementById('preview-comment').style.borderColor = themeColor;
+
+                    // Перекрашиваем заголовок
+                    document.getElementById('preview-title').style.color = themeColor;
                     document.getElementById('preview-title').style.textShadow = `2px 2px 5px #000, 0 0 10px rgba(${r}, ${g}, ${b}, 0.5)`;
-                    
-                    // Красим радар
-                    const themeColor = `rgb(${tr}, ${tg}, ${tb})`;
+
+                    // Перекрашиваем радар
                     if (previewRadarChart) {
                         previewRadarChart.data.datasets[0].borderColor = themeColor;
                         previewRadarChart.data.datasets[0].backgroundColor = `rgba(${tr}, ${tg}, ${tb}, 0.2)`;
@@ -403,10 +409,15 @@
                 } catch(e) {}
             };
             hiddenImg.onerror = function() {
+                // Если картинка не отдала цвет, возвращаем родной цвет пользователя
                 const panel = document.getElementById('dynamic-right-panel');
                 panel.style.borderColor = fallbackColor;
                 panel.style.boxShadow = `0 10px 30px rgba(0,0,0,0.8), 0 0 20px ${fallbackColor}40`;
+                
+                document.getElementById('preview-cover').style.borderColor = fallbackColor;
+                document.getElementById('preview-comment').style.borderColor = fallbackColor;
                 document.getElementById('preview-title').style.color = fallbackColor;
+                
                 if (previewRadarChart) {
                     previewRadarChart.data.datasets[0].borderColor = fallbackColor;
                     previewRadarChart.data.datasets[0].backgroundColor = fallbackColor + '40';
@@ -416,6 +427,7 @@
             };
             hiddenImg.src = data.cover + '?bypassCache=' + Date.now();
 
+            // Инициализация радара (если он еще не создан)
             const ctx = document.getElementById('previewChart').getContext('2d');
             if (previewRadarChart) {
                 previewRadarChart.data.datasets[0].data = [t.plot||0, t.visuals||0, t.music||0, t.world||0, t.atmosphere||0];
@@ -427,6 +439,7 @@
                     options: { animation: false, responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { filter: (i) => i.raw > 0 } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: 'rgba(255,255,255,0.1)' }, angleLines: { color: 'rgba(255,255,255,0.1)' }, pointLabels: { font: { size: 11, weight: 'bold' }, color: '#c4d1b8' } } } }
                 });
             }
+        }
 
         window.onload = initProfile;
     </script>
