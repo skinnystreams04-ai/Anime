@@ -370,33 +370,6 @@
         }
 
         function openPreview(index) {
-            const data = window.userActivityData[index];
-            if (!data) return;
-
-            document.getElementById('preview-placeholder').style.display = 'none';
-            document.getElementById('preview-container').style.display = 'flex';
-            
-            document.getElementById('preview-cover').src = data.cover;
-            document.getElementById('preview-title').innerText = data.title;
-            
-            document.getElementById('preview-score-box').style.cssText = getGlassBoxStyle(data.overall);
-            document.getElementById('preview-score-label').style.cssText = `color: ${getScoreColor(data.overall, 1)}; text-shadow: 0 0 5px ${getScoreColor(data.overall, 0.5)};`;
-            document.getElementById('preview-overall').innerHTML = `${data.overall > 0 ? data.overall : '-'}<span> / 10</span>`;
-            document.getElementById('preview-overall').style.cssText = `color: #fff; text-shadow: ${getScoreShadow(data.overall, true)};`;
-            
-            document.getElementById('preview-comment').innerHTML = data.comment ? `"${data.comment.replace(/\n/g, '<br>')}"` : '<span style="opacity:0.5; font-style: normal;">Только оценка, без рецензии.</span>';
-
-            const t = data.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
-            
-            const avgTh = ((t.plot||0) + (t.visuals||0) + (t.music||0) + (t.world||0) + (t.atmosphere||0)) / 5;
-            document.getElementById('preview-avg-theory').innerText = `Ср. критерий: ${avgTh > 0 ? avgTh.toFixed(1) : '-'}`;
-            document.getElementById('preview-avg-theory').style.color = getScoreColor(avgTh, 1);
-            document.getElementById('preview-avg-theory').style.textShadow = getScoreShadow(avgTh, false);
-
-            const createRow = (name, val) => `<div class="preview-crit-row" style="${getGlassRowStyle(val)}"><span style="color:${getScoreColor(val, 1)}; text-shadow: 1px 1px 2px #000;">${name}</span><span style="color:#fff; text-shadow: ${getScoreShadow(val, false)};">${val || '-'}</span></div>`;
-            
-            document.getElementById('preview-theory-list').innerHTML = createRow('Сюжет', t.plot) + createRow('Визуал', t.visuals) + createRow('Музыка', t.music) + createRow('Мир', t.world) + createRow('Персонажи', t.atmosphere);
-
             const fallbackColor = getComputedStyle(document.documentElement).getPropertyValue('--user-color').trim() || '#a6e3a1';
             const colorThief = new ColorThief();
             const hiddenImg = new Image();
@@ -405,18 +378,41 @@
                 try {
                     const color = colorThief.getColor(hiddenImg);
                     const r = color[0], g = color[1], b = color[2];
+                    const panel = document.getElementById('dynamic-right-panel');
                     
                     const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
                     let tr = r, tg = g, tb = b;
                     if (luminance < 90) { tr = Math.min(255, r+80); tg = Math.min(255, g+80); tb = Math.min(255, b+80); }
 
-                    // Окрашиваем только название тайтла, график остается цвета пользователя
+                    // Красим рамку и тень панели
+                    panel.style.borderColor = `rgba(${r}, ${g}, ${b}, 0.8)`;
+                    panel.style.boxShadow = `0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(${r}, ${g}, ${b}, 0.3)`;
+
+                    // Красим заголовок
                     document.getElementById('preview-title').style.color = `rgb(${tr}, ${tg}, ${tb})`;
                     document.getElementById('preview-title').style.textShadow = `2px 2px 5px #000, 0 0 10px rgba(${r}, ${g}, ${b}, 0.5)`;
+                    
+                    // Красим радар
+                    const themeColor = `rgb(${tr}, ${tg}, ${tb})`;
+                    if (previewRadarChart) {
+                        previewRadarChart.data.datasets[0].borderColor = themeColor;
+                        previewRadarChart.data.datasets[0].backgroundColor = `rgba(${tr}, ${tg}, ${tb}, 0.2)`;
+                        previewRadarChart.data.datasets[0].pointBackgroundColor = themeColor;
+                        previewRadarChart.update();
+                    }
                 } catch(e) {}
             };
             hiddenImg.onerror = function() {
+                const panel = document.getElementById('dynamic-right-panel');
+                panel.style.borderColor = fallbackColor;
+                panel.style.boxShadow = `0 10px 30px rgba(0,0,0,0.8), 0 0 20px ${fallbackColor}40`;
                 document.getElementById('preview-title').style.color = fallbackColor;
+                if (previewRadarChart) {
+                    previewRadarChart.data.datasets[0].borderColor = fallbackColor;
+                    previewRadarChart.data.datasets[0].backgroundColor = fallbackColor + '40';
+                    previewRadarChart.data.datasets[0].pointBackgroundColor = fallbackColor;
+                    previewRadarChart.update();
+                }
             };
             hiddenImg.src = data.cover + '?bypassCache=' + Date.now();
 
@@ -431,7 +427,6 @@
                     options: { animation: false, responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { filter: (i) => i.raw > 0 } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: 'rgba(255,255,255,0.1)' }, angleLines: { color: 'rgba(255,255,255,0.1)' }, pointLabels: { font: { size: 11, weight: 'bold' }, color: '#c4d1b8' } } } }
                 });
             }
-        }
 
         window.onload = initProfile;
     </script>
