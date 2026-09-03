@@ -41,13 +41,21 @@
         
         .preview-score-box { background: rgba(0,0,0,0.5); border: 1px solid var(--user-color, #a6e3a1); border-radius: 8px; padding: 8px; text-align: center; box-shadow: 0 0 10px rgba(0,0,0,0.5); backdrop-filter: blur(5px); }
         .preview-score-label { font-size: 12px; color: #a4b09c; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; }
-        .preview-score-val { font-size: 38px; font-weight: bold; color: #fff; line-height: 1; text-shadow: 2px 2px 4px #000; font-family: sans-serif; }
+        .preview-score-val { font-size: 55px; font-weight: bold; color: #fff; line-height: 1; text-shadow: 2px 2px 4px #000; font-family: 'Neucha', cursive, sans-serif; }
+        .preview-score-val span { font-size: 16px; color: #c4d1b8; text-shadow: none; letter-spacing: normal; }
+        .preview-crit-row { display: flex; justify-content: space-between; padding: 4px 10px; border-bottom: 1px dashed rgba(255,255,255,0.15); font-size: 15px; color: #c4d1b8; transition: 0.3s; }
+        .preview-crit-row span:last-child { font-weight: bold; color: #fff; font-family: 'Neucha', cursive, sans-serif; font-size: 16px; }
+        .preview-avg-theory { font-size: 16px; color: #c4d1b8; font-weight: bold; text-align: center; margin-top: 5px; margin-bottom: -5px; text-shadow: 1px 1px 2px #000; text-transform: uppercase; }
         
         .preview-chart-wrap { width: 100%; height: 180px; margin-top: 0; }
         .preview-comment { background: rgba(0,0,0,0.4); border-left: 3px solid var(--user-color, #a6e3a1); padding: 12px; border-radius: 0 8px 8px 0; color: #c4d1b8; font-size: 14px; line-height: 1.4; font-style: italic; white-space: pre-wrap; word-break: break-word; }
         
         .preview-crit-row { display: flex; justify-content: space-between; padding: 3px 8px; border-bottom: 1px dashed rgba(255,255,255,0.15); font-size: 14px; color: #c4d1b8; }
-        .preview-crit-row span:last-child { font-weight: bold; color: #fff; font-family: sans-serif;}
+        .preview-score-val { font-size: 55px; font-weight: bold; color: #fff; line-height: 1; text-shadow: 2px 2px 4px #000; font-family: 'Neucha', cursive, sans-serif; }
+        .preview-score-val span { font-size: 16px; color: #c4d1b8; text-shadow: none; letter-spacing: normal; }
+        .preview-crit-row { display: flex; justify-content: space-between; padding: 4px 10px; border-bottom: 1px dashed rgba(255,255,255,0.15); font-size: 15px; color: #c4d1b8; transition: 0.3s; }
+        .preview-crit-row span:last-child { font-weight: bold; color: #fff; font-family: 'Neucha', cursive, sans-serif; font-size: 16px; }
+        .preview-avg-theory { font-size: 16px; color: #c4d1b8; font-weight: bold; text-align: center; margin-top: 5px; margin-bottom: -5px; text-shadow: 1px 1px 2px #000; text-transform: uppercase; }
         
         .preview-placeholder { padding: 40px 20px; text-align: center; color: #6b7a62; font-size: 18px; display: flex; height: 100%; align-items: center; justify-content: center; }
 
@@ -129,7 +137,7 @@
         </div>
 
         <div class="col-center">
-            <div class="widget-base">
+            <div class="widget-base" style="flex: 1;"> <!-- Эта колонка теперь растягивается на всю высоту -->
                 <div class="widget-header" style="display: flex; gap: 10px;">
                     <div class="widget-title">Оценки</div>
                     <select id="sort-ratings" onchange="renderRatings()" style="background: #121612; color: #a6e3a1; border: 1px solid #4a5c41; border-radius: 6px; font-family: 'Neucha', cursive; font-weight: bold; outline: none; cursor: pointer; padding: 2px 8px;">
@@ -144,30 +152,22 @@
                     </div>
                 </div>
             </div>
-
-            <div class="widget-base" style="flex: 1;">
-                <div class="widget-header"><div class="widget-title">Последняя активность</div></div>
-                <div class="widget-content" style="background: var(--theme-panel-bg-bottom);">
-                    <div class="activity-feed" id="activity-feed">
-                        <!-- Активность -->
-                    </div>
-                </div>
-            </div>
         </div>
 
         <div class="col-right">
-            <div class="widget-base" style="position: sticky; top: 20px; overflow: hidden; min-height: 400px; border-color: var(--user-color, #a6e3a1); box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(166,227,161,0.1);">
+            <div class="widget-base" id="dynamic-right-panel" style="position: sticky; top: 20px; overflow: hidden; min-height: 400px; border-color: var(--user-color, #a6e3a1); box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(166,227,161,0.1); transition: border-color 0.5s, box-shadow 0.5s;">
                 <div id="preview-placeholder" class="preview-placeholder">
-                    Наведите курсор на любой тайтл в ленте или сетке, чтобы увидеть подробную статистику и рецензию пользователя
+                    Наведите курсор на любой тайтл в сетке, чтобы увидеть статистику
                 </div>
                 <div id="preview-container" style="display: none; flex-direction: column;">
-                    <img id="preview-cover" src="" class="preview-cover">
+                    <img id="preview-cover" src="" class="preview-cover" crossorigin="anonymous">
                     <div class="preview-content">
                         <div id="preview-title" class="preview-title">Название</div>
-                        <div class="preview-score-box">
-                            <div class="preview-score-label">Итоговая оценка</div>
+                        <div class="preview-score-box" id="preview-score-box">
+                            <div class="preview-score-label" id="preview-score-label">Итоговая оценка</div>
                             <div id="preview-overall" class="preview-score-val">10</div>
                         </div>
+                        <div id="preview-avg-theory" class="preview-avg-theory">Ср. критерий: 0</div>
                         <div class="preview-chart-wrap">
                             <canvas id="previewChart"></canvas>
                         </div>
@@ -178,8 +178,6 @@
             </div>
         </div>
 
-    </div>
-
     <script>
         const FIREBASE_BASE = 'https://skinwalkerauction-default-rtdb.europe-west1.firebasedatabase.app';
         let allRatedAnime = [];
@@ -187,6 +185,44 @@
         let radarChart = null;
 
         if (typeof Chart !== 'undefined') { Chart.defaults.font.family = "'Neucha', cursive, sans-serif"; Chart.defaults.color = "#829c73"; }
+
+        function getScoreColor(score, alpha = 1) {
+            const numScore = Number(score);
+            if (numScore === 0 || isNaN(numScore)) return `rgba(107, 122, 98, ${alpha})`; 
+            let r, g, b;
+            if (numScore <= 5.5) {
+                let p = (numScore - 1) / 4.5; if (p < 0) p = 0;
+                r = Math.round(205 + p * (210 - 205)); g = Math.round(115 + p * (215 - 115)); b = Math.round(50 + p * (220 - 50));
+            } else {
+                let p = (numScore - 5.5) / 4.5; if (p > 1) p = 1;
+                r = Math.round(210 + p * (255 - 210)); g = Math.round(215 + p * (235 - 215)); b = Math.round(220 + p * (20 - 220));
+            }
+            return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+        }
+        function getScoreShadow(score, isLarge) {
+            const numScore = Number(score);
+            const base = isLarge ? '-1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 4px #000' : '1px 1px 2px #000';
+            if (numScore === 0 || isNaN(numScore)) return base;
+            const color = getScoreColor(score, 1);
+            const blur1 = Math.round(1 + (numScore / 10) * 5); 
+            let glow = `${base}, 0 0 ${blur1}px ${color}`;
+            if (numScore >= 8) glow += `, 0 0 ${Math.round(blur1 * 1.5)}px ${color}`;
+            if (numScore === 10) glow += `, 0 0 15px rgba(255,255,255,0.3)`; 
+            return glow;
+        }
+        function getGlassBoxStyle(score) {
+            const numScore = Number(score);
+            if (numScore === 0 || isNaN(numScore)) return `background: rgba(107,122,98,0.05); border: 1px solid rgba(107,122,98,0.2); box-shadow: none; backdrop-filter: blur(5px);`;
+            const bg = getScoreColor(score, 0.15); const border = getScoreColor(score, 0.5); const glow = getScoreColor(score, 0.2);
+            let blur = Math.round(4 + (numScore / 10) * 8);
+            return `background: ${bg}; border: 1px solid ${border}; box-shadow: 0 4px 15px rgba(0,0,0,0.5), 0 0 ${blur}px ${glow} inset, 0 0 ${blur}px ${glow}; backdrop-filter: blur(5px);`;
+        }
+        function getGlassRowStyle(score) {
+            const numScore = Number(score);
+            if (numScore === 0 || isNaN(numScore)) return `background: transparent; border-left: 2px solid rgba(107,122,98,0.3);`;
+            const bg = getScoreColor(score, 0.1); const border = getScoreColor(score, 0.8);
+            return `background: linear-gradient(90deg, ${bg} 0%, transparent 100%); border-left: 2px solid ${border};`;
+        }
 
         function formatDate(timestamp) {
             const d = new Date(timestamp);
@@ -400,32 +436,68 @@
             
             document.getElementById('preview-cover').src = data.cover;
             document.getElementById('preview-title').innerText = data.title;
-            document.getElementById('preview-overall').innerText = data.overall > 0 ? data.overall : '-';
+            
+            // Красим главную оценку
+            document.getElementById('preview-score-box').style.cssText = getGlassBoxStyle(data.overall);
+            document.getElementById('preview-score-label').style.cssText = `color: ${getScoreColor(data.overall, 1)}; text-shadow: 0 0 5px ${getScoreColor(data.overall, 0.5)};`;
+            document.getElementById('preview-overall').innerHTML = `${data.overall > 0 ? data.overall : '-'}<span> / 10</span>`;
+            document.getElementById('preview-overall').style.cssText = `color: #fff; text-shadow: ${getScoreShadow(data.overall, true)};`;
             
             document.getElementById('preview-comment').innerHTML = data.comment ? `"${data.comment.replace(/\n/g, '<br>')}"` : '<span style="opacity:0.5; font-style: normal;">Только оценка, без рецензии.</span>';
 
-            const t = data.theory || {};
-            document.getElementById('preview-theory-list').innerHTML = `
-                <div class="preview-crit-row"><span>Сюжет</span><span>${t.plot || '-'}</span></div>
-                <div class="preview-crit-row"><span>Визуал</span><span>${t.visuals || '-'}</span></div>
-                <div class="preview-crit-row"><span>Музыка</span><span>${t.music || '-'}</span></div>
-                <div class="preview-crit-row"><span>Мир</span><span>${t.world || '-'}</span></div>
-                <div class="preview-crit-row"><span>Персонажи</span><span>${t.atmosphere || '-'}</span></div>
-            `;
+            const t = data.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
+            
+            // Считаем средний критерий
+            const avgTh = ((t.plot||0) + (t.visuals||0) + (t.music||0) + (t.world||0) + (t.atmosphere||0)) / 5;
+            document.getElementById('preview-avg-theory').innerText = `Ср. критерий: ${avgTh > 0 ? avgTh.toFixed(1) : '-'}`;
+            document.getElementById('preview-avg-theory').style.color = getScoreColor(avgTh, 1);
+            document.getElementById('preview-avg-theory').style.textShadow = getScoreShadow(avgTh, false);
+
+            const createRow = (name, val) => `<div class="preview-crit-row" style="${getGlassRowStyle(val)}"><span style="color:${getScoreColor(val, 1)}; text-shadow: 1px 1px 2px #000;">${name}</span><span style="color:#fff; text-shadow: ${getScoreShadow(val, false)};">${val || '-'}</span></div>`;
+            
+            document.getElementById('preview-theory-list').innerHTML = 
+                createRow('Сюжет', t.plot) + createRow('Визуал', t.visuals) + createRow('Музыка', t.music) + createRow('Мир', t.world) + createRow('Персонажи', t.atmosphere);
+
+            // COLOR THIEF МАГИЯ (Динамический цвет панели от обложки)
+            const colorThief = new ColorThief();
+            const hiddenImg = new Image();
+            hiddenImg.crossOrigin = 'Anonymous';
+            hiddenImg.onload = function() {
+                try {
+                    const color = colorThief.getColor(hiddenImg);
+                    const r = color[0], g = color[1], b = color[2];
+                    const panel = document.getElementById('dynamic-right-panel');
+                    
+                    const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
+                    let tr = r, tg = g, tb = b;
+                    if (luminance < 90) { tr = Math.min(255, r+80); tg = Math.min(255, g+80); tb = Math.min(255, b+80); }
+
+                    panel.style.borderColor = `rgba(${r}, ${g}, ${b}, 0.8)`;
+                    panel.style.boxShadow = `0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(${r}, ${g}, ${b}, 0.3)`;
+                    document.getElementById('preview-title').style.color = `rgb(${tr}, ${tg}, ${tb})`;
+                    document.getElementById('preview-title').style.textShadow = `2px 2px 5px #000, 0 0 10px rgba(${r}, ${g}, ${b}, 0.5)`;
+                    
+                    const themeColor = `rgb(${tr}, ${tg}, ${tb})`;
+                    if (previewRadarChart) {
+                        previewRadarChart.data.datasets[0].borderColor = themeColor;
+                        previewRadarChart.data.datasets[0].backgroundColor = `rgba(${tr}, ${tg}, ${tb}, 0.2)`;
+                        previewRadarChart.data.datasets[0].pointBackgroundColor = themeColor;
+                        previewRadarChart.update();
+                    }
+                } catch(e) {}
+            };
+            hiddenImg.src = data.cover + '?bypassCache=' + Date.now();
 
             const ctx = document.getElementById('previewChart').getContext('2d');
-            const color = getComputedStyle(document.documentElement).getPropertyValue('--user-color').trim() || '#a6e3a1';
+            const fallbackColor = getComputedStyle(document.documentElement).getPropertyValue('--user-color').trim() || '#a6e3a1';
 
             if (previewRadarChart) {
                 previewRadarChart.data.datasets[0].data = [t.plot||0, t.visuals||0, t.music||0, t.world||0, t.atmosphere||0];
-                previewRadarChart.data.datasets[0].borderColor = color;
-                previewRadarChart.data.datasets[0].backgroundColor = color + '40';
-                previewRadarChart.data.datasets[0].pointBackgroundColor = color;
                 previewRadarChart.update();
             } else {
                 previewRadarChart = new Chart(ctx, {
                     type: 'radar',
-                    data: { labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Персонажи'], datasets: [{ data: [t.plot||0, t.visuals||0, t.music||0, t.world||0, t.atmosphere||0], backgroundColor: color + '40', borderColor: color, pointBackgroundColor: color, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 }] },
+                    data: { labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Персонажи'], datasets: [{ data: [t.plot||0, t.visuals||0, t.music||0, t.world||0, t.atmosphere||0], backgroundColor: fallbackColor + '40', borderColor: fallbackColor, pointBackgroundColor: fallbackColor, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 }] },
                     options: { animation: false, responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { filter: (i) => i.raw > 0 } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: 'rgba(255,255,255,0.1)' }, angleLines: { color: 'rgba(255,255,255,0.1)' }, pointLabels: { font: { size: 11, weight: 'bold' }, color: '#c4d1b8' } } } }
                 });
             }
