@@ -137,7 +137,7 @@
         </div>
 
         <div class="col-center">
-            <div class="widget-base">
+            <div class="widget-base" style="flex: 1;"> <!-- Теперь карточки занимают всё место -->
                 <div class="widget-header" style="display: flex; gap: 10px;">
                     <div class="widget-title">Оценки</div>
                     <select id="sort-ratings" onchange="renderRatings()" style="background: #121612; color: #a6e3a1; border: 1px solid #4a5c41; border-radius: 6px; font-family: 'Neucha', cursive; font-weight: bold; outline: none; cursor: pointer; padding: 2px 8px;">
@@ -152,16 +152,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- ЭТОТ БЛОК МЫ СЛУЧАЙНО УДАЛИЛИ В ПРОШЛЫЙ РАЗ -->
-            <div class="widget-base" style="flex: 1;">
-                <div class="widget-header"><div class="widget-title">Последняя активность</div></div>
-                <div class="widget-content" style="background: var(--theme-panel-bg-bottom);">
-                    <div class="activity-feed" id="activity-feed">
-                        <!-- Активность -->
-                    </div>
-                </div>
-            </div>
         </div>
 
         <div class="col-right">
@@ -170,18 +160,22 @@
                     Наведите курсор на любой тайтл в сетке, чтобы увидеть статистику
                 </div>
                 <div id="preview-container" style="display: none; flex-direction: column;">
-                    <img id="preview-cover" src="" class="preview-cover" crossorigin="anonymous">
+                    <img id="preview-cover" src="" class="preview-cover"> <!-- Убран crossorigin, картинка починилась -->
                     <div class="preview-content">
                         <div id="preview-title" class="preview-title">Название</div>
                         <div class="preview-score-box" id="preview-score-box">
                             <div class="preview-score-label" id="preview-score-label">Итоговая оценка</div>
                             <div id="preview-overall" class="preview-score-val">10</div>
                         </div>
-                        <div id="preview-avg-theory" class="preview-avg-theory">Ср. критерий: 0</div>
+                        
                         <div class="preview-chart-wrap">
                             <canvas id="previewChart"></canvas>
                         </div>
-                        <div id="preview-theory-list" style="margin-bottom: 5px;"></div>
+                        
+                        <!-- Средний критерий перенесен вниз к самому списку -->
+                        <div id="preview-avg-theory" class="preview-avg-theory" style="margin-bottom: 5px; padding-bottom: 5px; border-bottom: 1px solid rgba(255,255,255,0.1);">Ср. критерий: 0</div>
+                        <div id="preview-theory-list" style="margin-bottom: 10px;"></div>
+                        
                         <div class="preview-comment" id="preview-comment"></div>
                     </div>
                 </div>
@@ -376,32 +370,6 @@
             window.userActivityData = allActivity; 
 
             renderRatings();
-
-            const actContainer = document.getElementById('activity-feed');
-            if (window.userActivityData.length === 0) {
-                actContainer.innerHTML = `<div style="text-align: center; color: #6b7a62; padding: 20px;">Пользователь пока не оставил следов...</div>`;
-            } else {
-                actContainer.innerHTML = window.userActivityData.map((act, idx) => {
-                    const scoreHtml = act.overall > 0 ? `<span class="act-score-badge" style="border-color: var(--user-color);">★ ${act.overall}</span>` : '';
-                    let actionText = '';
-                    if (act.overall > 0 && act.comment) actionText = `Написал(а) рецензию и поставил(а) оценку`;
-                    else if (act.overall > 0) actionText = `Выставил(а) оценку тайтлу`;
-                    else actionText = `Написал(а) комментарий`;
-
-                    const excerpt = act.comment ? `"<span style="opacity:0.8">${act.comment.length > 55 ? act.comment.substring(0, 55) + '...' : act.comment}</span>"` : actionText;
-
-                    return `
-                    <div class="act-item" onmouseenter="openPreview(${idx})" onclick="window.location.href='${act.link}'" style="cursor: pointer; border-left: 3px solid transparent;" onmouseover="this.style.borderLeftColor='var(--user-color)'" onmouseout="this.style.borderLeftColor='transparent'">
-                        <div class="act-header">
-                            <div class="act-title">${act.title}</div>
-                            <div class="act-date">${formatDate(act.timestamp)}</div>
-                        </div>
-                        <div class="act-body">${scoreHtml} ${excerpt}</div>
-                    </div>
-                    `;
-                }).join('');
-            }
-        }
 
         function renderRatings() {
             const container = document.getElementById('hof-grid');
