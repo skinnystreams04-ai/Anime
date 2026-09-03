@@ -83,33 +83,24 @@
 
         .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b0d0a; z-index: 9999; display: flex; justify-content: center; align-items: center; color: #a6e3a1; font-size: 24px; flex-direction: column; }
 
-         /* ВЫЕЗЖАЮЩАЯ ПАНЕЛЬ ДЕТАЛЕЙ (DRAWER) */
-        .drawer-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1999; opacity: 0; visibility: hidden; transition: 0.4s; backdrop-filter: blur(3px); }
-        .drawer-backdrop.show { opacity: 1; visibility: visible; }
+         /* ХОВЕР-ПАНЕЛЬ (ВСПЛЫВАЮЩЕЕ ОКНО) */
+        .preview-panel { position: fixed; top: 50%; right: 40px; transform: translateY(-50%) scale(0.95); width: 380px; max-height: 90vh; background: rgba(10, 12, 10, 0.95); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 2px solid var(--user-color, #a6e3a1); border-radius: 12px; box-shadow: 0 10px 40px rgba(0,0,0,0.8), 0 0 20px rgba(166, 227, 161, 0.15); z-index: 2000; opacity: 0; visibility: hidden; transition: 0.2s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column; overflow: hidden; pointer-events: none; }
+        .preview-panel.show { opacity: 1; visibility: visible; transform: translateY(-50%) scale(1); }
         
-        .detail-drawer { position: fixed; top: 0; right: -500px; width: 420px; height: 100vh; background: rgba(10, 12, 10, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-left: 2px solid var(--user-color, #a6e3a1); box-shadow: -10px 0 30px rgba(0,0,0,0.8); z-index: 2000; transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; }
-        .detail-drawer.open { right: 0; }
+        .preview-cover { width: 100%; height: 180px; object-fit: cover; -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 100%); mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 30%, rgba(0,0,0,0) 100%); border-bottom: 2px solid var(--user-color, #a6e3a1); }
+        .preview-content { padding: 0 20px 20px 20px; margin-top: -50px; position: relative; z-index: 2; display: flex; flex-direction: column; gap: 12px; }
         
-        .drawer-close { position: absolute; top: 15px; right: 20px; font-size: 35px; color: #fff; cursor: pointer; line-height: 1; z-index: 10; text-shadow: 0 0 10px #000; transition: 0.2s; font-family: sans-serif; }
-        .drawer-close:hover { color: #ff5555; transform: scale(1.1); }
+        .preview-title { font-size: 22px; font-weight: bold; color: #fff; text-shadow: 2px 2px 5px #000, 0 0 10px var(--user-color, #a6e3a1); text-transform: uppercase; line-height: 1.1; text-align: center; }
         
-        .drawer-cover { width: 100%; height: 250px; object-fit: cover; -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%); mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%); border-bottom: 2px solid var(--user-color, #a6e3a1); }
-        .drawer-content { padding: 0 25px 25px 25px; margin-top: -60px; position: relative; z-index: 2; display: flex; flex-direction: column; gap: 15px; }
+        .preview-score-box { background: rgba(0,0,0,0.5); border: 1px solid var(--user-color, #a6e3a1); border-radius: 8px; padding: 8px; text-align: center; box-shadow: 0 0 10px rgba(0,0,0,0.5); }
+        .preview-score-label { font-size: 12px; color: #a4b09c; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; }
+        .preview-score-val { font-size: 38px; font-weight: bold; color: #fff; line-height: 1; text-shadow: 2px 2px 4px #000; font-family: sans-serif; }
         
-        .drawer-title { font-size: 26px; font-weight: bold; color: #fff; text-shadow: 2px 2px 5px #000, 0 0 15px var(--user-color, #a6e3a1); text-transform: uppercase; line-height: 1.1; text-align: center; }
+        .preview-chart-wrap { width: 100%; height: 180px; margin-top: 0; }
+        .preview-comment { background: rgba(0,0,0,0.4); border-left: 3px solid var(--user-color, #a6e3a1); padding: 12px; border-radius: 0 8px 8px 0; color: #c4d1b8; font-size: 14px; line-height: 1.4; font-style: italic; white-space: pre-wrap; word-break: break-word; }
         
-        .drawer-score-box { background: rgba(0,0,0,0.5); border: 1px solid var(--user-color, #a6e3a1); border-radius: 8px; padding: 10px; text-align: center; box-shadow: 0 0 15px rgba(0,0,0,0.5); backdrop-filter: blur(5px); }
-        .drawer-score-label { font-size: 14px; color: #a4b09c; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; }
-        .drawer-score-val { font-size: 45px; font-weight: bold; color: #fff; line-height: 1; text-shadow: 2px 2px 4px #000; font-family: sans-serif; }
-        
-        .drawer-chart-wrap { width: 100%; height: 220px; margin-top: 5px; }
-        .drawer-comment { background: rgba(0,0,0,0.4); border-left: 3px solid var(--user-color, #a6e3a1); padding: 15px; border-radius: 0 8px 8px 0; color: #c4d1b8; font-size: 16px; line-height: 1.5; font-style: italic; white-space: pre-wrap; word-break: break-word; }
-        
-        .drawer-btn { background: rgba(166, 227, 161, 0.1); border: 1px solid var(--user-color, #a6e3a1); color: var(--user-color, #a6e3a1); padding: 12px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; text-transform: uppercase; width: 100%; margin-top: 10px; }
-        .drawer-btn:hover { background: var(--user-color, #a6e3a1); color: #0b0d0a; box-shadow: 0 0 15px var(--user-color, #a6e3a1); }
-        
-        .drawer-crit-row { display: flex; justify-content: space-between; padding: 4px 10px; border-bottom: 1px dashed rgba(255,255,255,0.15); font-size: 16px; color: #c4d1b8; }
-        .drawer-crit-row span:last-child { font-weight: bold; color: #fff; font-family: sans-serif;}
+        .preview-crit-row { display: flex; justify-content: space-between; padding: 3px 8px; border-bottom: 1px dashed rgba(255,255,255,0.15); font-size: 14px; color: #c4d1b8; }
+        .preview-crit-row span:last-child { font-weight: bold; color: #fff; font-family: sans-serif;}
 
     </style>
 </head>
@@ -352,7 +343,7 @@
                     const excerpt = act.comment ? `"<span style="opacity:0.8">${act.comment.length > 55 ? act.comment.substring(0, 55) + '...' : act.comment}</span>"` : actionText;
 
                     return `
-                    <div class="act-item" onclick="openReviewDrawer(${idx})" style="cursor: pointer; border-left: 3px solid transparent;" onmouseover="this.style.borderLeftColor='var(--user-color)'" onmouseout="this.style.borderLeftColor='transparent'">
+                    <div class="act-item" onmouseenter="openPreview(${idx})" onmouseleave="closePreview()" onclick="window.location.href='${act.link}'" style="cursor: pointer; border-left: 3px solid transparent;" onmouseover="this.style.borderLeftColor='var(--user-color)'" onmouseout="this.style.borderLeftColor='transparent'">
                         <div class="act-header">
                             <div class="act-title">${act.title}</div>
                             <div class="act-date">${formatDate(act.timestamp)}</div>
@@ -368,22 +359,16 @@
             const container = document.getElementById('hof-grid');
             const sortType = document.getElementById('sort-ratings').value;
             
-            // Берем данные напрямую из глобальной активности
             let ratedList = window.userActivityData
                 .map((data, index) => ({ data, index }))
                 .filter(item => item.data.overall > 0);
             
-            // Убираем дубликаты (оставляем самую свежую оценку)
             let uniqueList = [];
             const seen = new Set();
             ratedList.forEach(item => { 
-                if(!seen.has(item.data.title)) { 
-                    seen.add(item.data.title); 
-                    uniqueList.push(item); 
-                } 
+                if(!seen.has(item.data.title)) { seen.add(item.data.title); uniqueList.push(item); } 
             });
 
-            // Применяем выбранную сортировку
             if (sortType === 'high') uniqueList.sort((a, b) => b.data.overall - a.data.overall);
             else if (sortType === 'low') uniqueList.sort((a, b) => a.data.overall - b.data.overall);
             else if (sortType === 'new') uniqueList.sort((a, b) => b.data.timestamp - a.data.timestamp);
@@ -393,34 +378,79 @@
                 return;
             }
 
-            // ЗАМЕНИЛИ тег <a> на <div onclick="..."> чтобы открывалась панель!
             container.innerHTML = uniqueList.map(item => `
-                <div class="hof-item" onclick="openReviewDrawer(${item.index})">
+                <div class="hof-item" onmouseenter="openPreview(${item.index})" onmouseleave="closePreview()" onclick="window.location.href='${item.data.link}'">
                     <img src="${item.data.cover}" class="hof-img">
                     <div class="hof-score">★ ${item.data.overall}</div>
                     <div class="hof-title-overlay">${item.data.title}</div>
                 </div>
             `).join('');
         }
+
+        // === ФУНКЦИИ ХОВЕР-ПАНЕЛИ ===
+        let previewRadarChart = null;
+
+        function openPreview(index) {
+            const data = window.userActivityData[index];
+            if (!data) return;
+
+            const panel = document.getElementById('hover-preview');
+            panel.classList.add('show');
+            
+            document.getElementById('preview-cover').src = data.cover;
+            document.getElementById('preview-title').innerText = data.title;
+            document.getElementById('preview-overall').innerText = data.overall > 0 ? data.overall : '-';
+            
+            document.getElementById('preview-comment').innerHTML = data.comment ? `"${data.comment.replace(/\n/g, '<br>')}"` : '<span style="opacity:0.5; font-style: normal;">Только оценка, без рецензии.</span>';
+
+            const t = data.theory || {};
+            document.getElementById('preview-theory-list').innerHTML = `
+                <div class="preview-crit-row"><span>Сюжет</span><span>${t.plot || '-'}</span></div>
+                <div class="preview-crit-row"><span>Визуал</span><span>${t.visuals || '-'}</span></div>
+                <div class="preview-crit-row"><span>Музыка</span><span>${t.music || '-'}</span></div>
+                <div class="preview-crit-row"><span>Мир</span><span>${t.world || '-'}</span></div>
+                <div class="preview-crit-row"><span>Персонажи</span><span>${t.atmosphere || '-'}</span></div>
+            `;
+
+            const ctx = document.getElementById('previewChart').getContext('2d');
+            const color = getComputedStyle(document.documentElement).getPropertyValue('--user-color').trim() || '#a6e3a1';
+
+            if (previewRadarChart) {
+                previewRadarChart.data.datasets[0].data = [t.plot||0, t.visuals||0, t.music||0, t.world||0, t.atmosphere||0];
+                previewRadarChart.data.datasets[0].borderColor = color;
+                previewRadarChart.data.datasets[0].backgroundColor = color + '40';
+                previewRadarChart.data.datasets[0].pointBackgroundColor = color;
+                previewRadarChart.update();
+            } else {
+                // Анимация выключена (animation: false) для мгновенного обновления при быстром движении мышки!
+                previewRadarChart = new Chart(ctx, {
+                    type: 'radar',
+                    data: { labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Персонажи'], datasets: [{ data: [t.plot||0, t.visuals||0, t.music||0, t.world||0, t.atmosphere||0], backgroundColor: color + '40', borderColor: color, pointBackgroundColor: color, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 }] },
+                    options: { animation: false, responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { filter: (i) => i.raw > 0 } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: 'rgba(255,255,255,0.1)' }, angleLines: { color: 'rgba(255,255,255,0.1)' }, pointLabels: { font: { size: 11, weight: 'bold' }, color: '#c4d1b8' } } } }
+                });
+            }
+        }
+
+        function closePreview() {
+            document.getElementById('hover-preview').classList.remove('show');
+        }
+
         window.onload = initProfile;
     </script>
-  <!-- ВЫЕЗЖАЮЩАЯ ПАНЕЛЬ -->
-    <div id="drawer-backdrop" class="drawer-backdrop" onclick="closeReviewDrawer()"></div>
-    <div id="review-drawer" class="detail-drawer">
-        <div class="drawer-close" onclick="closeReviewDrawer()">×</div>
-        <img id="drawer-cover" src="" class="drawer-cover">
-        <div class="drawer-content">
-            <div id="drawer-title" class="drawer-title">Название</div>
-            <div class="drawer-score-box">
-                <div class="drawer-score-label">Оценка</div>
-                <div id="drawer-overall" class="drawer-score-val">10</div>
+  <!-- ХОВЕР-ПАНЕЛЬ (ВСПЛЫВАЕТ ПРИ НАВЕДЕНИИ) -->
+    <div id="hover-preview" class="preview-panel">
+        <img id="preview-cover" src="" class="preview-cover">
+        <div class="preview-content">
+            <div id="preview-title" class="preview-title">Название</div>
+            <div class="preview-score-box">
+                <div class="preview-score-label">Итоговая оценка</div>
+                <div id="preview-overall" class="preview-score-val">10</div>
             </div>
-            <div class="drawer-chart-wrap">
-                <canvas id="drawerChart"></canvas>
+            <div class="preview-chart-wrap">
+                <canvas id="previewChart"></canvas>
             </div>
-            <div id="drawer-theory-list" style="margin-bottom: 10px;"></div>
-            <div class="drawer-comment" id="drawer-comment"></div>
-            <button id="drawer-link-btn" class="drawer-btn">Перейти к аниме</button>
+            <div id="preview-theory-list" style="margin-bottom: 5px;"></div>
+            <div class="preview-comment" id="preview-comment"></div>
         </div>
     </div>
 </body>
