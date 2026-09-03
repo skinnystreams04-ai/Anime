@@ -25,6 +25,15 @@
             background-image: radial-gradient(circle at 50% 0%, rgba(var(--user-color-rgb, 166, 227, 161), 0.08) 0%, #0b0d0a 60%);
         }
 
+        .top-nav { background: #0b0d0a; border-bottom: 2px solid #283325; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); width: 100%; box-sizing: border-box; }
+        .nav-logo { color: #a6e3a1; font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; transition: 0.2s; cursor: pointer; }
+        .nav-logo:hover { filter: brightness(1.2); text-shadow: 0 0 15px rgba(166, 227, 161, 0.5); }
+
+        .layout { display: flex; gap: 20px; align-items: flex-start; padding: 0 40px; width: 100%; box-sizing: border-box; max-width: 1550px; margin: 0 auto; }
+        .col-left { width: 300px; display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; }
+        .col-center { flex: 1 1 auto; display: flex; flex-direction: column; gap: 20px; min-width: 0; width: 100%; }
+        .col-right { width: 350px; display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; }
+
         /* ПЕРСОНАЛИЗИРОВАННЫЕ ПАНЕЛИ */
         .widget-base { 
             background: linear-gradient(180deg, var(--theme-panel-bg-top) 0%, var(--theme-panel-bg-bottom) 100%); 
