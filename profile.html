@@ -248,7 +248,6 @@
             let th = { plot: 0, vis: 0, mus: 0, wor: 0, atm: 0 };
             let allActivityMap = {};
             
-            // Нормализуем данные из URL, чтобы скрипт умел искать по никам
             const searchId = userId.toString().toLowerCase();
 
             for (const [franchise, seasons] of Object.entries(commDb)) {
@@ -264,13 +263,11 @@
                     if (!allActivityMap[key]) { allActivityMap[key] = { title: titleName, cover: cover, link: linkUrl, timestamp: 0, overall: 0, theory: null, comment: null }; }
                     const actObj = allActivityMap[key];
 
-                    // УМНЫЙ ПОИСК ОЦЕНОК (По цифровому ID или по Нику)
                     let r = null;
                     if (data.ratings) {
                         if (data.ratings[userId]) {
-                            r = data.ratings[userId]; // Нашли по цифрам
+                            r = data.ratings[userId]; 
                         } else {
-                            // Ищем по нику, если с хаба передали никнейм
                             const foundUid = Object.keys(data.ratings).find(uid => data.ratings[uid].displayName && data.ratings[uid].displayName.toLowerCase() === searchId);
                             if (foundUid) r = data.ratings[foundUid];
                         }
@@ -285,7 +282,6 @@
                         }
                     }
 
-                    // УМНЫЙ ПОИСК КОММЕНТАРИЕВ (По цифровому ID или по Нику)
                     if (data.comments) {
                         for (const [cId, c] of Object.entries(data.comments)) {
                             if (c.userId === userId || (c.displayName && c.displayName.toLowerCase() === searchId)) {
@@ -297,21 +293,20 @@
                 }
             }
 
-            // Достаем цвета и роли (если URL был цифровым, берем вычисленный никнейм)
-            // Достаем цвета и роли
             const finalLogin = userName === "Неизвестный" ? searchId : userName.toLowerCase();
             const dbUser = usersDb[finalLogin];
             let role = "F"; 
             if (dbUser) { 
                 if (dbUser.role) role = dbUser.role.toUpperCase(); 
-                if (dbUser.color && dbUser.color.trim() !== "") userColor = dbUser.color; 
+                if (dbUser.color) userColor = dbUser.color; // ИСПРАВЛЕНИЕ: Безопасное присвоение цвета 
                 if (userName === "Неизвестный" && dbUser.display_name) userName = dbUser.display_name;
             }
+
+            userColor = userColor || '#a6e3a1'; // ЖЕСТКАЯ ЗАГЛУШКА ОТ NULL
 
             let badgeHtml = `<span class="role-badge role-f">FOLLOW</span>`;
             if (role === 'SUB' || role === 'SUBSCRIBER') badgeHtml = `<span class="role-badge role-sub">SUB</span>`; else if (role === 'VIP') badgeHtml = `<span class="role-badge role-vip">VIP</span>`;
 
-            // === ГЕНЕРИРУЕМ RGB ДЛЯ ТЕНЕЙ И РАМОК ===
             let hex = userColor.replace('#', '');
             if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
             let uR = parseInt(hex.substring(0,2), 16) || 166;
@@ -319,7 +314,7 @@
             let uB = parseInt(hex.substring(4,6), 16) || 161;
 
             document.documentElement.style.setProperty('--user-color', userColor);
-            document.documentElement.style.setProperty('--user-color-rgb', `${uR}, ${uG}, ${uB}`); // Переменная для прозрачности
+            document.documentElement.style.setProperty('--user-color-rgb', `${uR}, ${uG}, ${uB}`);
             
             document.getElementById('profile-card').innerHTML = `
                 <div class="avatar-wrap"><img src="${userAvatar}" class="profile-avatar"></div>
@@ -401,30 +396,18 @@
                 try {
                     const color = colorThief.getColor(hiddenImg);
                     const r = color[0], g = color[1], b = color[2];
-                    const panel = document.getElementById('dynamic-right-panel');
                     
                     const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
                     let tr = r, tg = g, tb = b;
                     if (luminance < 90) { tr = Math.min(255, r+80); tg = Math.min(255, g+80); tb = Math.min(255, b+80); }
 
-                    panel.style.borderColor = `rgba(${r}, ${g}, ${b}, 0.8)`;
-                    panel.style.boxShadow = `0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(${r}, ${g}, ${b}, 0.3)`;
+                    // Окрашиваем только название тайтла, график остается цвета пользователя
                     document.getElementById('preview-title').style.color = `rgb(${tr}, ${tg}, ${tb})`;
                     document.getElementById('preview-title').style.textShadow = `2px 2px 5px #000, 0 0 10px rgba(${r}, ${g}, ${b}, 0.5)`;
-                    
                 } catch(e) {}
             };
             hiddenImg.onerror = function() {
-                const panel = document.getElementById('dynamic-right-panel');
-                panel.style.borderColor = fallbackColor;
-                panel.style.boxShadow = `0 10px 30px rgba(0,0,0,0.8), 0 0 20px ${fallbackColor}40`;
                 document.getElementById('preview-title').style.color = fallbackColor;
-                if (previewRadarChart) {
-                    previewRadarChart.data.datasets[0].borderColor = fallbackColor;
-                    previewRadarChart.data.datasets[0].backgroundColor = fallbackColor + '40';
-                    previewRadarChart.data.datasets[0].pointBackgroundColor = fallbackColor;
-                    previewRadarChart.update();
-                }
             };
             hiddenImg.src = data.cover + '?bypassCache=' + Date.now();
 
