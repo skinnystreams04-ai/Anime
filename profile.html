@@ -370,6 +370,33 @@
         }
 
         function openPreview(index) {
+            const data = window.userActivityData[index];
+            if (!data) return;
+
+            document.getElementById('preview-placeholder').style.display = 'none';
+            document.getElementById('preview-container').style.display = 'flex';
+            
+            document.getElementById('preview-cover').src = data.cover;
+            document.getElementById('preview-title').innerText = data.title;
+            
+            document.getElementById('preview-score-box').style.cssText = getGlassBoxStyle(data.overall);
+            document.getElementById('preview-score-label').style.cssText = `color: ${getScoreColor(data.overall, 1)}; text-shadow: 0 0 5px ${getScoreColor(data.overall, 0.5)};`;
+            document.getElementById('preview-overall').innerHTML = `${data.overall > 0 ? data.overall : '-'}<span> / 10</span>`;
+            document.getElementById('preview-overall').style.cssText = `color: #fff; text-shadow: ${getScoreShadow(data.overall, true)};`;
+            
+            document.getElementById('preview-comment').innerHTML = data.comment ? `"${data.comment.replace(/\n/g, '<br>')}"` : '<span style="opacity:0.5; font-style: normal;">Только оценка, без рецензии.</span>';
+
+            const t = data.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
+            
+            const avgTh = ((t.plot||0) + (t.visuals||0) + (t.music||0) + (t.world||0) + (t.atmosphere||0)) / 5;
+            document.getElementById('preview-avg-theory').innerText = `Ср. критерий: ${avgTh > 0 ? avgTh.toFixed(1) : '-'}`;
+            document.getElementById('preview-avg-theory').style.color = getScoreColor(avgTh, 1);
+            document.getElementById('preview-avg-theory').style.textShadow = getScoreShadow(avgTh, false);
+
+            const createRow = (name, val) => `<div class="preview-crit-row" style="${getGlassRowStyle(val)}"><span style="color:${getScoreColor(val, 1)}; text-shadow: 1px 1px 2px #000;">${name}</span><span style="color:#fff; text-shadow: ${getScoreShadow(val, false)};">${val || '-'}</span></div>`;
+            
+            document.getElementById('preview-theory-list').innerHTML = createRow('Сюжет', t.plot) + createRow('Визуал', t.visuals) + createRow('Музыка', t.music) + createRow('Мир', t.world) + createRow('Персонажи', t.atmosphere);
+
             const fallbackColor = getComputedStyle(document.documentElement).getPropertyValue('--user-color').trim() || '#a6e3a1';
             const colorThief = new ColorThief();
             const hiddenImg = new Image();
@@ -427,7 +454,6 @@
             };
             hiddenImg.src = data.cover + '?bypassCache=' + Date.now();
 
-            // Инициализация радара (если он еще не создан)
             const ctx = document.getElementById('previewChart').getContext('2d');
             if (previewRadarChart) {
                 previewRadarChart.data.datasets[0].data = [t.plot||0, t.visuals||0, t.music||0, t.world||0, t.atmosphere||0];
