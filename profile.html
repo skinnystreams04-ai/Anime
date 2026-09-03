@@ -82,6 +82,35 @@
         .act-score-badge { display: inline-block; background: rgba(0,0,0,0.5); padding: 2px 8px; border-radius: 4px; border: 1px solid #4a5c41; font-weight: bold; color: #fff; font-size: 14px; margin-right: 8px; }
 
         .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0b0d0a; z-index: 9999; display: flex; justify-content: center; align-items: center; color: #a6e3a1; font-size: 24px; flex-direction: column; }
+
+         /* ВЫЕЗЖАЮЩАЯ ПАНЕЛЬ ДЕТАЛЕЙ (DRAWER) */
+        .drawer-backdrop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1999; opacity: 0; visibility: hidden; transition: 0.4s; backdrop-filter: blur(3px); }
+        .drawer-backdrop.show { opacity: 1; visibility: visible; }
+        
+        .detail-drawer { position: fixed; top: 0; right: -500px; width: 420px; height: 100vh; background: rgba(10, 12, 10, 0.85); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-left: 2px solid var(--user-color, #a6e3a1); box-shadow: -10px 0 30px rgba(0,0,0,0.8); z-index: 2000; transition: right 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; }
+        .detail-drawer.open { right: 0; }
+        
+        .drawer-close { position: absolute; top: 15px; right: 20px; font-size: 35px; color: #fff; cursor: pointer; line-height: 1; z-index: 10; text-shadow: 0 0 10px #000; transition: 0.2s; font-family: sans-serif; }
+        .drawer-close:hover { color: #ff5555; transform: scale(1.1); }
+        
+        .drawer-cover { width: 100%; height: 250px; object-fit: cover; -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%); mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%); border-bottom: 2px solid var(--user-color, #a6e3a1); }
+        .drawer-content { padding: 0 25px 25px 25px; margin-top: -60px; position: relative; z-index: 2; display: flex; flex-direction: column; gap: 15px; }
+        
+        .drawer-title { font-size: 26px; font-weight: bold; color: #fff; text-shadow: 2px 2px 5px #000, 0 0 15px var(--user-color, #a6e3a1); text-transform: uppercase; line-height: 1.1; text-align: center; }
+        
+        .drawer-score-box { background: rgba(0,0,0,0.5); border: 1px solid var(--user-color, #a6e3a1); border-radius: 8px; padding: 10px; text-align: center; box-shadow: 0 0 15px rgba(0,0,0,0.5); backdrop-filter: blur(5px); }
+        .drawer-score-label { font-size: 14px; color: #a4b09c; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; }
+        .drawer-score-val { font-size: 45px; font-weight: bold; color: #fff; line-height: 1; text-shadow: 2px 2px 4px #000; font-family: sans-serif; }
+        
+        .drawer-chart-wrap { width: 100%; height: 220px; margin-top: 5px; }
+        .drawer-comment { background: rgba(0,0,0,0.4); border-left: 3px solid var(--user-color, #a6e3a1); padding: 15px; border-radius: 0 8px 8px 0; color: #c4d1b8; font-size: 16px; line-height: 1.5; font-style: italic; white-space: pre-wrap; word-break: break-word; }
+        
+        .drawer-btn { background: rgba(166, 227, 161, 0.1); border: 1px solid var(--user-color, #a6e3a1); color: var(--user-color, #a6e3a1); padding: 12px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; border-radius: 8px; cursor: pointer; transition: 0.3s; text-transform: uppercase; width: 100%; margin-top: 10px; }
+        .drawer-btn:hover { background: var(--user-color, #a6e3a1); color: #0b0d0a; box-shadow: 0 0 15px var(--user-color, #a6e3a1); }
+        
+        .drawer-crit-row { display: flex; justify-content: space-between; padding: 4px 10px; border-bottom: 1px dashed rgba(255,255,255,0.15); font-size: 16px; color: #c4d1b8; }
+        .drawer-crit-row span:last-child { font-weight: bold; color: #fff; font-family: sans-serif;}
+
     </style>
 </head>
 <body>
@@ -192,6 +221,9 @@
             }
         }
 
+        window.userActivityData = []; // Глобальное хранилище для панели
+        let drawerRadarChart = null;
+
         function processData(userId, usersDb, animeDb, commDb) {
             let userName = "Неизвестный";
             let userAvatar = "https://static-cdn.jtvnw.net/user-default-pictures-uv/41780b5a-def8-11e9-94d9-784f43822e80-profile_image-70x70.png";
@@ -201,10 +233,10 @@
             let titleCount = 0;
             let th = { plot: 0, vis: 0, mus: 0, wor: 0, atm: 0 };
             
-            let allActivity = [];
+            let allActivityMap = {};
             let hofAnime = [];
 
-            // Прочесываем всю базу комментариев и оценок
+            // Прочесываем всю базу комментариев и оценок, склеивая их по сезону
             for (const [franchise, seasons] of Object.entries(commDb)) {
                 for (const [season, data] of Object.entries(seasons)) {
                     
@@ -214,6 +246,13 @@
                     const titleName = animeInfo.title;
                     const cover = animeInfo.coverUrl;
                     const linkUrl = `Anime-Page.html?id=${franchise}`;
+                    const key = `${franchise}_${season}`;
+
+                    if (!allActivityMap[key]) {
+                        allActivityMap[key] = { title: titleName, cover: cover, link: linkUrl, timestamp: 0, overall: 0, theory: null, comment: null };
+                    }
+                    const actObj = allActivityMap[key];
+                    let hasInteracted = false;
 
                     // Ищем оценки
                     if (data.ratings && data.ratings[userId]) {
@@ -222,6 +261,11 @@
                         userAvatar = r.profileImage || userAvatar;
                         
                         if (r.overall > 0) {
+                            actObj.overall = r.overall;
+                            actObj.theory = r.theory;
+                            actObj.timestamp = Math.max(actObj.timestamp, r.timestamp);
+                            hasInteracted = true;
+                            
                             totalOverall += r.overall;
                             titleCount++;
                             if (r.theory) {
@@ -230,15 +274,6 @@
                             }
                             
                             hofAnime.push({ title: titleName, cover: cover, score: r.overall, link: linkUrl, timestamp: r.timestamp });
-                            
-                            allActivity.push({
-                                type: 'rating',
-                                timestamp: r.timestamp,
-                                title: titleName,
-                                link: linkUrl,
-                                score: r.overall,
-                                text: `Выставил(а) оценку тайтлу`
-                            });
                         }
                     }
 
@@ -250,18 +285,17 @@
                                 userAvatar = c.profileImage || userAvatar;
                                 userColor = c.userColor || userColor;
 
-                                allActivity.push({
-                                    type: 'comment',
-                                    timestamp: c.timestamp,
-                                    title: titleName,
-                                    link: linkUrl,
-                                    text: c.text
-                                });
+                                actObj.comment = c.text;
+                                actObj.timestamp = Math.max(actObj.timestamp, c.timestamp);
+                                hasInteracted = true;
                             }
                         }
                     }
                 }
             }
+
+            // Фильтруем пустые записи
+            let allActivity = Object.values(allActivityMap).filter(a => a.overall > 0 || a.comment);
 
             // Достаем данные с Twitch/Аукциона
             const lowerName = userName.toLowerCase();
@@ -286,12 +320,11 @@
                 </div>
             `;
 
-            // Рендер Статистики
             const avgOverall = titleCount > 0 ? (totalOverall / titleCount).toFixed(1) : 0;
             document.getElementById('stat-ovr').innerText = avgOverall;
             document.getElementById('stat-count').innerText = titleCount;
 
-            // Рендер Радара
+            // Рендер Радара Профиля
             const ctx = document.getElementById('radarChart').getContext('2d');
             const avgT = titleCount > 0 ? [
                 (th.plot / titleCount).toFixed(1), (th.vis / titleCount).toFixed(1),
@@ -300,44 +333,90 @@
 
             radarChart = new Chart(ctx, {
                 type: 'radar',
-                data: { 
-                    labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Персонажи'], 
-                    datasets: [{ 
-                        data: avgT, 
-                        backgroundColor: `${userColor}33`, 
-                        borderColor: userColor, 
-                        pointBackgroundColor: userColor, 
-                        pointBorderColor: '#0b0d0a', 
-                        borderWidth: 2, 
-                        pointRadius: 4 
-                    }] 
-                },
+                data: { labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Персонажи'], datasets: [{ data: avgT, backgroundColor: `${userColor}33`, borderColor: userColor, pointBackgroundColor: userColor, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 4 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: '#283325' }, angleLines: { color: '#283325' }, pointLabels: { font: { size: 13, weight: 'bold' }, color: '#c4d1b8' } } } }
             });
 
-            // Рендер всех оценок с сортировкой
             allRatedAnime = hofAnime; 
             renderRatings();
 
-            // Рендер Активности
+            // Рендер Интерактивной Активности
             const actContainer = document.getElementById('activity-feed');
             allActivity.sort((a,b) => b.timestamp - a.timestamp);
+            window.userActivityData = allActivity; // Сохраняем для панели
+
             if (allActivity.length === 0) {
                 actContainer.innerHTML = `<div style="text-align: center; color: #6b7a62; padding: 20px;">Пользователь пока не оставил следов...</div>`;
             } else {
-                actContainer.innerHTML = allActivity.map(act => {
-                    const scoreHtml = act.type === 'rating' ? `<span class="act-score-badge">★ ${act.score}</span>` : '';
+                actContainer.innerHTML = allActivity.map((act, idx) => {
+                    const scoreHtml = act.overall > 0 ? `<span class="act-score-badge" style="border-color: var(--user-color);">★ ${act.overall}</span>` : '';
+                    let actionText = '';
+                    if (act.overall > 0 && act.comment) actionText = `Написал(а) рецензию и поставил(а) оценку`;
+                    else if (act.overall > 0) actionText = `Выставил(а) оценку тайтлу`;
+                    else actionText = `Написал(а) комментарий`;
+
+                    // Делаем красивую превьюшку комментария
+                    const excerpt = act.comment ? `"<span style="opacity:0.8">${act.comment.length > 55 ? act.comment.substring(0, 55) + '...' : act.comment}</span>"` : actionText;
+
                     return `
-                    <a href="${act.link}" class="act-item">
+                    <div class="act-item" onclick="openReviewDrawer(${idx})" style="cursor: pointer; border-left: 3px solid transparent;" onmouseover="this.style.borderLeftColor='var(--user-color)'" onmouseout="this.style.borderLeftColor='transparent'">
                         <div class="act-header">
                             <div class="act-title">${act.title}</div>
                             <div class="act-date">${formatDate(act.timestamp)}</div>
                         </div>
-                        <div class="act-body">${scoreHtml} ${act.text}</div>
-                    </a>
+                        <div class="act-body">${scoreHtml} ${excerpt}</div>
+                    </div>
                     `;
                 }).join('');
             }
+        }
+
+        // === ФУНКЦИИ ВЫЕЗЖАЮЩЕЙ ПАНЕЛИ ===
+        function openReviewDrawer(index) {
+            const data = window.userActivityData[index];
+            if (!data) return;
+
+            document.getElementById('drawer-backdrop').classList.add('show');
+            document.getElementById('review-drawer').classList.add('open');
+            
+            document.getElementById('drawer-cover').src = data.cover;
+            document.getElementById('drawer-title').innerText = data.title;
+            document.getElementById('drawer-overall').innerText = data.overall > 0 ? data.overall : '-';
+            
+            document.getElementById('drawer-comment').innerHTML = data.comment ? `"${data.comment.replace(/\n/g, '<br>')}"` : '<span style="opacity:0.5; font-style: normal;">Без рецензии, только оценка.</span>';
+            document.getElementById('drawer-link-btn').onclick = () => window.location.href = data.link;
+
+            const t = data.theory || {};
+            
+            document.getElementById('drawer-theory-list').innerHTML = `
+                <div class="drawer-crit-row"><span>Сюжет</span><span>${t.plot || '-'}</span></div>
+                <div class="drawer-crit-row"><span>Визуал</span><span>${t.visuals || '-'}</span></div>
+                <div class="drawer-crit-row"><span>Музыка</span><span>${t.music || '-'}</span></div>
+                <div class="drawer-crit-row"><span>Мир</span><span>${t.world || '-'}</span></div>
+                <div class="drawer-crit-row"><span>Персонажи</span><span>${t.atmosphere || '-'}</span></div>
+            `;
+
+            const ctx = document.getElementById('drawerChart').getContext('2d');
+            const color = getComputedStyle(document.documentElement).getPropertyValue('--user-color').trim() || '#a6e3a1';
+
+            if (drawerRadarChart) {
+                drawerRadarChart.data.datasets[0].data = [t.plot||0, t.visuals||0, t.music||0, t.world||0, t.atmosphere||0];
+                drawerRadarChart.data.datasets[0].borderColor = color;
+                drawerRadarChart.data.datasets[0].backgroundColor = color + '40';
+                drawerRadarChart.data.datasets[0].pointBackgroundColor = color;
+                drawerRadarChart.update();
+            } else {
+                drawerRadarChart = new Chart(ctx, {
+                    type: 'radar',
+                    data: { labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Персонажи'], datasets: [{ data: [t.plot||0, t.visuals||0, t.music||0, t.world||0, t.atmosphere||0], backgroundColor: color + '40', borderColor: color, pointBackgroundColor: color, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 3 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { filter: (i) => i.raw > 0 } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: 'rgba(255,255,255,0.1)' }, angleLines: { color: 'rgba(255,255,255,0.1)' }, pointLabels: { font: { size: 12, weight: 'bold' }, color: '#c4d1b8' } } } }
+                });
+            }
+        }
+
+        function closeReviewDrawer() {
+            document.getElementById('drawer-backdrop').classList.remove('show');
+            document.getElementById('review-drawer').classList.remove('open');
         }
 function renderRatings() {
             const container = document.getElementById('hof-grid');
@@ -369,5 +448,24 @@ function renderRatings() {
         }
         window.onload = initProfile;
     </script>
+  <!-- ВЫЕЗЖАЮЩАЯ ПАНЕЛЬ -->
+    <div id="drawer-backdrop" class="drawer-backdrop" onclick="closeReviewDrawer()"></div>
+    <div id="review-drawer" class="detail-drawer">
+        <div class="drawer-close" onclick="closeReviewDrawer()">×</div>
+        <img id="drawer-cover" src="" class="drawer-cover">
+        <div class="drawer-content">
+            <div id="drawer-title" class="drawer-title">Название</div>
+            <div class="drawer-score-box">
+                <div class="drawer-score-label">Оценка</div>
+                <div id="drawer-overall" class="drawer-score-val">10</div>
+            </div>
+            <div class="drawer-chart-wrap">
+                <canvas id="drawerChart"></canvas>
+            </div>
+            <div id="drawer-theory-list" style="margin-bottom: 10px;"></div>
+            <div class="drawer-comment" id="drawer-comment"></div>
+            <button id="drawer-link-btn" class="drawer-btn">Перейти к аниме</button>
+        </div>
+    </div>
 </body>
 </html>
