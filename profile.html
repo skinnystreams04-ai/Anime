@@ -18,27 +18,34 @@
             --theme-panel-border: #283325;
         }
 
-        body { margin: 0; padding: 0 0 20px 0; font-family: 'Neucha', cursive, sans-serif; background-color: #0b0d0a; color: #a4b09c; min-width: 1200px; overflow-x: hidden; }
+        body { 
+            margin: 0; padding: 0 0 20px 0; font-family: 'Neucha', cursive, sans-serif; 
+            background-color: #0b0d0a; color: #a4b09c; min-width: 1200px; overflow-x: hidden; 
+            /* Персональный легкий градиент на фоне */
+            background-image: radial-gradient(circle at 50% 0%, rgba(var(--user-color-rgb, 166, 227, 161), 0.08) 0%, #0b0d0a 60%);
+        }
 
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #0b0d0a; border-left: 1px solid #283325; }
-        ::-webkit-scrollbar-thumb { background: #4a5c41; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--theme-primary); box-shadow: 0 0 10px var(--theme-glow); }
-
-        .top-nav { background: #0b0d0a; border-bottom: 2px solid #283325; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
-        .nav-logo { color: #a6e3a1; font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; transition: 0.2s; cursor: pointer; }
-        .nav-logo:hover { filter: brightness(1.2); text-shadow: 0 0 15px rgba(166, 227, 161, 0.5); }
-
-        .layout { display: flex; gap: 20px; align-items: stretch; padding: 0 20px; max-width: 1550px; margin: 0 auto; }
-        .col-left { width: 300px; display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; }
-        .col-center { flex: 1; display: flex; flex-direction: column; gap: 20px; min-width: 0; }
-        .col-right { width: 350px; display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; }
-
-        /* ВИДЖЕТЫ (ПАНЕЛИ) */
-        .widget-base { background: linear-gradient(180deg, var(--theme-panel-bg-top) 0%, var(--theme-panel-bg-bottom) 100%); border: 2px solid var(--theme-panel-border); border-radius: 6px; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.8); overflow: hidden; }
-        .widget-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: var(--theme-panel-header); border-bottom: 2px solid var(--theme-panel-border); flex-shrink: 0; }
-        .widget-title { color: var(--theme-primary); font-weight: bold; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 10px var(--theme-glow); }
-        .widget-content { padding: 20px; flex: 1; display: flex; flex-direction: column; gap: 15px; }
+        /* ПЕРСОНАЛИЗИРОВАННЫЕ ПАНЕЛИ */
+        .widget-base { 
+            background: linear-gradient(180deg, var(--theme-panel-bg-top) 0%, var(--theme-panel-bg-bottom) 100%); 
+            border: 2px solid rgba(var(--user-color-rgb, 166, 227, 161), 0.3); /* Рамки под цвет пользователя */
+            border-radius: 6px; display: flex; flex-direction: column; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(var(--user-color-rgb, 166, 227, 161), 0.05); /* Легкое свечение */
+            overflow: hidden; transition: border-color 0.5s, box-shadow 0.5s;
+        }
+        
+        .widget-header { 
+            display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; 
+            background: var(--theme-panel-header); 
+            border-bottom: 2px solid rgba(var(--user-color-rgb, 166, 227, 161), 0.3); /* Линия шапки */
+            flex-shrink: 0; 
+        }
+        
+        .widget-title { 
+            color: var(--user-color, #a6e3a1); /* Текст шапки */
+            font-weight: bold; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; 
+            text-shadow: 0 0 10px rgba(var(--user-color-rgb, 166, 227, 161), 0.4); 
+        }
 
         /* ПРОФИЛЬНАЯ КАРТОЧКА */
         .profile-card { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 10px 0; }
@@ -291,6 +298,7 @@
             }
 
             // Достаем цвета и роли (если URL был цифровым, берем вычисленный никнейм)
+            // Достаем цвета и роли
             const finalLogin = userName === "Неизвестный" ? searchId : userName.toLowerCase();
             const dbUser = usersDb[finalLogin];
             let role = "F"; 
@@ -303,7 +311,16 @@
             let badgeHtml = `<span class="role-badge role-f">FOLLOW</span>`;
             if (role === 'SUB' || role === 'SUBSCRIBER') badgeHtml = `<span class="role-badge role-sub">SUB</span>`; else if (role === 'VIP') badgeHtml = `<span class="role-badge role-vip">VIP</span>`;
 
+            // === ГЕНЕРИРУЕМ RGB ДЛЯ ТЕНЕЙ И РАМОК ===
+            let hex = userColor.replace('#', '');
+            if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+            let uR = parseInt(hex.substring(0,2), 16) || 166;
+            let uG = parseInt(hex.substring(2,4), 16) || 227;
+            let uB = parseInt(hex.substring(4,6), 16) || 161;
+
             document.documentElement.style.setProperty('--user-color', userColor);
+            document.documentElement.style.setProperty('--user-color-rgb', `${uR}, ${uG}, ${uB}`); // Переменная для прозрачности
+            
             document.getElementById('profile-card').innerHTML = `
                 <div class="avatar-wrap"><img src="${userAvatar}" class="profile-avatar"></div>
                 <div class="profile-name" style="color: ${userColor}; text-shadow: 0 0 15px ${userColor}80;">${userName}</div>
@@ -395,13 +412,6 @@
                     document.getElementById('preview-title').style.color = `rgb(${tr}, ${tg}, ${tb})`;
                     document.getElementById('preview-title').style.textShadow = `2px 2px 5px #000, 0 0 10px rgba(${r}, ${g}, ${b}, 0.5)`;
                     
-                    const themeColor = `rgb(${tr}, ${tg}, ${tb})`;
-                    if (previewRadarChart) {
-                        previewRadarChart.data.datasets[0].borderColor = themeColor;
-                        previewRadarChart.data.datasets[0].backgroundColor = `rgba(${tr}, ${tg}, ${tb}, 0.2)`;
-                        previewRadarChart.data.datasets[0].pointBackgroundColor = themeColor;
-                        previewRadarChart.update();
-                    }
                 } catch(e) {}
             };
             hiddenImg.onerror = function() {
