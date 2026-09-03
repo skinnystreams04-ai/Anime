@@ -234,7 +234,6 @@
             let th = { plot: 0, vis: 0, mus: 0, wor: 0, atm: 0 };
             
             let allActivityMap = {};
-            let hofAnime = [];
 
             // Прочесываем всю базу комментариев и оценок, склеивая их по сезону
             for (const [franchise, seasons] of Object.entries(commDb)) {
@@ -252,7 +251,6 @@
                         allActivityMap[key] = { title: titleName, cover: cover, link: linkUrl, timestamp: 0, overall: 0, theory: null, comment: null };
                     }
                     const actObj = allActivityMap[key];
-                    let hasInteracted = false;
 
                     // Ищем оценки
                     if (data.ratings && data.ratings[userId]) {
@@ -264,7 +262,6 @@
                             actObj.overall = r.overall;
                             actObj.theory = r.theory;
                             actObj.timestamp = Math.max(actObj.timestamp, r.timestamp);
-                            hasInteracted = true;
                             
                             totalOverall += r.overall;
                             titleCount++;
@@ -272,8 +269,6 @@
                                 th.plot += r.theory.plot || 0; th.vis += r.theory.visuals || 0;
                                 th.mus += r.theory.music || 0; th.wor += r.theory.world || 0; th.atm += r.theory.atmosphere || 0;
                             }
-                            
-                            hofAnime.push({ title: titleName, cover: cover, score: r.overall, link: linkUrl, timestamp: r.timestamp });
                         }
                     }
 
@@ -287,15 +282,11 @@
 
                                 actObj.comment = c.text;
                                 actObj.timestamp = Math.max(actObj.timestamp, c.timestamp);
-                                hasInteracted = true;
                             }
                         }
                     }
                 }
             }
-
-            // Фильтруем пустые записи
-            let allActivity = Object.values(allActivityMap).filter(a => a.overall > 0 || a.comment);
 
             // Достаем данные с Twitch/Аукциона
             const lowerName = userName.toLowerCase();
@@ -331,31 +322,33 @@
                 (th.mus / titleCount).toFixed(1), (th.wor / titleCount).toFixed(1), (th.atm / titleCount).toFixed(1)
             ] : [0,0,0,0,0];
 
+            if(radarChart) radarChart.destroy();
             radarChart = new Chart(ctx, {
                 type: 'radar',
                 data: { labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Персонажи'], datasets: [{ data: avgT, backgroundColor: `${userColor}33`, borderColor: userColor, pointBackgroundColor: userColor, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 4 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: '#283325' }, angleLines: { color: '#283325' }, pointLabels: { font: { size: 13, weight: 'bold' }, color: '#c4d1b8' } } } }
             });
 
-            allRatedAnime = hofAnime; 
+            // ФИЛЬТРУЕМ ДАННЫЕ И СОХРАНЯЕМ ИХ ДО ОТРИСОВКИ КАРТОЧЕК
+            let allActivity = Object.values(allActivityMap).filter(a => a.overall > 0 || a.comment);
+            allActivity.sort((a,b) => b.timestamp - a.timestamp);
+            window.userActivityData = allActivity; 
+
+            // Рендер всех карточек в разделе "Оценки"
             renderRatings();
 
             // Рендер Интерактивной Активности
             const actContainer = document.getElementById('activity-feed');
-            allActivity.sort((a,b) => b.timestamp - a.timestamp);
-            window.userActivityData = allActivity; // Сохраняем для панели
-
-            if (allActivity.length === 0) {
+            if (window.userActivityData.length === 0) {
                 actContainer.innerHTML = `<div style="text-align: center; color: #6b7a62; padding: 20px;">Пользователь пока не оставил следов...</div>`;
             } else {
-                actContainer.innerHTML = allActivity.map((act, idx) => {
+                actContainer.innerHTML = window.userActivityData.map((act, idx) => {
                     const scoreHtml = act.overall > 0 ? `<span class="act-score-badge" style="border-color: var(--user-color);">★ ${act.overall}</span>` : '';
                     let actionText = '';
                     if (act.overall > 0 && act.comment) actionText = `Написал(а) рецензию и поставил(а) оценку`;
                     else if (act.overall > 0) actionText = `Выставил(а) оценку тайтлу`;
                     else actionText = `Написал(а) комментарий`;
 
-                    // Делаем красивую превьюшку комментария
                     const excerpt = act.comment ? `"<span style="opacity:0.8">${act.comment.length > 55 ? act.comment.substring(0, 55) + '...' : act.comment}</span>"` : actionText;
 
                     return `
@@ -371,79 +364,42 @@
             }
         }
 
-        // === ФУНКЦИИ ВЫЕЗЖАЮЩЕЙ ПАНЕЛИ ===
-        function openReviewDrawer(index) {
-            const data = window.userActivityData[index];
-            if (!data) return;
-
-            document.getElementById('drawer-backdrop').classList.add('show');
-            document.getElementById('review-drawer').classList.add('open');
-            
-            document.getElementById('drawer-cover').src = data.cover;
-            document.getElementById('drawer-title').innerText = data.title;
-            document.getElementById('drawer-overall').innerText = data.overall > 0 ? data.overall : '-';
-            
-            document.getElementById('drawer-comment').innerHTML = data.comment ? `"${data.comment.replace(/\n/g, '<br>')}"` : '<span style="opacity:0.5; font-style: normal;">Без рецензии, только оценка.</span>';
-            document.getElementById('drawer-link-btn').onclick = () => window.location.href = data.link;
-
-            const t = data.theory || {};
-            
-            document.getElementById('drawer-theory-list').innerHTML = `
-                <div class="drawer-crit-row"><span>Сюжет</span><span>${t.plot || '-'}</span></div>
-                <div class="drawer-crit-row"><span>Визуал</span><span>${t.visuals || '-'}</span></div>
-                <div class="drawer-crit-row"><span>Музыка</span><span>${t.music || '-'}</span></div>
-                <div class="drawer-crit-row"><span>Мир</span><span>${t.world || '-'}</span></div>
-                <div class="drawer-crit-row"><span>Персонажи</span><span>${t.atmosphere || '-'}</span></div>
-            `;
-
-            const ctx = document.getElementById('drawerChart').getContext('2d');
-            const color = getComputedStyle(document.documentElement).getPropertyValue('--user-color').trim() || '#a6e3a1';
-
-            if (drawerRadarChart) {
-                drawerRadarChart.data.datasets[0].data = [t.plot||0, t.visuals||0, t.music||0, t.world||0, t.atmosphere||0];
-                drawerRadarChart.data.datasets[0].borderColor = color;
-                drawerRadarChart.data.datasets[0].backgroundColor = color + '40';
-                drawerRadarChart.data.datasets[0].pointBackgroundColor = color;
-                drawerRadarChart.update();
-            } else {
-                drawerRadarChart = new Chart(ctx, {
-                    type: 'radar',
-                    data: { labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Персонажи'], datasets: [{ data: [t.plot||0, t.visuals||0, t.music||0, t.world||0, t.atmosphere||0], backgroundColor: color + '40', borderColor: color, pointBackgroundColor: color, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 3 }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { filter: (i) => i.raw > 0 } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: 'rgba(255,255,255,0.1)' }, angleLines: { color: 'rgba(255,255,255,0.1)' }, pointLabels: { font: { size: 12, weight: 'bold' }, color: '#c4d1b8' } } } }
-                });
-            }
-        }
-
-        function closeReviewDrawer() {
-            document.getElementById('drawer-backdrop').classList.remove('show');
-            document.getElementById('review-drawer').classList.remove('open');
-        }
-function renderRatings() {
+        function renderRatings() {
             const container = document.getElementById('hof-grid');
             const sortType = document.getElementById('sort-ratings').value;
             
-            // Убираем дубликаты (оставляем самую свежую оценку, если человек оценил 2 сезона)
+            // Берем данные напрямую из глобальной активности
+            let ratedList = window.userActivityData
+                .map((data, index) => ({ data, index }))
+                .filter(item => item.data.overall > 0);
+            
+            // Убираем дубликаты (оставляем самую свежую оценку)
             let uniqueList = [];
             const seen = new Set();
-            let sortedByTime = [...allRatedAnime].sort((a, b) => b.timestamp - a.timestamp);
-            sortedByTime.forEach(a => { if(!seen.has(a.title)) { seen.add(a.title); uniqueList.push(a); } });
+            ratedList.forEach(item => { 
+                if(!seen.has(item.data.title)) { 
+                    seen.add(item.data.title); 
+                    uniqueList.push(item); 
+                } 
+            });
 
             // Применяем выбранную сортировку
-            if (sortType === 'high') uniqueList.sort((a, b) => b.score - a.score);
-            else if (sortType === 'low') uniqueList.sort((a, b) => a.score - b.score);
-            else if (sortType === 'new') uniqueList.sort((a, b) => b.timestamp - a.timestamp);
+            if (sortType === 'high') uniqueList.sort((a, b) => b.data.overall - a.data.overall);
+            else if (sortType === 'low') uniqueList.sort((a, b) => a.data.overall - b.data.overall);
+            else if (sortType === 'new') uniqueList.sort((a, b) => b.data.timestamp - a.data.timestamp);
 
             if (uniqueList.length === 0) {
                 container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #6b7a62;">Пользователь еще ничего не оценил</div>`;
                 return;
             }
 
-            container.innerHTML = uniqueList.map(a => `
-                <a href="${a.link}" class="hof-item">
-                    <img src="${a.cover}" class="hof-img">
-                    <div class="hof-score">★ ${a.score}</div>
-                    <div class="hof-title-overlay">${a.title}</div>
-                </a>
+            // ЗАМЕНИЛИ тег <a> на <div onclick="..."> чтобы открывалась панель!
+            container.innerHTML = uniqueList.map(item => `
+                <div class="hof-item" onclick="openReviewDrawer(${item.index})">
+                    <img src="${item.data.cover}" class="hof-img">
+                    <div class="hof-score">★ ${item.data.overall}</div>
+                    <div class="hof-title-overlay">${item.data.title}</div>
+                </div>
             `).join('');
         }
         window.onload = initProfile;
