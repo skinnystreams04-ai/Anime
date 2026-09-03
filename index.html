@@ -112,12 +112,33 @@
         
         /* Прячем колонку "Я" для стримера (админа) */
         body.is-admin .me-element { display: none !important; }
+
+        /* ПОИСК ПОЛЬЗОВАТЕЛЕЙ И ОНЛАЙН */
+        .user-search-wrap { position: relative; margin-left: 30px; }
+        .user-search-input { background: rgba(14, 17, 13, 0.6); border: 1px solid #283325; color: #c4d1b8; padding: 8px 15px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 16px; outline: none; transition: 0.3s; width: 220px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
+        .user-search-input:focus { border-color: #a6e3a1; box-shadow: 0 0 10px rgba(166, 227, 161, 0.2), inset 0 2px 5px rgba(0,0,0,0.5); width: 260px; }
+        .user-search-results { position: absolute; top: 100%; left: 0; width: 100%; background: #0b0d0a; border: 1px solid #283325; border-radius: 8px; margin-top: 10px; max-height: 300px; overflow-y: auto; z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.8); display: none; flex-direction: column; }
+        .user-search-item { display: flex; align-items: center; gap: 12px; padding: 10px 15px; cursor: pointer; border-bottom: 1px solid #161a15; transition: 0.2s; text-decoration: none; }
+        .user-search-item:hover { background: rgba(166, 227, 161, 0.1); border-left: 3px solid #a6e3a1; padding-left: 12px; }
+        .us-avatar { width: 34px; height: 34px; border-radius: 50%; object-fit: cover; border: 1px solid #4a5c41; }
+        .us-info { display: flex; flex-direction: column; }
+        .us-name { color: #fff; font-size: 16px; font-weight: bold; letter-spacing: 1px; }
+        .us-status { font-size: 12px; display: flex; align-items: center; gap: 6px; font-family: sans-serif; font-weight: bold; }
+        .status-dot { width: 8px; height: 8px; border-radius: 50%; }
+        .status-online { background: #a6e3a1; box-shadow: 0 0 8px #a6e3a1; }
+        .status-offline { background: #555; }
     </style>
 </head>
 <body>
 
     <nav class="top-nav">
-        <a href="index.html" class="nav-logo">Skinwalker Аниме</a>
+        <div style="display: flex; align-items: center;">
+            <a href="index.html" class="nav-logo">Skinwalker Аниме</a>
+            <div class="user-search-wrap">
+                <input type="text" id="user-search-input" class="user-search-input" placeholder="Найти зрителя..." oninput="searchUsers()">
+                <div id="user-search-results" class="user-search-results"></div>
+            </div>
+        </div>
         <div class="nav-auth" id="nav-auth">
             <button class="twitch-btn" onclick="loginTwitch()">Войти через Twitch</button>
         </div>
@@ -334,9 +355,74 @@
                         document.getElementById('admin-btn').style.display = 'flex';
                         document.body.classList.add('is-admin');
                     }
+                    startOnlineHeartbeat(); // <--- ДОБАВЬ ЭТУ СТРОКУ СЮДА
                 }
             } catch (e) { console.error('Ошибка авторизации', e); }
         }
+        
+        // --- СИСТЕМА ОНЛАЙНА И ПОИСКА ---
+        function startOnlineHeartbeat() {
+            if (!currentUser) return;
+            const updateOnline = () => {
+                const dbId = currentUser.login.toLowerCase();
+                fetch(`${FIREBASE_BASE}/global_users/${dbId}/last_online.json`, {
+                    method: 'PUT',
+                    body: JSON.stringify(Date.now())
+                }).catch(e => console.log('Heartbeat error', e));
+            };
+            updateOnline(); // Стучимся сразу при входе
+            setInterval(updateOnline, 60000); // И потом каждую минуту
+        }
+
+        function searchUsers() {
+            const query = document.getElementById('user-search-input').value.toLowerCase().trim();
+            const resBox = document.getElementById('user-search-results');
+            
+            if (query.length < 2) {
+                resBox.style.display = 'none';
+                return;
+            }
+
+            // Ищем по базе пользователей
+            const results = Object.entries(window.globalUsersDB).filter(([id, user]) => {
+                const name = user.display_name ? user.display_name.toLowerCase() : id;
+                return name.includes(query);
+            });
+
+            if (results.length === 0) {
+                resBox.innerHTML = '<div style="padding: 10px; text-align: center; color: #6b7a62; font-size: 14px;">Никто не найден</div>';
+            } else {
+                resBox.innerHTML = results.map(([id, user]) => {
+                    const name = user.display_name || id;
+                    const avatar = user.profile_image_url || 'https://static-cdn.jtvnw.net/user-default-pictures-uv/41780b5a-def8-11e9-94d9-784f43822e80-profile_image-70x70.png';
+                    const color = user.color || '#a4b09c';
+                    const twitchId = user.id || id; // Twitch ID нужен для профиля
+                    
+                    // Если метка времени обновлялась меньше 2.5 минут назад -> В сети
+                    const isOnline = user.last_online && (Date.now() - user.last_online < 150000);
+                    const statusDot = isOnline ? '<div class="status-dot status-online"></div>' : '<div class="status-dot status-offline"></div>';
+                    const statusText = isOnline ? '<span style="color:#a6e3a1">В сети</span>' : '<span style="color:#6b7a62">Не в сети</span>';
+
+                    return `
+                    <a href="profile.html?user=${twitchId}" class="user-search-item">
+                        <img src="${avatar}" class="us-avatar" style="border-color: ${color}">
+                        <div class="us-info">
+                            <span class="us-name" style="color: ${color}">${name}</span>
+                            <span class="us-status">${statusDot} ${statusText}</span>
+                        </div>
+                    </a>
+                    `;
+                }).join('');
+            }
+            resBox.style.display = 'flex';
+        }
+
+        // Скрываем поиск, если кликнули мимо
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.user-search-wrap')) {
+                document.getElementById('user-search-results').style.display = 'none';
+            }
+        });
 
         async function initApp() {
             try {
