@@ -240,6 +240,9 @@
             let totalOverall = 0; let titleCount = 0;
             let th = { plot: 0, vis: 0, mus: 0, wor: 0, atm: 0 };
             let allActivityMap = {};
+            
+            // Нормализуем данные из URL, чтобы скрипт умел искать по никам
+            const searchId = userId.toString().toLowerCase();
 
             for (const [franchise, seasons] of Object.entries(commDb)) {
                 for (const [season, data] of Object.entries(seasons)) {
@@ -254,8 +257,19 @@
                     if (!allActivityMap[key]) { allActivityMap[key] = { title: titleName, cover: cover, link: linkUrl, timestamp: 0, overall: 0, theory: null, comment: null }; }
                     const actObj = allActivityMap[key];
 
-                    if (data.ratings && data.ratings[userId]) {
-                        const r = data.ratings[userId];
+                    // УМНЫЙ ПОИСК ОЦЕНОК (По цифровому ID или по Нику)
+                    let r = null;
+                    if (data.ratings) {
+                        if (data.ratings[userId]) {
+                            r = data.ratings[userId]; // Нашли по цифрам
+                        } else {
+                            // Ищем по нику, если с хаба передали никнейм
+                            const foundUid = Object.keys(data.ratings).find(uid => data.ratings[uid].displayName && data.ratings[uid].displayName.toLowerCase() === searchId);
+                            if (foundUid) r = data.ratings[foundUid];
+                        }
+                    }
+
+                    if (r) {
                         userName = r.displayName || userName; userAvatar = r.profileImage || userAvatar;
                         if (r.overall > 0) {
                             actObj.overall = r.overall; actObj.theory = r.theory; actObj.timestamp = Math.max(actObj.timestamp, r.timestamp);
@@ -264,9 +278,10 @@
                         }
                     }
 
+                    // УМНЫЙ ПОИСК КОММЕНТАРИЕВ (По цифровому ID или по Нику)
                     if (data.comments) {
                         for (const [cId, c] of Object.entries(data.comments)) {
-                            if (c.userId === userId) {
+                            if (c.userId === userId || (c.displayName && c.displayName.toLowerCase() === searchId)) {
                                 userName = c.displayName || userName; userAvatar = c.profileImage || userAvatar; userColor = c.userColor || userColor;
                                 actObj.comment = c.text; actObj.timestamp = Math.max(actObj.timestamp, c.timestamp);
                             }
@@ -275,10 +290,15 @@
                 }
             }
 
-            const lowerName = userName.toLowerCase();
-            const dbUser = usersDb[lowerName];
+            // Достаем цвета и роли (если URL был цифровым, берем вычисленный никнейм)
+            const finalLogin = userName === "Неизвестный" ? searchId : userName.toLowerCase();
+            const dbUser = usersDb[finalLogin];
             let role = "F"; 
-            if (dbUser) { if (dbUser.role) role = dbUser.role.toUpperCase(); if (dbUser.color && dbUser.color.trim() !== "") userColor = dbUser.color; }
+            if (dbUser) { 
+                if (dbUser.role) role = dbUser.role.toUpperCase(); 
+                if (dbUser.color && dbUser.color.trim() !== "") userColor = dbUser.color; 
+                if (userName === "Неизвестный" && dbUser.display_name) userName = dbUser.display_name;
+            }
 
             let badgeHtml = `<span class="role-badge role-f">FOLLOW</span>`;
             if (role === 'SUB' || role === 'SUBSCRIBER') badgeHtml = `<span class="role-badge role-sub">SUB</span>`; else if (role === 'VIP') badgeHtml = `<span class="role-badge role-vip">VIP</span>`;
