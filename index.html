@@ -59,28 +59,29 @@
         .sort-dir-btn { background: transparent; border: none; color: #6b7a62; padding: 0 5px 0 15px; font-family: sans-serif; font-size: 24px; font-weight: bold; cursor: pointer; outline: none; transition: 0.2s; display: flex; justify-content: center; align-items: center; line-height: 1; }
         .sort-dir-btn:hover { color: #a6e3a1; text-shadow: 0 0 10px rgba(166, 227, 161, 0.5); transform: translateY(-3px); }
 
-        .trophy-room { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 30px; padding: 0 40px; }
-        .card-container { width: 100%; aspect-ratio: 2 / 3; perspective: 1000px; position: relative; max-width: 300px; justify-self: center; }
-        .card-inner { width: 100%; height: 100%; position: relative; transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; }
-        .card-container::before { content: ''; position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; background: var(--card-color); filter: blur(50px); opacity: 0.15; z-index: -1; transition: opacity 0.5s, transform 0.5s; border-radius: 50%; }
-        .card-container:hover::before { opacity: 0.3; transform: scale(1.05); }
-        .card-container.is-flipped .card-inner { transform: rotateY(180deg); }
-
-        /* ИЗМЕНЕНА СВЕТИМОСТЬ КАРТОЧЕК НА ОСНОВЕ ОЦЕНКИ */
-        .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 12px; overflow: hidden; background: linear-gradient(180deg, #121612 0%, #0a0d0a 100%); display: flex; flex-direction: column; transition: 0.3s; border: 2px solid var(--card-border); box-shadow: 0 0 15px var(--card-shadow); }
-        .card-container:hover .card-face { border-color: var(--card-color); box-shadow: 0 0 30px var(--card-shadow-hover); }
+        .main-layout { display: flex; gap: 30px; padding: 0 40px; max-width: 1650px; margin: 0 auto; align-items: flex-start; width: 100%; box-sizing: border-box; }
+        .trophy-room { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
         
-        .card-front { background-size: cover; background-position: center; cursor: pointer; }
-        .ep-badge { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); background: rgba(11, 13, 10, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--card-border); color: var(--theme-light, #c4d1b8); font-size: 12px; font-weight: bold; padding: 4px 10px; border-radius: 6px; z-index: 10; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0,0,0,0.8), 0 0 10px var(--card-shadow); text-transform: uppercase; text-shadow: 1px 1px 2px #000; transition: 0.5s; }
-        
-        .flip-btn { position: absolute; top: 8px; right: 8px; background: rgba(11, 13, 10, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--card-border); color: var(--theme-light, #a4b09c); width: 28px; height: 28px; border-radius: 6px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.3s; z-index: 20; box-shadow: 0 4px 10px rgba(0,0,0,0.8), 0 0 10px var(--card-shadow); }
-        .flip-btn:hover { background: var(--card-shadow-hover); color: #fff; border-color: var(--theme-light); transform: scale(1.1); box-shadow: 0 0 15px var(--theme-light); }
+        /* ПРАВАЯ ПАНЕЛЬ ХАБА */
+        .hub-right-panel { width: 360px; flex-shrink: 0; background: #0b0d0a; border: 2px solid #283325; border-radius: 12px; position: sticky; top: 20px; min-height: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); overflow: hidden; transition: border-color 0.4s, box-shadow 0.4s; }
+        .preview-placeholder { padding: 40px 20px; text-align: center; color: #6b7a62; font-size: 18px; display: flex; height: 100%; align-items: center; justify-content: center; }
+        .preview-cover { width: 100%; height: 200px; object-fit: cover; -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%); mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%); border-bottom: 2px solid #283325; transition: border-color 0.4s; }
+        .preview-content { padding: 0 20px 20px 20px; margin-top: -60px; position: relative; z-index: 2; display: flex; flex-direction: column; }
+        .preview-title { font-size: 24px; font-weight: bold; color: #fff; text-transform: uppercase; line-height: 1.1; text-align: center; transition: color 0.4s; text-shadow: 2px 2px 5px #000; }
 
-        .front-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 30px 15px 15px 15px; box-sizing: border-box; background: linear-gradient(0deg, var(--overlay-solid, rgba(11, 13, 10, 1)) 0%, var(--overlay-fade, rgba(11, 13, 10, 0.95)) 50%, rgba(11, 13, 10, 0) 100%); display: flex; flex-direction: column; justify-content: flex-end; }
+        /* ПРОСТЫЕ КАРТОЧКИ БЕЗ ПЕРЕВОРОТА */
+        .card-container { width: 100%; aspect-ratio: 2 / 3; position: relative; max-width: 280px; justify-self: center; }
+        .card-container::before { content: ''; position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; background: var(--card-color); filter: blur(40px); opacity: 0.15; z-index: -1; transition: 0.5s; border-radius: 50%; }
+        .card-container:hover::before { opacity: 0.35; transform: scale(1.05); }
+
+        .card-face { position: absolute; width: 100%; height: 100%; border-radius: 12px; overflow: hidden; background-size: cover; background-position: center; display: flex; flex-direction: column; transition: 0.3s; border: 2px solid var(--card-border); box-shadow: 0 0 15px var(--card-shadow); cursor: pointer; }
+        .card-container:hover .card-face { border-color: var(--card-color); box-shadow: 0 0 30px var(--card-shadow-hover); transform: translateY(-8px); }
+        
+        .ep-badge { position: absolute; top: 8px; left: 50%; transform: translateX(-50%); background: rgba(11, 13, 10, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--card-border); color: var(--theme-light, #c4d1b8); font-size: 12px; font-weight: bold; padding: 4px 10px; border-radius: 6px; z-index: 10; letter-spacing: 1px; box-shadow: 0 4px 10px rgba(0,0,0,0.8); text-transform: uppercase; text-shadow: 1px 1px 2px #000; transition: 0.5s; }
+        .front-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 40px 15px 15px 15px; box-sizing: border-box; background: linear-gradient(0deg, var(--overlay-solid, rgba(11, 13, 10, 1)) 0%, var(--overlay-fade, rgba(11, 13, 10, 0.95)) 60%, rgba(11, 13, 10, 0) 100%); display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; }
         
         .scores-row { display: flex; justify-content: space-between; align-items: stretch; margin-bottom: 8px; gap: 8px; }
         .score-box { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 8px 4px; border-radius: 8px; flex: 1; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); transition: 0.3s;}
-        
         .score-label { width: 100%; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; margin-bottom: 4px; font-size: 13px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; text-shadow: 1px 1px 2px #000; text-align: center; }
         .main-score { font-size: 30px; font-weight: bold; line-height: 1; letter-spacing: 2px; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000, 2px 2px 4px #000; text-align: center; font-family: 'Neucha', cursive, sans-serif;}
         .main-score span { font-size: 13px; color: #c4d1b8; text-shadow: none !important; letter-spacing: normal; }
@@ -88,23 +89,18 @@
         .divider { border-top: 1px dashed #4a5c41; margin: 8px 0 12px 0; }
         .anime-title { color: var(--theme-light, #c4d1b8); font-size: 17px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; text-align: center; text-shadow: 0 0 10px var(--card-shadow-hover), 2px 2px 5px #000; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis; width: 100%; line-height: 1.2; transition: 0.5s; }
 
-        .card-back { transform: rotateY(180deg); padding: 15px; box-sizing: border-box; justify-content: space-between; }
-        .back-title { text-align: center; font-size: 18px; color: var(--theme-primary); text-transform: uppercase; letter-spacing: 2px; border-bottom: 2px solid var(--theme-panel-border); padding-bottom: 5px; margin: 0; cursor: pointer; text-shadow: 0 0 8px var(--theme-glow); }
-        .chart-container { width: 100%; height: 220px; position: relative; margin: 0; cursor: pointer; }
-        
+        /* ГРАФИК И КРИТЕРИИ В ПАНЕЛИ */
         .custom-legend { display: flex; justify-content: center; gap: 10px; margin-bottom: 5px; }
         .legend-item { display: flex; align-items: center; gap: 4px; font-size: 14px; font-weight: bold; cursor: pointer; transition: 0.2s;}
         .legend-item:hover { filter: brightness(1.3); transform: scale(1.05); }
         .dot { width: 10px; height: 10px; border-radius: 50%; border: 1px solid #0b0d0a; }
 
         .theory-container { background: transparent; border: none; padding: 0; }
-        .crit-row { display: flex; justify-content: space-between; font-size: 13px; color: #a4b09c; padding: 2px 8px; border-radius: 0 6px 6px 0; margin-bottom: 4px; transition: 0.2s;}
-        .crit-row span:last-child { font-weight: bold; font-family: 'Neucha', cursive, sans-serif; }
+        .crit-row { display: flex; justify-content: space-between; font-size: 14px; color: #a4b09c; padding: 4px 10px; border-radius: 0 6px 6px 0; margin-bottom: 6px; transition: 0.3s; border-bottom: 1px dashed rgba(255,255,255,0.1); }
+        .crit-row span:last-child { font-weight: bold; font-family: 'Neucha', cursive, sans-serif; font-size: 17px; color: #fff; text-shadow: 1px 1px 2px #000; }
         
-        .loading { font-size: 24px; color: #829c73; text-align: center; margin-top: 50px; width: 100%; }
-        .secret-admin-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 40px; height: 40px; background: rgba(11, 13, 10, 0.3); border: 1px solid #283325; color: #4a5c41; border-radius: 50%; justify-content: center; align-items: center; cursor: pointer; z-index: 9999; transition: 0.3s; opacity: 0.2; font-size: 18px; }
-        .secret-admin-btn:hover { opacity: 1; background: #1a2618; color: #a6e3a1; border-color: #a6e3a1; box-shadow: 0 0 10px rgba(166,227,161,0.3); }
-        }
+        .loading { font-size: 24px; color: #829c73; text-align: center; margin-top: 50px; width: 100%; grid-column: 1 / -1; }
+
         /* ИНДИКАТОР НАЛИЧИЯ ПЛЕЕРА (КАМЕРА) */
         .vod-badge { position: absolute; top: 12px; left: 12px; background: rgba(11, 13, 10, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--card-border); color: var(--theme-light, #a6e3a1); width: 32px; height: 32px; border-radius: 8px; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.8), 0 0 10px var(--card-shadow); display: flex; justify-content: center; align-items: center; pointer-events: none; transition: 0.5s; }
         .vod-badge::before { content: ''; display: inline-block; width: 6px; height: 6px; background: #fff; border-radius: 50%; animation: pulseVod 1.5s infinite; }
@@ -174,7 +170,25 @@
         <button id="sort-dir-btn" class="sort-dir-btn" onclick="toggleSortDir()" title="Изменить направление">↓</button>
     </div>
 
-    <div id="trophy-room" class="trophy-room"><div class="loading">Синхронизация с базой...</div></div>
+    <div class="main-layout">
+        <div id="trophy-room" class="trophy-room"><div class="loading">Синхронизация с базой...</div></div>
+        
+        <div class="hub-right-panel" id="hub-right-panel">
+            <div id="hub-preview-placeholder" class="preview-placeholder">Наведите курсор на любой тайтл в сетке, чтобы увидеть статистику</div>
+            
+            <div id="hub-preview-container" style="display: none; flex-direction: column;">
+                <img id="hub-preview-cover" src="" class="preview-cover" alt="cover">
+                <div class="preview-content">
+                    <div id="hub-preview-title" class="preview-title" style="margin-bottom: 10px;">Название</div>
+                    <div class="chart-container" style="height: 200px; margin-bottom: 15px;"><canvas id="hub-previewChart"></canvas></div>
+                    <div class="custom-legend" id="hub-preview-legend"></div>
+                    <div class="theory-container" id="hub-preview-theory" style="margin-top: 10px;"></div>
+                    <button id="hub-preview-btn" style="margin-top: 15px; width: 100%; background: #121612; border: 1px solid #4a5c41; color: #fff; padding: 10px; font-family: 'Neucha', cursive; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">Медиатека ▶</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="secret-admin-btn" id="admin-btn" onclick="window.location.href='admin.html'" title="Панель управления">⚙️</div>
 
     <script>
@@ -685,18 +699,18 @@
             renderCards(filtered, sortVal);
         }
 
+        window.currentRenderedCards = [];
+        let hubRadarChart = null;
+
         function renderCards(arr, sortVal = 'overall') {
+            window.currentRenderedCards = arr;
             const room = document.getElementById('trophy-room');
-            Object.values(allCharts).forEach(chart => chart.destroy()); allCharts = {}; room.innerHTML = "";
+            room.innerHTML = "";
             if (arr.length === 0) { room.innerHTML = "<div class='loading'>Ничего не найдено...</div>"; return; }
 
             const isStreamer = currentUser && currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
-
-            // Определяем, какую оценку выводить на карточке
             const validKeys = ['overall', 'avgTheory', 'plot', 'visuals', 'music', 'world', 'atmosphere'];
             const scoreKey = validKeys.includes(sortVal) ? sortVal : 'overall';
-            
-            // Названия критериев для красивой плашки
             const sortNames = { 'avgTheory': 'СРЕДНЕМУ КРИТЕРИЮ', 'plot': 'СЮЖЕТУ', 'visuals': 'ВИЗУАЛУ', 'music': 'МУЗЫКЕ', 'world': 'МИРУ', 'atmosphere': 'ПЕРСОНАЖАМ' };
             const labelHtml = scoreKey !== 'overall' ? `<div style="text-align: center; color: #829c73; font-size: 11px; font-weight: bold; letter-spacing: 1px; margin-bottom: 4px; text-shadow: 1px 1px 2px #000;">ОЦЕНКА ПО ${sortNames[scoreKey]}</div>` : '';
 
@@ -707,12 +721,11 @@
                 const safeCoverUrl = f.coverUrl.replace(/'/g, "\\'");
                 const s = f.scores;
 
-                // ДОСТАЕМ НУЖНЫЕ ЦИФРЫ В ЗАВИСИМОСТИ ОТ ВЫБРАННОГО ФИЛЬТРА
                 const valStr = s.streamer[scoreKey] || 0;
                 const valChat = s.chat[scoreKey] || 0;
                 const valMe = s.me[scoreKey] || 0;
 
-               const vodHtml = f.hasVod ? `<div class="vod-badge"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14v-4z"/><rect x="3" y="6" width="12" height="12" rx="2" ry="2"/></svg></div>` : '';
+                const vodHtml = f.hasVod ? `<div class="vod-badge"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14v-4z"/><rect x="3" y="6" width="12" height="12" rx="2" ry="2"/></svg></div>` : '';
 
                 const meBoxHtml = isStreamer ? '' : `
                     <div class="score-box me-element" style="${getGlassBoxStyle(valMe)}">
@@ -720,85 +733,37 @@
                         <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(valMe, true)};">${valMe}<span> / 10</span></div>
                     </div>`;
 
-                const meLegendHtml = isStreamer ? '' : `
-                    <div class="legend-item me-element" style="color: ${radarColors[2].border};" onmouseover="highlightChart('${safeDomId}', 2)" onmouseout="resetChart('${safeDomId}')"><div class="dot" style="background: ${radarColors[2].border};"></div>Я</div>`;
-
-                const meTheoryHtml = isStreamer ? '' : `
-                    <div class="crit-row me-element" style="${getGlassRowStyle(s.me.avgTheory)}">
-                        <span style="color:${getScoreColor(s.me.avgTheory, 1)}; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: ${getScoreShadow(s.me.avgTheory, false)};">Я</span>
-                        <span style="color:#fff; text-shadow: ${getScoreShadow(s.me.avgTheory, false)};">${s.me.avgTheory}/10</span>
-                    </div>`;
-
                 const cardHtml = `
-                <div class="card-container" id="card-${safeDomId}" data-cover="${safeCoverUrl}" onmouseleave="this.classList.remove('is-flipped')" style="--card-color: #283325; --card-border: rgba(40, 51, 37, 0.8); --card-shadow: rgba(0,0,0,0.5); --card-shadow-hover: rgba(166, 227, 161, 0.25);">
-                    <div class="card-number">${index + 1}</div>
-                    <div class="card-inner">
-                        <div class="card-face card-front" style="background-image: url('${safeCoverUrl}');" onclick="if(!event.target.closest('.flip-btn')) window.location.href='${detailsLink}'">
-                            <div class="ep-badge">${f.badgeText}</div>
-                            ${vodHtml}
-                            <div class="flip-btn" onmouseenter="document.getElementById('card-${safeDomId}').classList.add('is-flipped')"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.5 2v6h-6M2.13 15.57a10 10 0 1 0 3.1-8.91L2 9M2.5 22v-6h6M21.87 8.43a10 10 0 1 0-3.1 8.91l3.23-2.34"/></svg></div>
-                            <div class="front-overlay">
-                                ${labelHtml}
-                                <div class="scores-row">
-                                    <div class="score-box" style="${getGlassBoxStyle(valStr)}">
-                                        <div class="score-label streamer" style="color:${getScoreColor(valStr, 1)}; border-bottom-color:${getScoreColor(valStr, 0.4)}; text-shadow:0 0 8px ${getScoreColor(valStr, 0.6)};">Стример</div>
-                                        <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(valStr, true)};">${valStr}<span> / 10</span></div>
-                                    </div>
-                                    ${meBoxHtml}
-                                    <div class="score-box" style="${getGlassBoxStyle(valChat)}">
-                                        <div class="score-label chat" style="color:${getScoreColor(valChat, 1)}; border-bottom-color:${getScoreColor(valChat, 0.4)}; text-shadow:0 0 8px ${getScoreColor(valChat, 0.6)};">Чат</div>
-                                        <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(valChat, true)};">${valChat}<span> / 10</span></div>
-                                    </div>
+                <div class="card-container" id="card-${safeDomId}" data-cover="${safeCoverUrl}" onmouseenter="openHubPreview(${index})" onclick="window.location.href='${detailsLink}'" style="--card-color: #283325; --card-border: rgba(40, 51, 37, 0.8); --card-shadow: rgba(0,0,0,0.5); --card-shadow-hover: rgba(166, 227, 161, 0.25);">
+                    <div class="card-face" style="background-image: url('${safeCoverUrl}');">
+                        <div class="ep-badge">${f.badgeText}</div>
+                        ${vodHtml}
+                        <div class="front-overlay">
+                            ${labelHtml}
+                            <div class="scores-row">
+                                <div class="score-box" style="${getGlassBoxStyle(valStr)}">
+                                    <div class="score-label streamer" style="color:${getScoreColor(valStr, 1)}; border-bottom-color:${getScoreColor(valStr, 0.4)}; text-shadow:0 0 8px ${getScoreColor(valStr, 0.6)};">Стример</div>
+                                    <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(valStr, true)};">${valStr}<span> / 10</span></div>
                                 </div>
-                                <div class="divider"></div>
-                                <div class="anime-title">${f.title}</div>
-                            </div>
-                        </div>
-                        <div class="card-face card-back">
-                            <h3 class="back-title" onclick="window.location.href='${detailsLink}'">Критерии</h3>
-                            <div class="chart-container" onclick="window.location.href='${detailsLink}'"><canvas id="chart-${safeDomId}"></canvas></div>
-                            <div class="custom-legend">
-                                <div class="legend-item" style="color: ${radarColors[0].border};" onmouseover="highlightChart('${safeDomId}', 0)" onmouseout="resetChart('${safeDomId}')"><div class="dot" style="background: ${radarColors[0].border};"></div>Стример</div>
-                                ${meLegendHtml}
-                                <div class="legend-item" style="color: ${radarColors[1].border};" onmouseover="highlightChart('${safeDomId}', ${isStreamer ? 1 : 2})" onmouseout="resetChart('${safeDomId}')"><div class="dot" style="background: ${radarColors[1].border};"></div>Чат</div>
-                            </div>
-                            <div class="theory-container">
-                                <div class="crit-row" style="${getGlassRowStyle(s.streamer.avgTheory)}">
-                                    <span style="color:${getScoreColor(s.streamer.avgTheory, 1)}; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: ${getScoreShadow(s.streamer.avgTheory, false)};">Стример</span>
-                                    <span style="color:#fff; text-shadow: ${getScoreShadow(s.streamer.avgTheory, false)};">${s.streamer.avgTheory}/10</span>
+                                ${meBoxHtml}
+                                <div class="score-box" style="${getGlassBoxStyle(valChat)}">
+                                    <div class="score-label chat" style="color:${getScoreColor(valChat, 1)}; border-bottom-color:${getScoreColor(valChat, 0.4)}; text-shadow:0 0 8px ${getScoreColor(valChat, 0.6)};">Чат</div>
+                                    <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(valChat, true)};">${valChat}<span> / 10</span></div>
                                 </div>
-                                <div class="crit-row" style="${getGlassRowStyle(s.chat.avgTheory)}">
-                                    <span style="color:${getScoreColor(s.chat.avgTheory, 1)}; font-family: 'Neucha', cursive; font-weight: bold; text-shadow: ${getScoreShadow(s.chat.avgTheory, false)};">Чат</span>
-                                    <span style="color:#fff; text-shadow: ${getScoreShadow(s.chat.avgTheory, false)};">${s.chat.avgTheory}/10</span>
-                                </div>
-                                ${meTheoryHtml}
                             </div>
-                            <button onclick="window.location.href='${detailsLink}'" style="margin-top: 5px; width: 100%; background: var(--theme-panel-bg-top); border: 1px solid var(--theme-panel-border); color: #fff; padding: 6px; font-family: 'Neucha', cursive; font-size: 15px; font-weight: bold; border-radius: 6px; cursor: pointer; text-transform: uppercase; text-shadow: 0 0 5px var(--theme-primary);">Медиатека ▶</button>
+                            <div class="divider"></div>
+                            <div class="anime-title">${f.title}</div>
                         </div>
                     </div>
                 </div>
                 `;
                 room.insertAdjacentHTML('beforeend', cardHtml);
-
-                if (typeof Chart !== 'undefined') {
-                    const datasets = [
-                        { data: [s.streamer.plot, s.streamer.visuals, s.streamer.music, s.streamer.world, s.streamer.atmosphere], backgroundColor: radarColors[0].bg, borderColor: radarColors[0].border, pointBackgroundColor: radarColors[0].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 },
-                        { data: [s.chat.plot, s.chat.visuals, s.chat.music, s.chat.world, s.chat.atmosphere], backgroundColor: radarColors[1].bg, borderColor: radarColors[1].border, pointBackgroundColor: radarColors[1].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 }
-                    ];
-                    if (!isStreamer) datasets.push({ data: [s.me.plot, s.me.visuals, s.me.music, s.me.world, s.me.atmosphere], backgroundColor: radarColors[2].bg, borderColor: radarColors[2].border, pointBackgroundColor: radarColors[2].border, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 });
-
-                    allCharts[safeDomId] = new Chart(document.getElementById(`chart-${safeDomId}`).getContext('2d'), {
-                        type: 'radar',
-                        data: { labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Персонажи'], datasets: datasets },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { filter: function(item) { return item.raw > 0; }, displayColors: false } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: 'rgba(255,255,255,0.05)' }, angleLines: { color: 'rgba(255,255,255,0.05)' }, pointLabels: { font: { size: 12, weight: 'bold' }, color: '#c4d1b8' } } } }
-                    });
-                }
             });
 
             extractHubColors();
         }
 
-function extractHubColors() {
+        function extractHubColors() {
             const colorThief = new ColorThief();
             document.querySelectorAll('.card-container').forEach(card => {
                 const imgUrl = card.getAttribute('data-cover');
@@ -808,42 +773,91 @@ function extractHubColors() {
                     try {
                         const color = colorThief.getColor(hiddenImg);
                         let r = color[0], g = color[1], b = color[2];
-                        
-                        // Защита текста от сливания с фоном: высветляем акцентный цвет, если постер темный
                         const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
                         let tr = r, tg = g, tb = b;
-                        if (luminance < 90) {
-                            tr = Math.min(255, r + 80);
-                            tg = Math.min(255, g + 80);
-                            tb = Math.min(255, b + 80);
-                        }
+                        if (luminance < 90) { tr = Math.min(255, r + 80); tg = Math.min(255, g + 80); tb = Math.min(255, b + 80); }
 
                         card.style.setProperty('--card-color', `rgb(${r}, ${g}, ${b})`);
                         card.style.setProperty('--card-border', `rgba(${r}, ${g}, ${b}, 0.6)`);
                         card.style.setProperty('--card-shadow', `rgba(${r}, ${g}, ${b}, 0.2)`);
                         card.style.setProperty('--card-shadow-hover', `rgba(${r}, ${g}, ${b}, 0.8)`);
-                        card.style.setProperty('--overlay-solid', `rgba(${Math.floor(r*0.15)}, ${Math.floor(g*0.15)}, ${Math.floor(b*0.15)}, 0.98)`);
-                        card.style.setProperty('--overlay-fade', `rgba(${Math.floor(r*0.15)}, ${Math.floor(g*0.15)}, ${Math.floor(b*0.15)}, 0.8)`);
-                        card.style.setProperty('--theme-light', `rgb(${tr}, ${tg}, ${tb})`); // Новый цвет для иконок и текста
+                        card.style.setProperty('--theme-light', `rgb(${tr}, ${tg}, ${tb})`); 
                     } catch(e) {}
                 };
                 hiddenImg.src = imgUrl + '?bypassCache=' + Date.now();
             });
         }
-        
-        function highlightChart(domId, index) {
-            if(!allCharts[domId]) return;
-            allCharts[domId].data.datasets.forEach((ds, i) => {
-                if (i !== index) { ds.backgroundColor = 'transparent'; ds.borderColor = 'rgba(255,255,255,0.05)'; ds.borderWidth = 1; }
-                else { ds.backgroundColor = radarColors[i].border + '40'; ds.borderColor = radarColors[i].border; ds.borderWidth = 4; }
-            });
-            allCharts[domId].update();
-        }
 
-        function resetChart(domId) {
-            if(!allCharts[domId]) return;
-            allCharts[domId].data.datasets.forEach((ds, i) => { ds.backgroundColor = radarColors[i].bg; ds.borderColor = radarColors[i].border; ds.borderWidth = 2; });
-            allCharts[domId].update();
+        function openHubPreview(index) {
+            const f = window.currentRenderedCards[index];
+            if (!f) return;
+
+            const isStreamer = currentUser && currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
+            const safeDomId = f.id.replace(/[^a-zA-Z0-9_-]/g, "_");
+            const cardElem = document.getElementById(`card-${safeDomId}`);
+            const s = f.scores;
+
+            // Забираем уже вычисленные красивые цвета прямо из карточки!
+            const themeLight = cardElem.style.getPropertyValue('--theme-light').trim() || '#a6e3a1';
+            const cardBorder = cardElem.style.getPropertyValue('--card-border').trim() || 'rgba(166, 227, 161, 0.6)';
+            const cardShadow = cardElem.style.getPropertyValue('--card-shadow-hover').trim() || 'rgba(166, 227, 161, 0.3)';
+
+            document.getElementById('hub-preview-placeholder').style.display = 'none';
+            document.getElementById('hub-preview-container').style.display = 'flex';
+            
+            // Красим панель
+            const panel = document.getElementById('hub-right-panel');
+            panel.style.borderColor = themeLight;
+            panel.style.boxShadow = `0 10px 30px rgba(0,0,0,0.8), 0 0 20px ${cardShadow}`;
+
+            document.getElementById('hub-preview-cover').src = f.coverUrl;
+            document.getElementById('hub-preview-cover').style.borderColor = themeLight;
+            document.getElementById('hub-preview-title').innerText = f.title;
+            document.getElementById('hub-preview-title').style.color = themeLight;
+            document.getElementById('hub-preview-btn').style.borderColor = themeLight;
+            document.getElementById('hub-preview-btn').onclick = () => window.location.href = `Anime-Page.html?id=${encodeURIComponent(f.id).replace(/'/g, "%27")}`;
+
+            // Сборка критериев
+            const createRow = (name, val) => `<div class="crit-row" style="${getGlassRowStyle(val)}"><span style="color:${getScoreColor(val, 1)};">${name}</span><span style="color:#fff;">${val || '-'}</span></div>`;
+            
+            document.getElementById('hub-preview-theory').innerHTML = `
+                <div style="font-size: 15px; color: ${radarColors[0].border}; font-weight: bold; text-align: center; margin-top: 10px;">Стример (Ср: ${s.streamer.avgTheory})</div>
+                ${createRow('Сюжет', s.streamer.plot)} ${createRow('Визуал', s.streamer.visuals)} ${createRow('Музыка', s.streamer.music)} ${createRow('Мир', s.streamer.world)} ${createRow('Персонажи', s.streamer.atmosphere)}
+                
+                <div style="font-size: 15px; color: ${radarColors[1].border}; font-weight: bold; text-align: center; margin-top: 10px;">Чат (Ср: ${s.chat.avgTheory})</div>
+                ${createRow('Сюжет', s.chat.plot)} ${createRow('Визуал', s.chat.visuals)} ${createRow('Музыка', s.chat.music)} ${createRow('Мир', s.chat.world)} ${createRow('Персонажи', s.chat.atmosphere)}
+                
+                ${!isStreamer ? `
+                <div style="font-size: 15px; color: ${radarColors[2].border}; font-weight: bold; text-align: center; margin-top: 10px;">Я (Ср: ${s.me.avgTheory})</div>
+                ${createRow('Сюжет', s.me.plot)} ${createRow('Визуал', s.me.visuals)} ${createRow('Музыка', s.me.music)} ${createRow('Мир', s.me.world)} ${createRow('Персонажи', s.me.atmosphere)}
+                ` : ''}
+            `;
+
+            // Легенда радара
+            document.getElementById('hub-preview-legend').innerHTML = `
+                <div class="legend-item" style="color: ${radarColors[0].border};"><div class="dot" style="background: ${radarColors[0].border};"></div>Стример</div>
+                ${!isStreamer ? `<div class="legend-item" style="color: ${radarColors[2].border};"><div class="dot" style="background: ${radarColors[2].border};"></div>Я</div>` : ''}
+                <div class="legend-item" style="color: ${radarColors[1].border};"><div class="dot" style="background: ${radarColors[1].border};"></div>Чат</div>
+            `;
+
+            // Отрисовка радара
+            const ctx = document.getElementById('hub-previewChart').getContext('2d');
+            const datasets = [
+                { data: [s.streamer.plot, s.streamer.visuals, s.streamer.music, s.streamer.world, s.streamer.atmosphere], backgroundColor: radarColors[0].bg, borderColor: radarColors[0].border, pointBackgroundColor: radarColors[0].border, borderWidth: 2, pointRadius: 2 },
+                { data: [s.chat.plot, s.chat.visuals, s.chat.music, s.chat.world, s.chat.atmosphere], backgroundColor: radarColors[1].bg, borderColor: radarColors[1].border, pointBackgroundColor: radarColors[1].border, borderWidth: 2, pointRadius: 2 }
+            ];
+            if (!isStreamer) datasets.push({ data: [s.me.plot, s.me.visuals, s.me.music, s.me.world, s.me.atmosphere], backgroundColor: radarColors[2].bg, borderColor: radarColors[2].border, pointBackgroundColor: radarColors[2].border, borderWidth: 2, pointRadius: 2 });
+
+            if (hubRadarChart) {
+                hubRadarChart.data.datasets = datasets;
+                hubRadarChart.update();
+            } else {
+                hubRadarChart = new Chart(ctx, {
+                    type: 'radar',
+                    data: { labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Персонажи'], datasets: datasets },
+                    options: { animation: false, responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: 'rgba(255,255,255,0.1)' }, angleLines: { color: 'rgba(255,255,255,0.1)' }, pointLabels: { font: { size: 11, weight: 'bold' }, color: '#c4d1b8' } } } }
+                });
+            }
         }
 
         initApp();
