@@ -467,37 +467,47 @@
                     const seasons = Object.entries(seasonsObj).map(([seasonId, sData]) => ({seasonId, ...sData}));
                     let totalEp = 0;
                     
+                    // Жесткое разделение счетчиков: Итоговые (countOv) и Критерии (countTh)
                     let streamer = { overall:0, plot:0, vis:0, mus:0, wor:0, atm:0, countOv:0, countTh:0 };
-                    let chat = { overall:0, plot:0, vis:0, mus:0, wor:0, atm:0, count:0 };
-                    let me = { overall:0, plot:0, vis:0, mus:0, wor:0, atm:0, count:0 };
+                    let chat = { overall:0, plot:0, vis:0, mus:0, wor:0, atm:0, countOv:0, countTh:0 };
+                    let me = { overall:0, plot:0, vis:0, mus:0, wor:0, atm:0, countOv:0, countTh:0 };
 
                     seasons.forEach(s => {
                         totalEp += parseInt(s.info.episodesTotal) || 0;
                         
                         if (s.scores && safeNum(s.scores.overall) > 0) { streamer.overall += safeNum(s.scores.overall); streamer.countOv++; }
                         if (s.scores && s.scores.theory) {
-                            streamer.plot += safeNum(s.scores.theory.plot); streamer.vis += safeNum(s.scores.theory.visuals);
-                            streamer.mus += safeNum(s.scores.theory.music); streamer.wor += safeNum(s.scores.theory.world);
-                            streamer.atm += safeNum(s.scores.theory.atmosphere); streamer.countTh++;
+                            const thSum = safeNum(s.scores.theory.plot) + safeNum(s.scores.theory.visuals) + safeNum(s.scores.theory.music) + safeNum(s.scores.theory.world) + safeNum(s.scores.theory.atmosphere);
+                            if (thSum > 0) { // Игнорируем сезон, если нет критериев
+                                streamer.plot += safeNum(s.scores.theory.plot); streamer.vis += safeNum(s.scores.theory.visuals);
+                                streamer.mus += safeNum(s.scores.theory.music); streamer.wor += safeNum(s.scores.theory.world);
+                                streamer.atm += safeNum(s.scores.theory.atmosphere); streamer.countTh++;
+                            }
                         }
 
                         const sComm = commData[franchiseId] && commData[franchiseId][s.seasonId] ? commData[franchiseId][s.seasonId].ratings : null;
                         if (sComm) {
                             for (const [uid, r] of Object.entries(sComm)) {
-                                chat.overall += safeNum(r.overall);
-                                if (r.theory) {
-                                    chat.plot += safeNum(r.theory.plot); chat.vis += safeNum(r.theory.visuals);
-                                    chat.mus += safeNum(r.theory.music); chat.wor += safeNum(r.theory.world); chat.atm += safeNum(r.theory.atmosphere);
-                                }
-                                chat.count++;
+                                const isMe = currentUser && uid === currentUser.id;
                                 
-                                if (currentUser && uid === currentUser.id) {
-                                    me.overall += safeNum(r.overall);
-                                    if (r.theory) {
-                                        me.plot += safeNum(r.theory.plot); me.vis += safeNum(r.theory.visuals);
-                                        me.mus += safeNum(r.theory.music); me.wor += safeNum(r.theory.world); me.atm += safeNum(r.theory.atmosphere);
+                                if (safeNum(r.overall) > 0) {
+                                    chat.overall += safeNum(r.overall); chat.countOv++;
+                                    if (isMe) { me.overall += safeNum(r.overall); me.countOv++; }
+                                }
+                                
+                                if (r.theory) {
+                                    const thSumChat = safeNum(r.theory.plot) + safeNum(r.theory.visuals) + safeNum(r.theory.music) + safeNum(r.theory.world) + safeNum(r.theory.atmosphere);
+                                    if (thSumChat > 0) { // Игнорируем пустые критерии чата
+                                        chat.plot += safeNum(r.theory.plot); chat.vis += safeNum(r.theory.visuals);
+                                        chat.mus += safeNum(r.theory.music); chat.wor += safeNum(r.theory.world); chat.atm += safeNum(r.theory.atmosphere);
+                                        chat.countTh++;
+                                        
+                                        if (isMe) {
+                                            me.plot += safeNum(r.theory.plot); me.vis += safeNum(r.theory.visuals);
+                                            me.mus += safeNum(r.theory.music); me.wor += safeNum(r.theory.world); me.atm += safeNum(r.theory.atmosphere);
+                                            me.countTh++;
+                                        }
                                     }
-                                    me.count++;
                                 }
                             }
                         }
@@ -510,14 +520,14 @@
                             music: getAvg(streamer.mus, streamer.countTh), world: getAvg(streamer.wor, streamer.countTh), atmosphere: getAvg(streamer.atm, streamer.countTh)
                         },
                         chat: {
-                            overall: getAvg(chat.overall, chat.count),
-                            plot: getAvg(chat.plot, chat.count), visuals: getAvg(chat.vis, chat.count),
-                            music: getAvg(chat.mus, chat.count), world: getAvg(chat.wor, chat.count), atmosphere: getAvg(chat.atm, chat.count)
+                            overall: getAvg(chat.overall, chat.countOv),
+                            plot: getAvg(chat.plot, chat.countTh), visuals: getAvg(chat.vis, chat.countTh),
+                            music: getAvg(chat.mus, chat.countTh), world: getAvg(chat.wor, chat.countTh), atmosphere: getAvg(chat.atm, chat.countTh)
                         },
                         me: {
-                            overall: getAvg(me.overall, me.count),
-                            plot: getAvg(me.plot, me.count), visuals: getAvg(me.vis, me.count),
-                            music: getAvg(me.mus, me.count), world: getAvg(me.wor, me.count), atmosphere: getAvg(me.atm, me.count)
+                            overall: getAvg(me.overall, me.countOv),
+                            plot: getAvg(me.plot, me.countTh), visuals: getAvg(me.vis, me.countTh),
+                            music: getAvg(me.mus, me.countTh), world: getAvg(me.wor, me.countTh), atmosphere: getAvg(me.atm, me.countTh)
                         }
                     };
 
@@ -526,136 +536,6 @@
                     scoresObj.me.avgTheory = getAvg(scoresObj.me.plot + scoresObj.me.visuals + scoresObj.me.music + scoresObj.me.world + scoresObj.me.atmosphere, 5);
 
                     const baseSeason = seasons[0];
-                    globalFranchises.push({
-                        id: franchiseId, title: franchiseId.replace(/_/g, ' '), coverUrl: baseSeason.coverUrl,
-                        episodes: totalEp, badgeText: `${seasons.length}S ${totalEp}EP`,
-                        release_year: parseInt(baseSeason.info.year) || 0, date_watched: baseSeason.info.dateWatched ? new Date(baseSeason.info.dateWatched).getTime() : 0,
-                        az: franchiseId.replace(/_/g, ' ').toLowerCase(),
-                        scores: scoresObj
-                    });
-                }
-
-                document.getElementById('controls-bar').style.display = 'flex';
-                toggleRoleSelect();
-                applyFiltersAndSort();
-
-            } catch (e) { console.error(e); }
-        }
-
-        function applyFiltersAndSort() {
-            const query = document.getElementById('search-input').value.toLowerCase();
-            const sortVal = document.getElementById('sort-select').value;
-            const roleVal = document.getElementById('role-select').value;
-            const mult = currentSortDir === 'desc' ? 1 : -1;
-            
-            // Если это критерий или итоговая оценка - ищем внутри объекта scores
-            const needsRole = ['overall', 'avgTheory', 'plot', 'visuals', 'music', 'world', 'atmosphere'].includes(sortVal);
-
-            let filtered = globalFranchises.filter(f => f.title.toLowerCase().includes(query));
-
-            filtered.sort((a, b) => {
-                let valA, valB;
-                if (needsRole) {
-                    // Берем оценку в зависимости от выбранной роли (Стример/Чат/Я)
-                    valA = safeNum(a.scores[roleVal][sortVal]);
-                    valB = safeNum(b.scores[roleVal][sortVal]);
-                } else {
-                    valA = a[sortVal]; 
-                    valB = b[sortVal];
-                }
-
-                if (typeof valA === 'string') return valA.localeCompare(valB) * (mult === 1 ? 1 : -1);
-                return (valB - valA) * mult;
-            });
-
-            renderCards(filtered);
-        }
-
-        async function initApp() {
-            try {
-                const dbRes = await fetch(`${FIREBASE_BASE}/global_users.json`, { cache: 'no-store' });
-                if (dbRes.ok) { window.globalUsersDB = (await dbRes.json()) || {}; }
-            } catch(e) { console.warn("Не удалось загрузить базу пользователей", e); }
-
-            await checkTwitchAuth();
-
-            try {
-                const [animeRes, commRes] = await Promise.all([
-                    fetch(`${FIREBASE_BASE}/anime_db.json`, { cache: 'no-store' }),
-                    fetch(`${FIREBASE_BASE}/community_db.json`, { cache: 'no-store' })
-                ]);
-                const data = await animeRes.json();
-                const commData = (await commRes.json()) || {};
-
-                const room = document.getElementById('trophy-room');
-                if (!data) { room.innerHTML = "<div class='loading'>Коллекция пуста.</div>"; return; }
-                
-                globalFranchises = []; 
-
-                for (const [franchiseId, seasonsObj] of Object.entries(data)) {
-                    const seasons = Object.entries(seasonsObj).map(([seasonId, sData]) => ({seasonId, ...sData}));
-                    let totalEp = 0;
-                    
-                    let streamer = { overall:0, plot:0, vis:0, mus:0, wor:0, atm:0, countOv:0, countTh:0 };
-                    let chat = { overall:0, plot:0, vis:0, mus:0, wor:0, atm:0, count:0 };
-                    let me = { overall:0, plot:0, vis:0, mus:0, wor:0, atm:0, count:0 };
-
-                    seasons.forEach(s => {
-                        totalEp += parseInt(s.info.episodesTotal) || 0;
-                        
-                        if (s.scores && safeNum(s.scores.overall) > 0) { streamer.overall += safeNum(s.scores.overall); streamer.countOv++; }
-                        if (s.scores && s.scores.theory) {
-                            streamer.plot += safeNum(s.scores.theory.plot); streamer.vis += safeNum(s.scores.theory.visuals);
-                            streamer.mus += safeNum(s.scores.theory.music); streamer.wor += safeNum(s.scores.theory.world);
-                            streamer.atm += safeNum(s.scores.theory.atmosphere); streamer.countTh++;
-                        }
-
-                        const sComm = commData[franchiseId] && commData[franchiseId][s.seasonId] ? commData[franchiseId][s.seasonId].ratings : null;
-                        if (sComm) {
-                            for (const [uid, r] of Object.entries(sComm)) {
-                                chat.overall += safeNum(r.overall);
-                                if (r.theory) {
-                                    chat.plot += safeNum(r.theory.plot); chat.vis += safeNum(r.theory.visuals);
-                                    chat.mus += safeNum(r.theory.music); chat.wor += safeNum(r.theory.world); chat.atm += safeNum(r.theory.atmosphere);
-                                }
-                                chat.count++;
-                                
-                                if (currentUser && uid === currentUser.id) {
-                                    me.overall += safeNum(r.overall);
-                                    if (r.theory) {
-                                        me.plot += safeNum(r.theory.plot); me.vis += safeNum(r.theory.visuals);
-                                        me.mus += safeNum(r.theory.music); me.wor += safeNum(r.theory.world); me.atm += safeNum(r.theory.atmosphere);
-                                    }
-                                    me.count++;
-                                }
-                            }
-                        }
-                    });
-
-                    const scoresObj = {
-                        streamer: {
-                            overall: getAvg(streamer.overall, streamer.countOv),
-                            plot: getAvg(streamer.plot, streamer.countTh), visuals: getAvg(streamer.vis, streamer.countTh),
-                            music: getAvg(streamer.mus, streamer.countTh), world: getAvg(streamer.wor, streamer.countTh), atmosphere: getAvg(streamer.atm, streamer.countTh)
-                        },
-                        chat: {
-                            overall: getAvg(chat.overall, chat.count),
-                            plot: getAvg(chat.plot, chat.count), visuals: getAvg(chat.vis, chat.count),
-                            music: getAvg(chat.mus, chat.count), world: getAvg(chat.wor, chat.count), atmosphere: getAvg(chat.atm, chat.count)
-                        },
-                        me: {
-                            overall: getAvg(me.overall, me.count),
-                            plot: getAvg(me.plot, me.count), visuals: getAvg(me.vis, me.count),
-                            music: getAvg(me.mus, me.count), world: getAvg(me.wor, me.count), atmosphere: getAvg(me.atm, me.count)
-                        }
-                    };
-
-                    scoresObj.streamer.avgTheory = getAvg(scoresObj.streamer.plot + scoresObj.streamer.visuals + scoresObj.streamer.music + scoresObj.streamer.world + scoresObj.streamer.atmosphere, 5);
-                    scoresObj.chat.avgTheory = getAvg(scoresObj.chat.plot + scoresObj.chat.visuals + scoresObj.chat.music + scoresObj.chat.world + scoresObj.chat.atmosphere, 5);
-                    scoresObj.me.avgTheory = getAvg(scoresObj.me.plot + scoresObj.me.visuals + scoresObj.me.music + scoresObj.me.world + scoresObj.me.atmosphere, 5);
-
-                    const baseSeason = seasons[0];
-                    // Проверяем наличие видео хотя бы в первом сезоне
                     const seasonUrls = baseSeason.videoUrls || (baseSeason.videoUrl ? [baseSeason.videoUrl] : []);
                     
                     globalFranchises.push({
@@ -664,7 +544,7 @@
                         release_year: parseInt(baseSeason.info.year) || 0, date_watched: baseSeason.info.dateWatched ? new Date(baseSeason.info.dateWatched).getTime() : 0,
                         az: franchiseId.replace(/_/g, ' ').toLowerCase(),
                         scores: scoresObj,
-                        hasVod: seasonUrls.length > 0 // Флажок записи
+                        hasVod: seasonUrls.length > 0
                     });
                 }
 
@@ -699,7 +579,6 @@
                 return (valB - valA) * mult;
             });
 
-            // ПЕРЕДАЕМ ВЫБРАННЫЙ КРИТЕРИЙ В РЕНДЕР
             renderCards(filtered, sortVal);
         }
 
