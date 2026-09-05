@@ -59,11 +59,11 @@
         .sort-dir-btn { background: transparent; border: none; color: #6b7a62; padding: 0 5px 0 15px; font-family: sans-serif; font-size: 24px; font-weight: bold; cursor: pointer; outline: none; transition: 0.2s; display: flex; justify-content: center; align-items: center; line-height: 1; }
         .sort-dir-btn:hover { color: #a6e3a1; text-shadow: 0 0 10px rgba(166, 227, 161, 0.5); transform: translateY(-3px); }
 
-        .main-layout { display: flex; gap: 30px; padding: 0 40px; max-width: 1650px; margin: 0 auto; align-items: flex-start; width: 100%; box-sizing: border-box; }
-        .trophy-room { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
+        .main-layout { display: flex; gap: 30px; padding: 0 40px; max-width: 100%; margin: 0 auto; align-items: flex-start; width: 100%; box-sizing: border-box; }
+        .trophy-room { flex: 1; display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 30px; }
         
         /* ПРАВАЯ ПАНЕЛЬ ХАБА */
-        .hub-right-panel { width: 360px; flex-shrink: 0; background: #0b0d0a; border: 2px solid #283325; border-radius: 12px; position: sticky; top: 20px; min-height: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); overflow: hidden; transition: border-color 0.4s, box-shadow 0.4s; }
+        .hub-right-panel { width: 420px; flex-shrink: 0; background: #0b0d0a; border: 2px solid #283325; border-radius: 12px; position: sticky; top: 20px; min-height: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); overflow: hidden; transition: border-color 0.4s, box-shadow 0.4s; }
         .preview-placeholder { padding: 40px 20px; text-align: center; color: #6b7a62; font-size: 18px; display: flex; height: 100%; align-items: center; justify-content: center; }
         .preview-cover { width: 100%; height: 200px; object-fit: cover; -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%); mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%); border-bottom: 2px solid #283325; transition: border-color 0.4s; }
         .preview-content { padding: 0 20px 20px 20px; margin-top: -60px; position: relative; z-index: 2; display: flex; flex-direction: column; }
@@ -817,28 +817,74 @@
             document.getElementById('hub-preview-btn').style.borderColor = themeLight;
             document.getElementById('hub-preview-btn').onclick = () => window.location.href = `Anime-Page.html?id=${encodeURIComponent(f.id).replace(/'/g, "%27")}`;
 
-            // Сборка критериев
-            const createRow = (name, val) => `<div class="crit-row" style="${getGlassRowStyle(val)}"><span style="color:${getScoreColor(val, 1)};">${name}</span><span style="color:#fff;">${val || '-'}</span></div>`;
-            
+            // --- ДОБАВЛЯЕМ ГЛОБАЛЬНЫЕ ФУНКЦИИ ПОДСВЕТКИ РАДАРА ---
+            if (!window.hubHighlightChart) {
+                window.hubHighlightChart = function(index) {
+                    if (!hubRadarChart) return;
+                    hubRadarChart.data.datasets.forEach((ds, i) => {
+                        if (i !== index) { ds.backgroundColor = 'transparent'; ds.borderColor = 'rgba(255,255,255,0.05)'; ds.borderWidth = 1; }
+                        else { ds.backgroundColor = radarColors[i].border + '40'; ds.borderColor = radarColors[i].border; ds.borderWidth = 4; }
+                    });
+                    hubRadarChart.update();
+                };
+                window.hubResetChart = function() {
+                    if (!hubRadarChart) return;
+                    hubRadarChart.data.datasets.forEach((ds, i) => { ds.backgroundColor = radarColors[i].bg; ds.borderColor = radarColors[i].border; ds.borderWidth = 2; });
+                    hubRadarChart.update();
+                };
+            }
+
+            const createStatCol = (title, chartColor, avgTheory, theory, isMe, chartIndex) => {
+                if (isMe && isStreamer) return '';
+                
+                const numAvg = Number(avgTheory) || 0;
+                
+                // Цвет заголовка и оценки берется от значения Ср. Критерия
+                const titleColor = numAvg > 0 ? getScoreColor(numAvg, 1) : '#6b7a62';
+                const titleShadow = numAvg > 0 ? getScoreShadow(numAvg, false) : 'none';
+                
+                const row = (name, val) => {
+                    const numVal = Number(val) || 0;
+                    const textColor = numVal > 0 ? getScoreColor(numVal, 1) : '#6b7a62';
+                    const textShadow = numVal > 0 ? getScoreShadow(numVal, false) : 'none';
+                    const numColor = numVal > 0 ? '#fff' : '#555';
+                    
+                    return `
+                    <div style="${getGlassRowStyle(numVal)} display: flex; justify-content: space-between; align-items: center; padding: 4px 8px; border-radius: 0 6px 6px 0; margin-bottom: 4px;">
+                        <span style="color: ${textColor}; font-family: 'Neucha', cursive; font-size: 15px; font-weight: bold; text-shadow: ${textShadow};">${name}</span>
+                        <span style="color: ${numColor}; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; text-shadow: ${textShadow};">${val || '-'}</span>
+                    </div>`;
+                };
+
+                return `
+                <div style="${getGlassBoxStyle(numAvg)} flex: 1; display: flex; flex-direction: column; align-items: center; padding: 12px 6px; border-radius: 8px; cursor: pointer; transition: 0.3s;" onmouseover="this.style.transform='scale(1.02)'; this.style.filter='brightness(1.2)'; window.hubHighlightChart(${chartIndex});" onmouseout="this.style.transform='scale(1)'; this.style.filter='none'; window.hubResetChart();">
+                    <div style="color: ${titleColor}; text-shadow: ${titleShadow}; display: flex; align-items: center; gap: 5px; font-size: 14px; font-weight: bold; text-transform: uppercase; margin-bottom: 6px;">
+                        <div style="width: 10px; height: 10px; border-radius: 50%; background: ${chartColor}; box-shadow: 0 0 5px ${chartColor};"></div>
+                        ${title}
+                    </div>
+                    <div style="color: #fff; font-size: 26px; font-weight: bold; text-shadow: ${numAvg > 0 ? getScoreShadow(numAvg, true) : 'none'}; margin-bottom: 5px; font-family: 'Neucha', cursive;">${numAvg > 0 ? numAvg : '-'}</div>
+                    
+                    <div style="width: 100%; display: flex; flex-direction: column; gap: 4px; border-top: 1px dashed rgba(74, 92, 65, 0.6); padding-top: 8px; margin-top: 5px;">
+                        ${row('Сюжет', theory.plot)}
+                        ${row('Визуал', theory.visuals)}
+                        ${row('Музыка', theory.music)}
+                        ${row('Мир', theory.world)}
+                        ${row('Персонажи', theory.atmosphere)}
+                    </div>
+                </div>
+                `;
+            };
+
             document.getElementById('hub-preview-theory').innerHTML = `
-                <div style="font-size: 15px; color: ${radarColors[0].border}; font-weight: bold; text-align: center; margin-top: 10px;">Стример (Ср: ${s.streamer.avgTheory})</div>
-                ${createRow('Сюжет', s.streamer.plot)} ${createRow('Визуал', s.streamer.visuals)} ${createRow('Музыка', s.streamer.music)} ${createRow('Мир', s.streamer.world)} ${createRow('Персонажи', s.streamer.atmosphere)}
-                
-                <div style="font-size: 15px; color: ${radarColors[1].border}; font-weight: bold; text-align: center; margin-top: 10px;">Чат (Ср: ${s.chat.avgTheory})</div>
-                ${createRow('Сюжет', s.chat.plot)} ${createRow('Визуал', s.chat.visuals)} ${createRow('Музыка', s.chat.music)} ${createRow('Мир', s.chat.world)} ${createRow('Персонажи', s.chat.atmosphere)}
-                
-                ${!isStreamer ? `
-                <div style="font-size: 15px; color: ${radarColors[2].border}; font-weight: bold; text-align: center; margin-top: 10px;">Я (Ср: ${s.me.avgTheory})</div>
-                ${createRow('Сюжет', s.me.plot)} ${createRow('Визуал', s.me.visuals)} ${createRow('Музыка', s.me.music)} ${createRow('Мир', s.me.world)} ${createRow('Персонажи', s.me.atmosphere)}
-                ` : ''}
+                <div style="display: flex; justify-content: space-between; gap: 10px; width: 100%;">
+                    ${createStatCol('Стример', radarColors[0].border, s.streamer.avgTheory, s.streamer, false, 0)}
+                    ${!isStreamer ? createStatCol('Я', radarColors[2].border, s.me.avgTheory, s.me, true, 2) : ''}
+                    ${createStatCol('Чат', radarColors[1].border, s.chat.avgTheory, s.chat, false, 1)}
+                </div>
             `;
 
-            // Легенда радара
-            document.getElementById('hub-preview-legend').innerHTML = `
-                <div class="legend-item" style="color: ${radarColors[0].border};"><div class="dot" style="background: ${radarColors[0].border};"></div>Стример</div>
-                ${!isStreamer ? `<div class="legend-item" style="color: ${radarColors[2].border};"><div class="dot" style="background: ${radarColors[2].border};"></div>Я</div>` : ''}
-                <div class="legend-item" style="color: ${radarColors[1].border};"><div class="dot" style="background: ${radarColors[1].border};"></div>Чат</div>
-            `;
+            // Старая легенда нам больше не нужна, колонки сами всё объясняют!
+            document.getElementById('hub-preview-legend').innerHTML = '';
 
             // Отрисовка радара
             const ctx = document.getElementById('hub-previewChart').getContext('2d');
