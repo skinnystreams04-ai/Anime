@@ -633,6 +633,16 @@
         let hubRadarChart = null;
 
         function renderCards(arr, sortVal = 'overall') {
+            // ВОТ ЭТИ СТРОКИ Я СЛУЧАЙНО УДАЛИЛ В ПРОШЛЫЙ РАЗ!
+            window.currentRenderedCards = arr;
+            const room = document.getElementById('trophy-room');
+            room.innerHTML = "";
+            
+            if (arr.length === 0) { 
+                room.innerHTML = "<div class='loading'>Ничего не найдено...</div>"; 
+                return; 
+            }
+
             const isStreamer = currentUser && currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
             const validKeys = ['overall', 'avgTheory', 'plot', 'visuals', 'music', 'world', 'atmosphere'];
             const scoreKey = validKeys.includes(sortVal) ? sortVal : 'overall';
@@ -696,7 +706,9 @@
                 `;
                 room.insertAdjacentHTML('beforeend', cardHtml);
             });
-        } // <--- ДОБАВЬ ВОТ ЭТУ СКОБКУ!
+            
+            extractHubColors();
+        }
 
         function extractHubColors() {
             const colorThief = new ColorThief();
