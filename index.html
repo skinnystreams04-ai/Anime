@@ -127,6 +127,18 @@
         /* КНОПКА АДМИНА */
         .secret-admin-btn { display: none; position: fixed; bottom: 20px; right: 20px; width: 45px; height: 45px; background: rgba(11, 13, 10, 0.5); border: 1px solid #283325; color: #4a5c41; border-radius: 50%; justify-content: center; align-items: center; cursor: pointer; z-index: 9999; transition: 0.3s; opacity: 0.3; font-size: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.8); backdrop-filter: blur(5px); }
         .secret-admin-btn:hover { opacity: 1; background: #1a2618; color: #a6e3a1; border-color: #a6e3a1; box-shadow: 0 0 15px rgba(166,227,161,0.5); transform: scale(1.1); }
+
+        /* ПЕРЕКЛЮЧАТЕЛЬ РЕЖИМА (ОЦЕНКИ / ТИРЫ) */
+        .mode-toggle { display: flex; align-items: center; gap: 10px; font-family: 'Neucha', cursive; font-size: 18px; margin-left: 10px; }
+        .switch { position: relative; display: inline-block; width: 46px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(14, 17, 13, 0.6); border: 1px solid #283325; transition: .4s; border-radius: 34px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: #a4b09c; transition: .4s; border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
+        input:checked + .slider { background-color: rgba(255, 215, 0, 0.15); border-color: #ffd700; }
+        input:checked + .slider:before { transform: translateX(22px); background-color: #ffd700; box-shadow: 0 0 10px #ffd700; }
+        .mode-label { font-weight: bold; text-shadow: 1px 1px 2px #000; transition: 0.3s; cursor: pointer; }
+        .mode-label.active { color: #fff; text-shadow: 0 0 8px currentColor; }
+        .mode-label.inactive { color: #6b7a62; }
     </style>
 </head>
 <body>
@@ -172,6 +184,16 @@
         </select>
 
         <button id="sort-dir-btn" class="sort-dir-btn" onclick="toggleSortDir()" title="Изменить направление">↓</button>
+        <div class="controls-divider"></div>
+        
+        <div class="mode-toggle">
+            <span id="label-score" class="mode-label inactive" onclick="document.getElementById('display-mode-switch').click()">123</span>
+            <label class="switch">
+                <input type="checkbox" id="display-mode-switch" onchange="toggleDisplayMode()">
+                <span class="slider"></span>
+            </label>
+            <span id="label-tier" class="mode-label active" style="color: #ffd700;" onclick="document.getElementById('display-mode-switch').click()">S-F</span>
+        </div>
     </div>
 
     <div class="main-layout">
@@ -204,7 +226,32 @@
         let currentUser = null;
         let allCharts = {};
         let globalFranchises = []; 
-        let currentSortDir = 'desc'; 
+        let currentSortDir = 'desc';
+        let currentDisplayMode = localStorage.getItem('skinwalker_display_mode') || 'tier';
+
+        function toggleDisplayMode() {
+            const switchEl = document.getElementById('display-mode-switch');
+            currentDisplayMode = switchEl.checked ? 'tier' : 'score';
+            localStorage.setItem('skinwalker_display_mode', currentDisplayMode);
+            
+            document.getElementById('label-tier').className = currentDisplayMode === 'tier' ? 'mode-label active' : 'mode-label inactive';
+            document.getElementById('label-tier').style.color = currentDisplayMode === 'tier' ? '#ffd700' : '';
+            document.getElementById('label-score').className = currentDisplayMode === 'score' ? 'mode-label active' : 'mode-label inactive';
+            document.getElementById('label-score').style.color = currentDisplayMode === 'score' ? '#a6e3a1' : '';
+            
+            applyFiltersAndSort(); // Перерисовываем карточки при переключении
+        }
+        
+        function getTierData(score) {
+            const num = Number(score) || 0;
+            if (num === 0) return { letter: '—', color: '#6b7a62', glow: 'none' };
+            if (num >= 9.0) return { letter: 'S', color: '#ff4a4a', glow: '0 0 15px rgba(255, 74, 74, 0.8)' };
+            if (num >= 8.0) return { letter: 'A', color: '#ffd700', glow: '0 0 15px rgba(255, 215, 0, 0.8)' };
+            if (num >= 7.0) return { letter: 'B', color: '#cba6f7', glow: '0 0 15px rgba(203, 166, 247, 0.8)' };
+            if (num >= 5.0) return { letter: 'C', color: '#89b4fa', glow: '0 0 15px rgba(137, 180, 250, 0.8)' };
+            if (num >= 3.0) return { letter: 'D', color: '#a6e3a1', glow: '0 0 15px rgba(166, 227, 161, 0.8)' };
+            return { letter: 'F', color: '#888888', glow: '0 0 15px rgba(136, 136, 136, 0.8)' };
+        } 
         
         window.globalUsersDB = {};
 
@@ -550,7 +597,7 @@
 
                 document.getElementById('controls-bar').style.display = 'flex';
                 toggleRoleSelect();
-                applyFiltersAndSort();
+                document.getElementById('display-mode-switch').checked = (currentDisplayMode === 'tier'); toggleDisplayMode();
 
             } catch (e) { console.error(e); }
         }
@@ -586,11 +633,6 @@
         let hubRadarChart = null;
 
         function renderCards(arr, sortVal = 'overall') {
-            window.currentRenderedCards = arr;
-            const room = document.getElementById('trophy-room');
-            room.innerHTML = "";
-            if (arr.length === 0) { room.innerHTML = "<div class='loading'>Ничего не найдено...</div>"; return; }
-
             const isStreamer = currentUser && currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
             const validKeys = ['overall', 'avgTheory', 'plot', 'visuals', 'music', 'world', 'atmosphere'];
             const scoreKey = validKeys.includes(sortVal) ? sortVal : 'overall';
@@ -610,11 +652,29 @@
 
                 const vodHtml = f.hasVod ? `<div class="vod-badge"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14v-4z"/><rect x="3" y="6" width="12" height="12" rx="2" ry="2"/></svg></div>` : '';
 
-                const meBoxHtml = isStreamer ? '' : `
-                    <div class="score-box me-element" style="${getGlassBoxStyle(valMe)}">
-                        <div class="score-label me" style="color:${getScoreColor(valMe, 1)}; border-bottom-color:${getScoreColor(valMe, 0.4)}; text-shadow:0 0 8px ${getScoreColor(valMe, 0.6)};">Я</div>
-                        <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(valMe, true)};">${valMe}<span> / 10</span></div>
-                    </div>`;
+                const getBoxHtml = (roleClass, labelText, val) => {
+                    if (currentDisplayMode === 'tier') {
+                        const tier = getTierData(val);
+                        return `
+                            <div class="score-box" style="background: ${tier.color}15; border: 1px solid ${tier.color}60; box-shadow: 0 4px 15px rgba(0,0,0,0.5), inset 0 0 15px ${tier.color}15;">
+                                <div class="score-label ${roleClass}" style="color:${tier.color}; border-bottom-color:${tier.color}60; text-shadow:0 0 8px ${tier.color};">${labelText}</div>
+                                <div class="main-score" style="color:${tier.color}; text-shadow:${tier.glow}; font-size: 34px;">${tier.letter}</div>
+                                ${val > 0 ? `<div style="font-size: 11px; color: ${tier.color}; opacity: 0.8; margin-top: -2px; font-family: sans-serif; font-weight: bold; letter-spacing: 1px;">${val}</div>` : ''}
+                            </div>
+                        `;
+                    } else {
+                        return `
+                            <div class="score-box" style="${getGlassBoxStyle(val)}">
+                                <div class="score-label ${roleClass}" style="color:${getScoreColor(val, 1)}; border-bottom-color:${getScoreColor(val, 0.4)}; text-shadow:0 0 8px ${getScoreColor(val, 0.6)};">${labelText}</div>
+                                <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(val, true)};">${val}<span> / 10</span></div>
+                            </div>
+                        `;
+                    }
+                };
+
+                const strBoxHtml = getBoxHtml('streamer', 'Стример', valStr);
+                const chatBoxHtml = getBoxHtml('chat', 'Чат', valChat);
+                const meBoxHtml = isStreamer ? '' : getBoxHtml('me', 'Я', valMe);
 
                 const cardHtml = `
                 <div class="card-container" id="card-${safeDomId}" data-cover="${safeCoverUrl}" onmouseenter="openHubPreview(${index})" onclick="window.location.href='${detailsLink}'" style="--card-color: #283325; --card-border: rgba(40, 51, 37, 0.8); --card-shadow: rgba(0,0,0,0.5); --card-shadow-hover: rgba(166, 227, 161, 0.25);">
@@ -624,15 +684,9 @@
                         <div class="front-overlay">
                             ${labelHtml}
                             <div class="scores-row">
-                                <div class="score-box" style="${getGlassBoxStyle(valStr)}">
-                                    <div class="score-label streamer" style="color:${getScoreColor(valStr, 1)}; border-bottom-color:${getScoreColor(valStr, 0.4)}; text-shadow:0 0 8px ${getScoreColor(valStr, 0.6)};">Стример</div>
-                                    <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(valStr, true)};">${valStr}<span> / 10</span></div>
-                                </div>
+                                ${strBoxHtml}
                                 ${meBoxHtml}
-                                <div class="score-box" style="${getGlassBoxStyle(valChat)}">
-                                    <div class="score-label chat" style="color:${getScoreColor(valChat, 1)}; border-bottom-color:${getScoreColor(valChat, 0.4)}; text-shadow:0 0 8px ${getScoreColor(valChat, 0.6)};">Чат</div>
-                                    <div class="main-score" style="color:#fff; text-shadow:${getScoreShadow(valChat, true)};">${valChat}<span> / 10</span></div>
-                                </div>
+                                ${chatBoxHtml}
                             </div>
                             <div class="divider"></div>
                             <div class="anime-title">${f.title}</div>
@@ -642,9 +696,7 @@
                 `;
                 room.insertAdjacentHTML('beforeend', cardHtml);
             });
-
-            extractHubColors();
-        }
+        } // <--- ДОБАВЬ ВОТ ЭТУ СКОБКУ!
 
         function extractHubColors() {
             const colorThief = new ColorThief();
