@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тир-лист Аниме</title>
+    <link href="https://fonts.googleapis.com/css2?family=Neucha&display=swap" rel="stylesheet">
+    <style>
+        body { margin: 0; font-family: 'Neucha', cursive; background: #0b0d0a; color: #a4b09c; min-height: 100vh; }
+        .top-nav { background: #0b0d0a; border-bottom: 2px solid #283325; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
+        .nav-logo { color: #a6e3a1; font-size: 24px; font-weight: bold; text-decoration: none; text-transform: uppercase; letter-spacing: 2px; }
+        
+        .controls { padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; background: rgba(14, 17, 13, 0.4); border-bottom: 1px solid #283325; }
+        .role-select { background: #121612; color: #a6e3a1; border: 1px solid #4a5c41; padding: 8px 15px; border-radius: 6px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; outline: none; cursor: pointer; }
+        
+        .tier-board { padding: 30px 40px; display: flex; flex-direction: column; gap: 15px; max-width: 1600px; margin: 0 auto; }
+        .tier-row { display: flex; background: rgba(0,0,0,0.4); border: 1px solid #283325; border-radius: 8px; overflow: hidden; min-height: 140px; }
+        .tier-label { width: 100px; display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: bold; color: #fff; text-shadow: 1px 1px 3px #000; flex-shrink: 0; box-shadow: 5px 0 15px rgba(0,0,0,0.5); z-index: 2; }
+        .tier-content { display: flex; flex-wrap: wrap; gap: 12px; padding: 15px; flex: 1; align-content: flex-start; }
+        
+        .tier-item { width: 90px; height: 130px; border-radius: 6px; cursor: pointer; transition: 0.2s; position: relative; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .tier-item:hover { transform: scale(1.15) translateY(-5px); z-index: 10; box-shadow: 0 10px 20px rgba(0,0,0,0.8); }
+        .tier-item img { width: 100%; height: 100%; object-fit: cover; }
+        .item-score { position: absolute; bottom: 0; left: 0; right: 0; background: rgba(0,0,0,0.85); color: #fff; text-align: center; font-size: 14px; font-weight: bold; padding: 4px 0; backdrop-filter: blur(4px); }
+    </style>
+</head>
+<body>
+
+    <nav class="top-nav">
+        <a href="index.html" class="nav-logo">← Назад в Хаб</a>
+    </nav>
+
+    <div class="controls">
+        <div style="color: #c4d1b8; font-size: 24px; font-weight: bold;">Глобальный Тир-лист</div>
+        <select id="role-select" class="role-select" onchange="renderTierList()">
+            <option value="streamer">Тир-лист Стримера</option>
+            <option value="chat">Тир-лист Чата</option>
+        </select>
+    </div>
+
+    <div class="tier-board" id="tier-board">
+        <div style="text-align: center; font-size: 20px; color: #829c73; margin-top: 50px;">Загрузка базы данных...</div>
+    </div>
+
+    <script>
+        const FIREBASE_BASE = 'https://skinwalkerauction-default-rtdb.europe-west1.firebasedatabase.app';
+        let globalFranchises = [];
+
+        const tiersConfig = [
+            { id: 'S', color: '#ff4a4a', min: 9.0 },
+            { id: 'A', color: '#ffd700', min: 8.0 },
+            { id: 'B', color: '#cba6f7', min: 7.0 },
+            { id: 'C', color: '#89b4fa', min: 5.0 },
+            { id: 'D', color: '#a6e3a1', min: 3.0 },
+            { id: 'F', color: '#888888', min: 0.1 }
+        ];
+
+        const safeNum = (v) => Number(v) || 0;
+        const getAvg = (sum, count) => count > 0 ? parseFloat((sum/count).toFixed(1)) : 0;
+
+        async function initTierList() {
+            try {
+                const [animeRes, commRes] = await Promise.all([
+                    fetch(`${FIREBASE_BASE}/anime_db.json`),
+                    fetch(`${FIREBASE_BASE}/community_db.json`)
+                ]);
+                const data = await animeRes.json() || {};
+                const commData = await commRes.json() || {};
+
+                for (const [franchiseId, seasonsObj] of Object.entries(data)) {
+                    const seasons = Object.entries(seasonsObj).map(([seasonId, sData]) => ({seasonId, ...sData}));
+                    let strOvr = 0, strCnt = 0, chatOvr = 0, chatCnt = 0;
+
+                    seasons.forEach(s => {
+                        if (s.scores && safeNum(s.scores.overall) > 0) { strOvr += safeNum(s.scores.overall); strCnt++; }
+                        const sComm = commData[franchiseId]?.[s.seasonId]?.ratings;
+                        if (sComm) {
+                            for (const [uid, r] of Object.entries(sComm)) {
+                                if (safeNum(r.overall) > 0) { chatOvr += safeNum(r.overall); chatCnt++; }
+                            }
+                        }
+                    });
+
+                    globalFranchises.push({
+                        id: franchiseId,
+                        title: franchiseId.replace(/_/g, ' '),
+                        coverUrl: seasons[0].coverUrl,
+                        scores: {
+                            streamer: getAvg(strOvr, strCnt),
+                            chat: getAvg(chatOvr, chatCnt)
+                        }
+                    });
+                }
+                renderTierList();
+            } catch (e) { document.getElementById('tier-board').innerHTML = 'Ошибка загрузки!'; }
+        }
+
+        function renderTierList() {
+            const role = document.getElementById('role-select').value;
+            const board = document.getElementById('tier-board');
+            board.innerHTML = '';
+
+            tiersConfig.forEach(tier => {
+                // Фильтруем тайтлы, которые попадают в текущий тир
+                let items = globalFranchises.filter(f => {
+                    const score = f.scores[role];
+                    if (tier.id === 'S') return score >= tier.min;
+                    if (tier.id === 'F') return score >= tier.min && score < 3.0;
+                    // Ищем следующий (верхний) порог, чтобы ограничить диапазон
+                    const nextTier = tiersConfig[tiersConfig.indexOf(tier) - 1];
+                    return score >= tier.min && score < nextTier.min;
+                });
+
+                // Сортируем внутри тира от лучшего к худшему (хирургическая точность!)
+                items.sort((a, b) => b.scores[role] - a.scores[role]);
+
+                let itemsHtml = items.map(f => `
+                    <a href="Anime-Page.html?id=${f.id}" class="tier-item" title="${f.title}">
+                        <img src="${f.coverUrl}">
+                        <div class="item-score" style="color: ${tier.color}">${f.scores[role]}</div>
+                    </a>
+                `).join('');
+
+                board.insertAdjacentHTML('beforeend', `
+                    <div class="tier-row" style="border-color: ${tier.color}40;">
+                        <div class="tier-label" style="background: ${tier.color}20; border-right: 2px solid ${tier.color}; color: ${tier.color}; text-shadow: 0 0 15px ${tier.color};">${tier.id}</div>
+                        <div class="tier-content">${itemsHtml}</div>
+                    </div>
+                `);
+            });
+        }
+
+        window.onload = initTierList;
+    </script>
+</body>
+</html>
