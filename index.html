@@ -167,19 +167,69 @@
         .lb-count { font-size: 26px; font-weight: bold; color: #fff; line-height: 1; font-family: 'Neucha', cursive, sans-serif; }
         .lb-count-label { font-size: 11px; color: #6b7a62; text-transform: uppercase; font-family: sans-serif; font-weight: bold; letter-spacing: 1px; margin-top: 4px; }
 
-        /* КНОПКИ В ШАПКЕ */
-        .nav-btn { background: rgba(14, 17, 13, 0.6); border: 1px solid #4a5c41; color: #c4d1b8; padding: 8px 16px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
-        .nav-btn:hover { border-color: #a6e3a1; color: #a6e3a1; box-shadow: 0 0 10px rgba(166, 227, 161, 0.2); transform: translateY(-2px); }
+        /* КНОПКИ В ШАПКЕ (СОВРЕМЕННЫЙ МИНИМАЛИЗМ) */
+        .nav-btn { 
+            background: transparent; border: none; color: #a4b09c; padding: 5px 0; 
+            font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; 
+            cursor: pointer; transition: 0.3s; display: flex; align-items: center; 
+            gap: 8px; position: relative; text-decoration: none; 
+            text-transform: uppercase; letter-spacing: 1px; outline: none;
+        }
+        .nav-btn::after {
+            content: ''; position: absolute; width: 0; height: 2px; bottom: 0; left: 50%;
+            background-color: var(--btn-color, #a6e3a1); transition: 0.3s;
+            transform: translateX(-50%); box-shadow: 0 0 8px var(--btn-color, #a6e3a1);
+        }
+        .nav-btn:hover { 
+            color: var(--btn-color, #a6e3a1); 
+            text-shadow: 0 0 10px var(--btn-color, #a6e3a1); 
+        }
+        .nav-btn:hover::after { width: 100%; }
+
+        /* ВЫПАДАЮЩЕЕ МЕНЮ ВИЗУАЛА */
+        .visual-dropdown { position: relative; display: inline-block; }
+        .visual-dropdown-content { 
+            display: none; position: absolute; right: 0; top: 100%; margin-top: 15px;
+            background: rgba(14, 17, 13, 0.95); border: 1px solid #4a5c41; border-radius: 12px;
+            padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 2000;
+            min-width: 250px; backdrop-filter: blur(10px); flex-direction: column; gap: 15px;
+        }
+        .visual-dropdown.show .visual-dropdown-content { display: flex; }
     </style>
 </head>
 <body>
 
     <nav class="top-nav">
-        <div style="display: flex; align-items: center; gap: 20px;">
+        <div style="display: flex; align-items: center; gap: 40px;">
             <a href="index.html" class="nav-logo">Skinwalker Аниме</a>
-            <button onclick="openUsersModal()" class="nav-btn">🔍 Поиск зрителей</button>
-            <button onclick="openLeaderboard()" class="nav-btn" style="border-color: #ffd700; color: #ffd700;">🏆 Зал славы</button>
+            
+            <div style="display: flex; gap: 25px; align-items: center;">
+                <a href="tierlist.html" class="nav-btn" style="--btn-color: #ff4a4a;">Тир-лист</a>
+                <button onclick="openLeaderboard()" class="nav-btn" style="--btn-color: #ffd700;">Зрители</button>
+                
+                <!-- КНОПКА ВИЗУАЛ С ВЫПАДАЮЩИМ МЕНЮ -->
+                <div class="visual-dropdown" id="visual-dropdown">
+                    <button class="nav-btn" style="--btn-color: #a6e3a1;" onclick="toggleVisualMenu()">Визуал</button>
+                    <div class="visual-dropdown-content">
+                        <div class="mode-toggle" style="margin: 0; justify-content: center;">
+                            <span id="label-score" class="mode-label inactive" onclick="document.getElementById('display-mode-switch').click()">123</span>
+                            <label class="switch">
+                                <input type="checkbox" id="display-mode-switch" onchange="toggleDisplayMode()">
+                                <span class="slider"></span>
+                            </label>
+                            <span id="label-tier" class="mode-label active" style="color: #ffd700;" onclick="document.getElementById('display-mode-switch').click()">S-F</span>
+                        </div>
+                        <div style="border-top: 1px dashed #283325; margin: 5px 0;"></div>
+                        <div class="role-toggles" style="margin: 0; justify-content: center; flex-wrap: wrap;">
+                            <button id="toggle-streamer" class="role-toggle-btn active streamer" onclick="toggleRoleVis('streamer')">Стример</button>
+                            <button id="toggle-me" class="role-toggle-btn active me" onclick="toggleRoleVis('me')">Я</button>
+                            <button id="toggle-chat" class="role-toggle-btn active chat" onclick="toggleRoleVis('chat')">Чат</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
+        
         <div class="nav-auth" id="nav-auth">
             <button class="twitch-btn" onclick="loginTwitch()">Войти через Twitch</button>
         </div>
@@ -187,9 +237,7 @@
 
     <div class="controls-bar" style="display: none;" id="controls-bar">
         <input type="text" id="search-input" class="search-input" placeholder="Поиск по названию..." oninput="applyFiltersAndSort()">
-        
         <div class="controls-divider"></div>
-        
         <select id="sort-select" class="sort-select" onchange="toggleRoleSelect(); applyFiltersAndSort();">
             <option value="overall">По Итоговой оценке</option>
             <option value="avgTheory">По среднему Критериев</option>
@@ -203,36 +251,13 @@
             <option value="release_year">По дате выпуска</option>
             <option value="episodes">По количеству серий</option>
         </select>
-        
         <div class="controls-divider" id="role-divider"></div>
-        
         <select id="role-select" class="sort-select" onchange="applyFiltersAndSort()">
             <option value="streamer">Стример</option>
             <option value="me" class="me-element">Я</option>
             <option value="chat">Чат</option>
         </select>
-
         <button id="sort-dir-btn" class="sort-dir-btn" onclick="toggleSortDir()" title="Изменить направление">↓</button>
-        
-        <!-- ГРУППИРУЕМ ВСЕ ФИЛЬТРЫ ВИДА В ПРАВОМ УГЛУ -->
-        <div style="display: flex; align-items: center; gap: 15px; margin-left: auto;">
-            <div class="mode-toggle" style="margin-left: 0;">
-                <span id="label-score" class="mode-label inactive" onclick="document.getElementById('display-mode-switch').click()">123</span>
-                <label class="switch">
-                    <input type="checkbox" id="display-mode-switch" onchange="toggleDisplayMode()">
-                    <span class="slider"></span>
-                </label>
-                <span id="label-tier" class="mode-label active" style="color: #ffd700;" onclick="document.getElementById('display-mode-switch').click()">S-F</span>
-            </div>
-            
-            <div class="controls-divider"></div>
-            
-            <div class="role-toggles" style="margin-left: 0;">
-                <button id="toggle-streamer" class="role-toggle-btn active streamer" onclick="toggleRoleVis('streamer')">Стример</button>
-                <button id="toggle-me" class="role-toggle-btn active me" onclick="toggleRoleVis('me')">Я</button>
-                <button id="toggle-chat" class="role-toggle-btn active chat" onclick="toggleRoleVis('chat')">Чат</button>
-            </div>
-        </div>
     </div>
 
     <div class="main-layout">
@@ -255,28 +280,15 @@
     </div>
 
     <div class="secret-admin-btn" id="admin-btn" onclick="window.location.href='admin.html'" title="Панель управления">⚙️</div>
-    <!-- МОДАЛЬНОЕ ОКНО: ЗАЛ СЛАВЫ -->
+    <!-- ЕДИНОЕ ОКНО ЗРИТЕЛЕЙ (ЗАЛ СЛАВЫ + ПОИСК) -->
     <div id="leaderboard-modal" class="leaderboard-overlay" style="display: none;" onclick="if(event.target===this) this.style.display='none'">
-        <div class="leaderboard-box">
-            <div class="close-btn" style="position: absolute; top: 15px; right: 20px; font-size: 32px; color: #a6e3a1; cursor: pointer; transition: 0.2s;" onclick="document.getElementById('leaderboard-modal').style.display='none'" onmouseover="this.style.color='#ff5555'" onmouseout="this.style.color='#a6e3a1'">×</div>
-            <div class="leaderboard-header">Топ зрителей (Зал славы)</div>
-            <div class="leaderboard-list" id="leaderboard-list">
-                <!-- Сюда вставятся лидеры -->
-            </div>
-        </div>
-    </div>
-
-    <!-- МОДАЛЬНОЕ ОКНО: ПОИСК ЗРИТЕЛЕЙ -->
-    <div id="users-modal" class="leaderboard-overlay" style="display: none;" onclick="if(event.target===this) this.style.display='none'">
-        <div class="leaderboard-box" style="height: 650px;">
-            <div class="close-btn" style="position: absolute; top: 15px; right: 20px; font-size: 32px; color: #a6e3a1; cursor: pointer; transition: 0.2s; z-index: 10;" onclick="document.getElementById('users-modal').style.display='none'" onmouseover="this.style.color='#ff5555'" onmouseout="this.style.color='#a6e3a1'">×</div>
-            <div class="leaderboard-header" style="border-bottom: none; padding-bottom: 15px;">Зрители с оценками</div>
+        <div class="leaderboard-box" style="height: 700px;">
+            <div class="close-btn" style="position: absolute; top: 15px; right: 20px; font-size: 32px; color: #a6e3a1; cursor: pointer; transition: 0.2s; z-index: 10;" onclick="document.getElementById('leaderboard-modal').style.display='none'" onmouseover="this.style.color='#ff5555'" onmouseout="this.style.color='#a6e3a1'">×</div>
+            <div class="leaderboard-header" style="border-bottom: none; padding-bottom: 15px;">Зал славы зрителей</div>
             <div style="padding: 0 20px 15px 20px; border-bottom: 1px solid #283325;">
-                <input type="text" id="modal-user-search" class="search-input" style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.5); border: 1px solid #4a5c41; border-radius: 8px; padding: 12px 15px;" placeholder="Введите никнейм для поиска..." oninput="filterModalUsers()">
+                <input type="text" id="lb-search" class="search-input" style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.5); border: 1px solid #4a5c41; border-radius: 8px; padding: 12px 15px; color: #c4d1b8; outline: none; font-family: 'Neucha', cursive; font-size: 16px;" placeholder="Введите никнейм для поиска..." oninput="filterLeaderboard()">
             </div>
-            <div class="leaderboard-list" id="users-modal-list">
-                <!-- Сюда вставятся все юзеры -->
-            </div>
+            <div class="leaderboard-list" id="leaderboard-list"></div>
         </div>
     </div>
 
@@ -295,28 +307,27 @@
         // 2. Память для кнопок ролей
         let visRoles = JSON.parse(localStorage.getItem('skinwalker_vis_roles')) || { streamer: true, me: true, chat: true };
         
+        // ЛОГИКА МЕНЮ ВИЗУАЛА
+        function toggleVisualMenu() { document.getElementById('visual-dropdown').classList.toggle('show'); }
+        window.addEventListener('click', function(e) {
+            if (!document.getElementById('visual-dropdown').contains(e.target)) {
+                document.getElementById('visual-dropdown').classList.remove('show');
+            }
+        });
+
+        // ЛОГИКА ОБЪЕДИНЕННОГО ЗАЛА СЛАВЫ
+        let lbAllUsers = [];
+
         function openLeaderboard() {
             if (!window.globalCommData) return;
-            
             const userStats = {};
-            
-            // Проходим по всей базе оценок
             for (const [franchiseId, seasons] of Object.entries(window.globalCommData)) {
                 for (const [seasonId, seasonData] of Object.entries(seasons)) {
                     if (seasonData.ratings) {
                         for (const [userId, rating] of Object.entries(seasonData.ratings)) {
-                            // Проверяем, поставил ли юзер хоть какую-то оценку
                             if ((Number(rating.overall) > 0) || (rating.theory && Object.values(rating.theory).some(v => Number(v) > 0))) {
-                                if (!userStats[userId]) {
-                                    userStats[userId] = {
-                                        id: userId,
-                                        name: rating.displayName || userId,
-                                        avatar: rating.profileImage || 'https://static-cdn.jtvnw.net/user-default-pictures-uv/41780b5a-def8-11e9-94d9-784f43822e80-profile_image-70x70.png',
-                                        count: 0
-                                    };
-                                }
+                                if (!userStats[userId]) { userStats[userId] = { id: userId, name: rating.displayName || userId, avatar: rating.profileImage || 'https://static-cdn.jtvnw.net/user-default-pictures-uv/41780b5a-def8-11e9-94d9-784f43822e80-profile_image-70x70.png', count: 0 }; }
                                 userStats[userId].count++;
-                                // Забираем самую свежую аватарку и имя
                                 if (rating.displayName) userStats[userId].name = rating.displayName;
                                 if (rating.profileImage) userStats[userId].avatar = rating.profileImage;
                             }
@@ -324,124 +335,60 @@
                     }
                 }
             }
-            
-            // Конвертируем в массив и сортируем по количеству оценок
-            const sortedUsers = Object.values(userStats).sort((a, b) => b.count - a.count);
-            
-            const listEl = document.getElementById('leaderboard-list');
-            listEl.innerHTML = '';
-            
-            if (sortedUsers.length === 0) {
-                listEl.innerHTML = '<div style="text-align: center; color: #6b7a62; padding: 30px; font-size: 18px;">Никто еще не оценивал аниме.</div>';
-            } else {
-                sortedUsers.forEach((u, index) => {
-                    const rank = index + 1;
-                    let rankClass = '';
-                    let crown = rank;
-                    
-                    if (rank === 1) { rankClass = 'top-1'; crown = '👑'; }
-                    else if (rank === 2) { rankClass = 'top-2'; crown = '🥈'; }
-                    else if (rank === 3) { rankClass = 'top-3'; crown = '🥉'; }
-                    
-                    const dbUser = window.globalUsersDB[u.name.toLowerCase()];
-                    const color = (dbUser && dbUser.color) ? dbUser.color : '#a4b09c';
-                    
-                    const html = `
-                    <a href="profile.html?user=${u.id}" class="lb-item">
-                        <div class="lb-rank ${rankClass}">${crown}</div>
-                        <div class="lb-user">
-                            <img src="${u.avatar}" class="lb-avatar" style="border-color: ${color};">
-                            <div class="lb-name" style="color: ${color}; text-shadow: 0 0 8px ${color}80;">${u.name}</div>
-                        </div>
-                        <div class="lb-stats">
-                            <div class="lb-count">${u.count}</div>
-                            <div class="lb-count-label">тайтлов</div>
-                        </div>
-                    </a>
-                    `;
-                    listEl.insertAdjacentHTML('beforeend', html);
-                });
-            }
-            
+            // Сортировка по убыванию (Зал Славы по дефолту)
+            lbAllUsers = Object.values(userStats).sort((a, b) => b.count - a.count);
+            document.getElementById('lb-search').value = '';
+            renderLeaderboard(lbAllUsers);
             document.getElementById('leaderboard-modal').style.display = 'flex';
         }
 
-        let allActiveUsers = []; // Глобальный массив для мгновенного поиска
-
-        function openUsersModal() {
-            if (!window.globalCommData) return;
-            const userStats = {};
-            
-            // Собираем всех, кто поставил хоть одну оценку
-            for (const [franchiseId, seasons] of Object.entries(window.globalCommData)) {
-                for (const [seasonId, seasonData] of Object.entries(seasons)) {
-                    if (seasonData.ratings) {
-                        for (const [userId, rating] of Object.entries(seasonData.ratings)) {
-                            if ((Number(rating.overall) > 0) || (rating.theory && Object.values(rating.theory).some(v => Number(v) > 0))) {
-                                if (!userStats[userId]) {
-                                    userStats[userId] = { id: userId, name: rating.displayName || userId, avatar: rating.profileImage || 'https://static-cdn.jtvnw.net/user-default-pictures-uv/41780b5a-def8-11e9-94d9-784f43822e80-profile_image-70x70.png', count: 0 };
-                                }
-                                userStats[userId].count++;
-                                if (rating.displayName) userStats[userId].name = rating.displayName;
-                                if (rating.profileImage) userStats[userId].avatar = rating.profileImage;
-                            }
-                        }
-                    }
-                }
-            }
-            
-            // Сортируем по алфавиту
-            allActiveUsers = Object.values(userStats).sort((a, b) => a.name.localeCompare(b.name));
-            
-            document.getElementById('modal-user-search').value = '';
-            renderModalUsers(allActiveUsers);
-            document.getElementById('users-modal').style.display = 'flex';
-        }
-
-        function renderModalUsers(usersArray) {
-            const listEl = document.getElementById('users-modal-list');
+        function renderLeaderboard(usersArray) {
+            const listEl = document.getElementById('leaderboard-list');
             listEl.innerHTML = '';
-            
             if (usersArray.length === 0) {
                 listEl.innerHTML = '<div style="text-align: center; color: #6b7a62; padding: 30px; font-size: 18px;">Никого не найдено.</div>';
                 return;
             }
             
-            usersArray.forEach(u => {
+            usersArray.forEach((u) => {
+                // Привязываем ранг к глобальной позиции, чтобы при поиске сохранялись правильные места
+                const originalIndex = lbAllUsers.findIndex(orig => orig.id === u.id);
+                const rank = originalIndex + 1;
+                
+                let rankClass = ''; let crown = rank;
+                if (rank === 1) { rankClass = 'top-1'; crown = '👑'; }
+                else if (rank === 2) { rankClass = 'top-2'; crown = '🥈'; }
+                else if (rank === 3) { rankClass = 'top-3'; crown = '🥉'; }
+
                 const dbUser = window.globalUsersDB[u.name.toLowerCase()];
                 const color = (dbUser && dbUser.color) ? dbUser.color : '#a4b09c';
-                
-                // Проверяем онлайн (если обновлялся меньше 2.5 мин назад)
                 const isOnline = dbUser && dbUser.last_online && (Date.now() - dbUser.last_online < 150000);
                 const statusDot = isOnline ? '<div class="status-dot status-online" style="display:inline-block; margin-right:6px;"></div><span style="color:#a6e3a1; font-size:13px; font-family:sans-serif;">В сети</span>' : '<div class="status-dot status-offline" style="display:inline-block; margin-right:6px;"></div><span style="color:#6b7a62; font-size:13px; font-family:sans-serif;">Не в сети</span>';
 
                 const html = `
-                <a href="profile.html?user=${u.id}" class="lb-item" style="padding: 10px 20px;">
-                    <div class="lb-user" style="margin-left: 0;">
-                        <img src="${u.avatar}" class="lb-avatar" style="border-color: ${color}; width: 45px; height: 45px;">
+                <a href="profile.html?user=${u.id}" class="lb-item">
+                    <div class="lb-rank ${rankClass}" style="width: 45px; text-align: center;">${crown}</div>
+                    <div class="lb-user" style="flex: 1; margin-left: 10px;">
+                        <img src="${u.avatar}" class="lb-avatar" style="border-color: ${color};">
                         <div style="display: flex; flex-direction: column; gap: 4px;">
                             <div class="lb-name" style="color: ${color}; text-shadow: 0 0 8px ${color}80; line-height: 1;">${u.name}</div>
                             <div style="display: flex; align-items: center;">${statusDot}</div>
                         </div>
                     </div>
                     <div class="lb-stats">
-                        <div class="lb-count" style="font-size: 22px;">${u.count}</div>
-                        <div class="lb-count-label" style="font-size: 10px;">оценок</div>
+                        <div class="lb-count">${u.count}</div>
+                        <div class="lb-count-label">оценок</div>
                     </div>
-                </a>
-                `;
+                </a>`;
                 listEl.insertAdjacentHTML('beforeend', html);
             });
         }
 
-        function filterModalUsers() {
-            const query = document.getElementById('modal-user-search').value.toLowerCase().trim();
-            if (!query) {
-                renderModalUsers(allActiveUsers);
-                return;
-            }
-            const filtered = allActiveUsers.filter(u => u.name.toLowerCase().includes(query));
-            renderModalUsers(filtered);
+        function filterLeaderboard() {
+            const query = document.getElementById('lb-search').value.toLowerCase().trim();
+            if (!query) { renderLeaderboard(lbAllUsers); return; }
+            const filtered = lbAllUsers.filter(u => u.name.toLowerCase().includes(query));
+            renderLeaderboard(filtered);
         }
 
         function initRoleVis() {

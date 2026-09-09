@@ -192,6 +192,36 @@
         #toast { position: fixed; bottom: 30px; right: 30px; background: #a6e3a1; color: #121612; padding: 15px 25px; border-radius: 8px; font-weight: bold; font-size: 18px; box-shadow: 0 5px 20px rgba(166, 227, 161, 0.4); transform: translateY(100px); opacity: 0; transition: 0.3s; z-index: 2000; font-family: sans-serif;}
         #toast.show { transform: translateY(0); opacity: 1; }
         #toast.error { background: #ff5555; color: white; box-shadow: 0 5px 20px rgba(255, 85, 85, 0.4); }
+        
+        /* КНОПКИ В ШАПКЕ */
+        .nav-btn { background: transparent; border: none; color: #a4b09c; padding: 5px 0; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; position: relative; text-decoration: none; text-transform: uppercase; letter-spacing: 1px; outline: none; }
+        .nav-btn::after { content: ''; position: absolute; width: 0; height: 2px; bottom: 0; left: 50%; background-color: var(--btn-color, #a6e3a1); transition: 0.3s; transform: translateX(-50%); box-shadow: 0 0 8px var(--btn-color, #a6e3a1); }
+        .nav-btn:hover { color: var(--btn-color, #a6e3a1); text-shadow: 0 0 10px var(--btn-color, #a6e3a1); }
+        .nav-btn:hover::after { width: 100%; }
+
+        /* ВЫПАДАЮЩЕЕ МЕНЮ ВИЗУАЛА */
+        .visual-dropdown { position: relative; display: inline-block; }
+        .visual-dropdown-content { display: none; position: absolute; right: 0; top: 100%; margin-top: 15px; background: rgba(14, 17, 13, 0.95); border: 1px solid #4a5c41; border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 2000; min-width: 250px; backdrop-filter: blur(10px); flex-direction: column; gap: 15px; }
+        .visual-dropdown.show .visual-dropdown-content { display: flex; }
+
+        /* ПЕРЕКЛЮЧАТЕЛИ В МЕНЮ */
+        .mode-toggle { display: flex; align-items: center; gap: 10px; font-family: 'Neucha', cursive; font-size: 18px; }
+        .switch { position: relative; display: inline-block; width: 46px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(14, 17, 13, 0.6); border: 1px solid #283325; transition: .4s; border-radius: 34px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: #a4b09c; transition: .4s; border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
+        input:checked + .slider { background-color: rgba(255, 215, 0, 0.15); border-color: #ffd700; }
+        input:checked + .slider:before { transform: translateX(22px); background-color: #ffd700; box-shadow: 0 0 10px #ffd700; }
+        .mode-label { font-weight: bold; text-shadow: 1px 1px 2px #000; transition: 0.3s; cursor: pointer; }
+        .mode-label.active { color: #fff; text-shadow: 0 0 8px currentColor; }
+        .mode-label.inactive { color: #6b7a62; }
+        
+        .role-toggles { display: flex; gap: 20px; align-items: center; justify-content: center; flex-wrap: wrap; }
+        .role-toggle-btn { background: transparent; border: none; border-bottom: 2px solid rgba(107, 122, 98, 0.3); color: #6b7a62; padding: 4px 2px; font-family: 'Neucha', cursive; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; outline: none; }
+        .role-toggle-btn:hover { color: #c4d1b8; border-bottom-color: rgba(196, 209, 184, 0.5); }
+        .role-toggle-btn.active.streamer { color: #cba6f7; border-bottom-color: #cba6f7; text-shadow: 0 0 8px rgba(203, 166, 247, 0.6); }
+        .role-toggle-btn.active.me { color: #a6e3a1; border-bottom-color: #a6e3a1; text-shadow: 0 0 8px rgba(166, 227, 161, 0.6); }
+        .role-toggle-btn.active.chat { color: #b8a87b; border-bottom-color: #b8a87b; text-shadow: 0 0 8px rgba(184, 168, 123, 0.6); }
     </style>
 </head>
 <body>
@@ -199,8 +229,36 @@
     <div class="loading-screen" id="loading-screen">Загрузка данных...</div>
     <div id="toast">✅ Оценка успешно сохранена!</div>
 
-    <nav class="top-nav" id="top-nav" style="display: none;">
-        <a href="index.html" class="nav-logo">Skinwalker Аниме</a>
+    <nav class="top-nav">
+        <div style="display: flex; align-items: center; gap: 40px;">
+            <a href="index.html" class="nav-logo">Skinwalker Аниме</a>
+            
+            <div style="display: flex; gap: 25px; align-items: center;">
+                <a href="tierlist.html" class="nav-btn" style="--btn-color: #ff4a4a;">Тир-лист</a>
+                <button onclick="window.location.href='index.html'" class="nav-btn" style="--btn-color: #ffd700;">Зрители</button>
+                
+                <div class="visual-dropdown" id="visual-dropdown">
+                    <button class="nav-btn" style="--btn-color: #a6e3a1;" onclick="toggleVisualMenu()">Визуал</button>
+                    <div class="visual-dropdown-content">
+                        <div class="mode-toggle" style="margin: 0; justify-content: center;">
+                            <span id="label-score" class="mode-label inactive" onclick="document.getElementById('display-mode-switch').click()">123</span>
+                            <label class="switch">
+                                <input type="checkbox" id="display-mode-switch" onchange="toggleDisplayMode()">
+                                <span class="slider"></span>
+                            </label>
+                            <span id="label-tier" class="mode-label active" style="color: #ffd700;" onclick="document.getElementById('display-mode-switch').click()">S-F</span>
+                        </div>
+                        <div style="border-top: 1px dashed #283325; margin: 5px 0;"></div>
+                        <div class="role-toggles" style="margin: 0;">
+                            <button id="toggle-streamer" class="role-toggle-btn active streamer" onclick="toggleRoleVis('streamer')">Стример</button>
+                            <button id="toggle-me" class="role-toggle-btn active me" onclick="toggleRoleVis('me')">Я</button>
+                            <button id="toggle-chat" class="role-toggle-btn active chat" onclick="toggleRoleVis('chat')">Чат</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <div class="nav-auth" id="nav-auth">
             <button class="twitch-btn" onclick="loginTwitch()">Войти через Twitch</button>
         </div>
@@ -364,6 +422,99 @@
         let radarChart = null;
         let modalRadarChart = null;
         let editingTarget = { type: null, id: null, parentId: null }; 
+        let currentDisplayMode = localStorage.getItem('skinwalker_display_mode') || 'score';
+        let visRoles = JSON.parse(localStorage.getItem('skinwalker_vis_roles')) || { streamer: true, me: true, chat: true };
+
+        function toggleVisualMenu() { document.getElementById('visual-dropdown').classList.toggle('show'); }
+        window.addEventListener('click', function(e) {
+            if (!document.getElementById('visual-dropdown').contains(e.target)) {
+                document.getElementById('visual-dropdown').classList.remove('show');
+            }
+        });
+
+        function toggleDisplayMode() {
+            const switchEl = document.getElementById('display-mode-switch');
+            currentDisplayMode = switchEl.checked ? 'tier' : 'score';
+            localStorage.setItem('skinwalker_display_mode', currentDisplayMode);
+            
+            document.getElementById('label-tier').className = currentDisplayMode === 'tier' ? 'mode-label active' : 'mode-label inactive';
+            document.getElementById('label-tier').style.color = currentDisplayMode === 'tier' ? '#ffd700' : '';
+            document.getElementById('label-score').className = currentDisplayMode === 'score' ? 'mode-label active' : 'mode-label inactive';
+            document.getElementById('label-score').style.color = currentDisplayMode === 'score' ? '#a6e3a1' : '';
+            
+            applyPageVisuals(); // ЭТУ ФУНКЦИЮ МЫ НАПИШЕМ НИЖЕ
+        }
+
+        function toggleRoleVis(role) {
+            visRoles[role] = !visRoles[role];
+            localStorage.setItem('skinwalker_vis_roles', JSON.stringify(visRoles));
+            
+            document.getElementById(`toggle-${role}`).classList.toggle('active', visRoles[role]);
+            applyPageVisuals(); 
+        }
+        
+            function applyPageVisuals() {
+            if (!window.pageScores) return; // Ждем, пока загрузятся оценки
+            
+            const isStreamer = currentUser && currentUser.login.toLowerCase() === ADMIN_USERNAME.toLowerCase();
+            const showMe = !isStreamer && visRoles.me;
+            
+            // 1. Скрываем/показываем колонки ролей
+            document.getElementById('box-streamer').style.display = visRoles.streamer ? 'flex' : 'none';
+            document.getElementById('legend-box-streamer').style.display = visRoles.streamer ? 'flex' : 'none';
+            
+            document.getElementById('box-chat').style.display = visRoles.chat ? 'flex' : 'none';
+            document.getElementById('legend-box-chat').style.display = visRoles.chat ? 'flex' : 'none';
+            
+            document.getElementById('box-me').style.display = showMe ? 'flex' : 'none';
+            document.getElementById('legend-box-me').style.display = showMe ? 'flex' : 'none';
+
+            // 2. Скрываем/показываем линии на радаре
+            if (radarChart && radarChart.data.datasets.length >= 3) {
+                radarChart.data.datasets[0].hidden = !visRoles.streamer;
+                radarChart.data.datasets[1].hidden = !visRoles.chat;
+                radarChart.data.datasets[2].hidden = !showMe;
+                radarChart.update();
+            }
+
+            // 3. Отрисовываем цифры или буквы (S-F)
+            const renderBox = (boxId, labelId, valId, score, labelName) => {
+                const box = document.getElementById(boxId);
+                const label = document.getElementById(labelId);
+                const val = document.getElementById(valId);
+                
+                if (currentDisplayMode === 'tier') {
+                    const tier = getTierData(score);
+                    box.style.cssText = `background: ${tier.color}15; border: 1px solid ${tier.color}60; box-shadow: 0 4px 15px rgba(0,0,0,0.5), inset 0 0 15px ${tier.color}15; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 5px; border-radius: 8px; flex: 1; cursor: pointer; transition: 0.3s;`;
+                    label.style.cssText = `color: ${tier.color}; border-bottom: 1px solid ${tier.color}60; text-shadow: 0 0 8px ${tier.color}; width: 100%; padding-bottom: 4px; margin-bottom: 6px; font-size: 13px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; text-align: center;`;
+                    label.innerText = labelName;
+                    val.innerHTML = tier.letter + (score > 0 ? `<div style="font-size: 12px; color: ${tier.color}; opacity: 0.8; margin-top: -2px; font-family: sans-serif; font-weight: bold; letter-spacing: 1px;">${score}</div>` : '');
+                    val.style.cssText = `color: ${tier.color}; font-size: 44px; font-weight: bold; line-height: 1; text-shadow: ${tier.glow}; font-family: 'Neucha', cursive; text-align: center;`;
+                } else {
+                    box.style.cssText = getGlassBoxStyle(score) + ' display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 5px; border-radius: 8px; flex: 1; cursor: pointer; transition: 0.3s;';
+                    label.style.cssText = `color:${getScoreColor(score, 1)}; border-bottom: 1px solid ${getScoreColor(score, 0.4)}; text-shadow:0 0 8px ${getScoreColor(score, 0.6)}; width: 100%; padding-bottom: 4px; margin-bottom: 6px; font-size: 13px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; text-align: center;`;
+                    label.innerText = labelName;
+                    val.innerHTML = `${score > 0 ? score : '-'}<span> / 10</span>`;
+                    val.style.cssText = `color:#fff; text-shadow:${getScoreShadow(score, true)}; font-size: 32px; font-weight: bold; line-height: 1; letter-spacing: 2px; text-align: center; font-family: 'Neucha', cursive, sans-serif;`;
+                }
+            };
+
+            renderBox('box-streamer', 'label-streamer', 'streamer-score-val', window.pageScores.streamer, 'Стример');
+            renderBox('box-chat', 'label-chat', 'chat-score-val', window.pageScores.chat, 'Чат');
+            renderBox('box-me', 'label-me', 'my-score-display', window.pageScores.me, 'Моя');
+        }
+
+        // Синхронизация кнопок при загрузке страницы
+        setTimeout(() => {
+            document.getElementById('display-mode-switch').checked = (currentDisplayMode === 'tier');
+            document.getElementById('label-tier').className = currentDisplayMode === 'tier' ? 'mode-label active' : 'mode-label inactive';
+            document.getElementById('label-tier').style.color = currentDisplayMode === 'tier' ? '#ffd700' : '';
+            document.getElementById('label-score').className = currentDisplayMode === 'score' ? 'mode-label active' : 'mode-label inactive';
+            document.getElementById('label-score').style.color = currentDisplayMode === 'score' ? '#a6e3a1' : '';
+            
+            Object.keys(visRoles).forEach(r => document.getElementById(`toggle-${r}`).classList.toggle('active', visRoles[r]));
+            applyPageVisuals();
+        }, 500);
 
         // Инициализация плеера Plyr
 
@@ -801,7 +952,6 @@
                 await renderSeasonData(seasonKeys[0]);
 
                 loadingScreen.style.display = 'none';
-                document.getElementById('top-nav').style.display = 'flex';
                 document.getElementById('main-layout').style.display = 'flex';
             } catch(e) { 
                 console.error(e);
@@ -896,20 +1046,9 @@
             const tStr = strScores.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
             const strTheoryAvg = calcTheoryAvg(tStr);
 
-            // СТЕКЛЯННЫЕ ПЛАШКИ ОЦЕНОК (ТИР ЛИСТ)
-            const setupTierBox = (boxId, labelId, valId, score, labelName) => {
-                const tier = getTierData(score);
-                const box = document.getElementById(boxId);
-                box.style.cssText = `background: ${tier.color}15; border: 1px solid ${tier.color}60; box-shadow: 0 4px 15px rgba(0,0,0,0.5), inset 0 0 15px ${tier.color}15; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 12px 5px; border-radius: 8px; flex: 1; cursor: pointer; transition: 0.3s;`;
-                document.getElementById(labelId).style.cssText = `color: ${tier.color}; border-bottom: 1px solid ${tier.color}60; text-shadow: 0 0 8px ${tier.color}; width: 100%; padding-bottom: 4px; margin-bottom: 6px; font-size: 13px; text-transform: uppercase; font-weight: bold; letter-spacing: 1px; text-align: center;`;
-                document.getElementById(labelId).innerText = labelName;
-                document.getElementById(valId).innerHTML = tier.letter;
-                document.getElementById(valId).style.cssText = `color: ${tier.color}; font-size: 48px; font-weight: bold; line-height: 1; text-shadow: ${tier.glow}; font-family: 'Neucha', cursive;`;
-            };
-
-            setupTierBox('box-streamer', 'label-streamer', 'streamer-score-val', strOvr, 'Стример');
-            setupTierBox('box-chat', 'label-chat', 'chat-score-val', chatOvr, 'Чат');
-            setupTierBox('box-me', 'label-me', 'my-score-display', meOvr, 'Моя');
+            // Сохраняем оценки в глобальную память и запускаем обновлятор визуала
+            window.pageScores = { streamer: strOvr, chat: chatOvr, me: meOvr };
+            applyPageVisuals();
 
             // СТЕКЛЯННЫЕ ПЛАШКИ ЛЕГЕНДЫ (ПОД ГРАФИКОМ)
             document.getElementById('legend-box-streamer').style.cssText = getGlassBoxStyle(strTheoryAvg);
