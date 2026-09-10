@@ -712,20 +712,20 @@
                     
                     document.getElementById('nav-auth').innerHTML = `
                         <div class="user-profile-neon">
-                            <div class="avatar-glow-wrap" style="--user-color: ${uInfo.color};">
+                            <div class="avatar-glow-wrap" style="--user-color: ${uInfo.color}; cursor: pointer; transition: 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" onclick="window.location.href='profile.html?user=${currentUser.id}'" title="Мой профиль">
                                 <img src="${currentUser.profile_image_url}" class="user-avatar">
                             </div>
                             <div class="profile-info">
                                 <div class="profile-top">
-                                    <span class="profile-name" style="color: ${uInfo.color}; text-shadow: 0 0 8px ${uInfo.color};">${currentUser.display_name}</span>
+                                    <span class="profile-name-top" style="color: ${uInfo.color}; text-shadow: 0 0 8px ${uInfo.color}; cursor: pointer; transition: 0.2s;" onmouseover="this.style.filter='brightness(1.3)'" onmouseout="this.style.filter='none'" onclick="window.location.href='profile.html?user=${currentUser.id}'" title="Мой профиль">${currentUser.display_name}</span>
                                     <button class="logout-neon" onclick="logoutTwitch()">Выйти</button>
                                 </div>
                                 <div class="profile-bottom">
                                     ${uInfo.badge}
-                                    <div class="wallet-item gold">
+                                    <div class="wallet-item" style="color: #ffd700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.3);">
                                         <img src="icons/BILET_GOLD.png"> <span>${uInfo.gold}</span>
                                     </div>
-                                    <div class="wallet-item tickets">
+                                    <div class="wallet-item" style="color: #a6e3a1; text-shadow: 0 0 10px rgba(166, 227, 161, 0.3);">
                                         <img src="icons/BILET.png"> <span>${uInfo.tickets}</span>
                                     </div>
                                 </div>

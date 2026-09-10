@@ -10,38 +10,22 @@
         .top-nav { background: #0b0d0a; border-bottom: 2px solid #283325; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
         .nav-logo { color: #a6e3a1; font-size: 24px; font-weight: bold; text-decoration: none; text-transform: uppercase; letter-spacing: 2px; }
         
-        /* ЕДИНАЯ ДОСКА ТИР-ЛИСТА */
-        .tier-board { 
-            max-width: 1600px; margin: 40px auto; display: flex; flex-direction: column; 
-            background: #0b0d0a; border: 1px solid #283325; border-radius: 12px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8); overflow: hidden; 
-        }
-        
-        /* ШАПКА ДОСКИ С МИНИМАЛИСТИЧНЫМИ КНОПКАМИ */
-        .board-header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 20px 30px; background: rgba(14, 17, 13, 0.8); 
-            border-bottom: 1px solid #283325; 
-        }
+        .tier-board { max-width: 1600px; margin: 40px auto; display: flex; flex-direction: column; background: #0b0d0a; border: 1px solid #283325; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); overflow: hidden; }
+        .board-header { display: flex; justify-content: space-between; align-items: center; padding: 20px 30px; background: rgba(14, 17, 13, 0.8); border-bottom: 1px solid #283325; }
         .board-title { color: #a6e3a1; font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px rgba(166,227,161,0.3); }
         
         .role-toggles { display: flex; gap: 20px; }
-        .role-btn { 
-            background: transparent; border: none; border-bottom: 2px solid rgba(107, 122, 98, 0.3); 
-            color: #6b7a62; padding: 4px 2px; font-family: 'Neucha', cursive; font-size: 18px; 
-            font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; outline: none; 
-        }
+        .role-btn { background: transparent; border: none; border-bottom: 2px solid rgba(107, 122, 98, 0.3); color: #6b7a62; padding: 4px 2px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; outline: none; }
         .role-btn:hover { color: #c4d1b8; border-bottom-color: rgba(196, 209, 184, 0.5); }
         .role-btn.active.streamer { color: #cba6f7; border-bottom-color: #cba6f7; text-shadow: 0 0 8px rgba(203, 166, 247, 0.6); box-shadow: 0 8px 10px -6px rgba(203, 166, 247, 0.5); }
         .role-btn.active.chat { color: #b8a87b; border-bottom-color: #b8a87b; text-shadow: 0 0 8px rgba(184, 168, 123, 0.6); box-shadow: 0 8px 10px -6px rgba(184, 168, 123, 0.5); }
+        .role-btn.active.user { color: #a6e3a1; border-bottom-color: #a6e3a1; text-shadow: 0 0 8px rgba(166, 227, 161, 0.6); box-shadow: 0 8px 10px -6px rgba(166, 227, 161, 0.5); }
 
-        /* СТРОКИ СЛИВАЮТСЯ В ЕДИНОЕ ПОЛОТНО */
         .tier-row { display: flex; background: rgba(0,0,0,0.2); border-bottom: 1px solid #1a2217; min-height: 140px; }
         .tier-row:last-child { border-bottom: none; }
         .tier-label { width: 100px; display: flex; align-items: center; justify-content: center; font-size: 48px; font-weight: bold; color: #fff; text-shadow: 1px 1px 3px #000; flex-shrink: 0; box-shadow: 5px 0 15px rgba(0,0,0,0.5); z-index: 2; border-right: 1px solid #1a2217; }
         .tier-content { display: flex; flex-wrap: wrap; gap: 12px; padding: 15px; flex: 1; align-content: flex-start; }
-
-        /* СТИЛИ САМИХ КАРТОЧЕК В ТИР-ЛИСТЕ */
+        
         .tier-item { width: 90px; height: 130px; border-radius: 6px; cursor: pointer; transition: 0.2s; position: relative; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.5); display: block; text-decoration: none; }
         .tier-item:hover { transform: scale(1.15) translateY(-5px); z-index: 10; box-shadow: 0 10px 20px rgba(0,0,0,0.8); }
         .tier-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -57,8 +41,8 @@
     <div class="tier-board">
         <div class="board-header">
             <div class="board-title">Аниме Тир-лист</div>
-            <div class="role-toggles">
-                <button id="btn-streamer" class="role-btn active streamer" onclick="setRole('streamer')">Стример</button>
+            <div class="role-toggles" id="role-toggles">
+                <button id="btn-streamer" class="role-btn streamer" onclick="setRole('streamer')">Стример</button>
                 <button id="btn-chat" class="role-btn chat" onclick="setRole('chat')">Чат</button>
             </div>
         </div>
@@ -71,12 +55,17 @@
         const FIREBASE_BASE = 'https://skinwalkerauction-default-rtdb.europe-west1.firebasedatabase.app';
         let globalFranchises = [];
 
-        let currentTierRole = 'streamer';
+        // Читаем ID юзера из ссылки
+        let targetUserId = new URLSearchParams(window.location.search).get('user');
+        let currentTierRole = targetUserId ? 'user' : 'streamer'; // Если перешли с профиля, сразу открываем его тиры
+        let targetUserName = "Зритель";
 
         function setRole(role) {
             currentTierRole = role;
             document.getElementById('btn-streamer').classList.toggle('active', role === 'streamer');
             document.getElementById('btn-chat').classList.toggle('active', role === 'chat');
+            const userBtn = document.getElementById('btn-user');
+            if (userBtn) userBtn.classList.toggle('active', role === 'user');
             renderTierList();
         }
 
@@ -103,14 +92,21 @@
 
                 for (const [franchiseId, seasonsObj] of Object.entries(data)) {
                     const seasons = Object.entries(seasonsObj).map(([seasonId, sData]) => ({seasonId, ...sData}));
-                    let strOvr = 0, strCnt = 0, chatOvr = 0, chatCnt = 0;
+                    let strOvr = 0, strCnt = 0, chatOvr = 0, chatCnt = 0, userOvr = 0, userCnt = 0;
 
                     seasons.forEach(s => {
                         if (s.scores && safeNum(s.scores.overall) > 0) { strOvr += safeNum(s.scores.overall); strCnt++; }
                         const sComm = commData[franchiseId]?.[s.seasonId]?.ratings;
                         if (sComm) {
                             for (const [uid, r] of Object.entries(sComm)) {
-                                if (safeNum(r.overall) > 0) { chatOvr += safeNum(r.overall); chatCnt++; }
+                                if (safeNum(r.overall) > 0) { 
+                                    chatOvr += safeNum(r.overall); chatCnt++; 
+                                    // Ищем оценки нашего юзера
+                                    if (targetUserId && uid.toLowerCase() === targetUserId.toLowerCase()) {
+                                        userOvr += safeNum(r.overall); userCnt++;
+                                        if (r.displayName) targetUserName = r.displayName;
+                                    }
+                                }
                             }
                         }
                     });
@@ -118,36 +114,51 @@
                     globalFranchises.push({
                         id: franchiseId,
                         title: franchiseId.replace(/_/g, ' '),
-                        coverUrl: seasons[0].coverUrl,
+                        coverUrl: seasons[0]?.coverUrl || '',
                         scores: {
                             streamer: getAvg(strOvr, strCnt),
-                            chat: getAvg(chatOvr, chatCnt)
+                            chat: getAvg(chatOvr, chatCnt),
+                            user: getAvg(userOvr, userCnt)
                         }
                     });
                 }
-                renderTierList();
-            } catch (e) { document.getElementById('tier-board').innerHTML = 'Ошибка загрузки!'; }
+
+                // Динамически создаем вкладку для пользователя
+                if (targetUserId) {
+                    const roleToggles = document.getElementById('role-toggles');
+                    if (roleToggles) {
+                        roleToggles.insertAdjacentHTML('beforeend', `<button id="btn-user" class="role-btn user" onclick="setRole('user')">${targetUserName}</button>`);
+                    }
+                }
+
+                setRole(currentTierRole);
+            } catch (e) { 
+                console.error(e);
+                document.getElementById('tier-content-area').innerHTML = '<div style="text-align:center; padding:50px; color:#ff5555;">Ошибка загрузки!</div>'; 
+            }
         }
 
         function renderTierList() {
             const role = currentTierRole;
             const board = document.getElementById('tier-content-area');
+            if (!board) return;
             board.innerHTML = '';
-            
-            // ... дальше код остается без изменений (tiersConfig.forEach...)
+
+            let hasAnyCards = false;
 
             tiersConfig.forEach(tier => {
-                // Фильтруем тайтлы, которые попадают в текущий тир
                 let items = globalFranchises.filter(f => {
                     const score = f.scores[role];
+                    if (score === 0) return false; // Прячем аниме без оценки!
+                    
                     if (tier.id === 'S') return score >= tier.min;
                     if (tier.id === 'F') return score >= tier.min && score < 3.0;
-                    // Ищем следующий (верхний) порог, чтобы ограничить диапазон
                     const nextTier = tiersConfig[tiersConfig.indexOf(tier) - 1];
                     return score >= tier.min && score < nextTier.min;
                 });
 
-                // Сортируем внутри тира от лучшего к худшему (хирургическая точность!)
+                if (items.length > 0) hasAnyCards = true;
+
                 items.sort((a, b) => b.scores[role] - a.scores[role]);
 
                 let itemsHtml = items.map(f => `
@@ -164,6 +175,10 @@
                     </div>
                 `);
             });
+
+            if (!hasAnyCards) {
+                board.innerHTML = '<div style="text-align: center; font-size: 20px; color: #6b7a62; padding: 50px;">Пока нет оценок для этого тир-листа...</div>';
+            }
         }
 
         window.onload = initTierList;

@@ -36,9 +36,21 @@
         .nav-logo { color: #a6e3a1; font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; transition: 0.2s; cursor: pointer; }
         .nav-logo:hover { filter: brightness(1.2); text-shadow: 0 0 15px rgba(166, 227, 161, 0.5); }
 
-        /* КНОПКИ В ШАПКЕ */
-        .nav-btn { background: rgba(14, 17, 13, 0.6); border: 1px solid #4a5c41; color: #c4d1b8; padding: 8px 16px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 8px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
-        .nav-btn:hover { border-color: #a6e3a1; color: #a6e3a1; box-shadow: 0 0 10px rgba(166, 227, 161, 0.2); transform: translateY(-2px); }
+        /* КНОПКИ В ШАПКЕ (СОВРЕМЕННЫЙ МИНИМАЛИЗМ) */
+        .nav-btn { 
+            background: transparent; border: none; color: #a4b09c; padding: 5px 0; 
+            font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; 
+            cursor: pointer; transition: 0.3s; display: flex; align-items: center; 
+            gap: 8px; position: relative; text-decoration: none; 
+            text-transform: uppercase; letter-spacing: 1px; outline: none;
+        }
+        .nav-btn::after {
+            content: ''; position: absolute; width: 0; height: 2px; bottom: 0; left: 50%;
+            background-color: var(--btn-color, #a6e3a1); transition: 0.3s;
+            transform: translateX(-50%); box-shadow: 0 0 8px var(--btn-color, #a6e3a1);
+        }
+        .nav-btn:hover { color: var(--btn-color, #a6e3a1); text-shadow: 0 0 10px var(--btn-color, #a6e3a1); }
+        .nav-btn:hover::after { width: 100%; }
 
         /* ПРОФИЛЬ TWITCH В ШАПКЕ */
         .nav-auth .twitch-btn { background: #6441a5; color: white; padding: 8px 16px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; cursor: pointer; border: 1px solid #4a307a; transition: 0.2s; letter-spacing: 1px;}
@@ -107,13 +119,32 @@
         .stat-label { font-size: 13px; text-transform: uppercase; color: #829c73; font-weight: bold; letter-spacing: 1px; }
         .chart-wrapper { width: 100%; height: 260px; margin-top: 10px; }
 
-        /* СЕТКА ОЦЕНОК */
-        .hof-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; }
-        .hof-item { position: relative; border-radius: 6px; overflow: hidden; border: 1px solid #4a5c41; cursor: pointer; transition: 0.3s; aspect-ratio: 2/3; text-decoration: none; display: block; }
-        .hof-item:hover { transform: translateY(-5px); border-color: var(--theme-primary); box-shadow: 0 10px 20px rgba(0,0,0,0.8), 0 0 15px var(--theme-glow); }
-        .hof-img { width: 100%; height: 100%; object-fit: cover; }
-        .hof-score { position: absolute; top: 5px; right: 5px; background: rgba(0,0,0,0.8); border: 1px solid var(--theme-primary); color: var(--theme-primary); padding: 4px 8px; border-radius: 6px; font-weight: bold; font-size: 16px; box-shadow: 0 0 10px #000; backdrop-filter: blur(4px); font-family: 'Neucha', cursive, sans-serif; }
-        .hof-title-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 100%); padding: 20px 10px 10px 10px; color: #fff; font-size: 14px; font-weight: bold; text-align: center; box-sizing: border-box; text-shadow: 1px 1px 3px #000; }
+        /* ВЫПАДАЮЩЕЕ МЕНЮ ВИЗУАЛА */
+        .visual-dropdown { position: relative; display: inline-block; }
+        .visual-dropdown-content { display: none; position: absolute; right: 0; top: 100%; margin-top: 15px; background: rgba(14, 17, 13, 0.95); border: 1px solid #4a5c41; border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 2000; min-width: 160px; backdrop-filter: blur(10px); flex-direction: column; gap: 15px; }
+        .visual-dropdown.show .visual-dropdown-content { display: flex; }
+        .mode-toggle { display: flex; align-items: center; gap: 10px; font-family: 'Neucha', cursive; font-size: 18px; }
+        .switch { position: relative; display: inline-block; width: 46px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: rgba(14, 17, 13, 0.6); border: 1px solid #283325; transition: .4s; border-radius: 34px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background: #a4b09c; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background: rgba(255, 215, 0, 0.15); border-color: #ffd700; }
+        input:checked + .slider:before { transform: translateX(22px); background: #ffd700; box-shadow: 0 0 10px #ffd700; }
+        .mode-label { font-weight: bold; text-shadow: 1px 1px 2px #000; transition: 0.3s; cursor: pointer; }
+        .mode-label.active { color: #fff; text-shadow: 0 0 8px currentColor; }
+        .mode-label.inactive { color: #6b7a62; }
+
+        /* СЕТКА ОЦЕНОК (СТИЛЬ ХАБА) */
+        .hof-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; padding: 10px; }
+        .card-container { width: 100%; aspect-ratio: 2 / 3; position: relative; justify-self: center; }
+        .card-container::before { content: ''; position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; background: var(--card-color); filter: blur(30px); opacity: 0.1; z-index: -1; transition: 0.5s; border-radius: 50%; }
+        .card-container:hover::before { opacity: 0.35; transform: scale(1.05); }
+        .card-face { position: absolute; width: 100%; height: 100%; border-radius: 10px; overflow: hidden; background-size: cover; background-position: center; display: flex; flex-direction: column; transition: 0.3s; border: 2px solid var(--card-border); cursor: pointer; }
+        .card-container:hover .card-face { border-color: var(--card-color); transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.8); }
+        .front-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 30px 10px 10px 10px; box-sizing: border-box; background: linear-gradient(0deg, rgba(11,13,10,1) 0%, rgba(11,13,10,0.9) 50%, transparent 100%); display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; }
+        .anime-title { color: #fff; font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; text-align: center; text-shadow: 2px 2px 4px #000; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.2; }
+        .score-box-mini { position: absolute; top: 6px; right: 6px; padding: 4px 10px; border-radius: 6px; backdrop-filter: blur(8px); text-align: center; display: flex; flex-direction: column; justify-content: center; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.8); }
+        .main-score-mini { font-size: 20px; font-weight: bold; line-height: 1; text-shadow: 1px 1px 2px #000; font-family: 'Neucha', cursive; }
 
         /* ПРАВАЯ ВСПЛЫВАЮЩАЯ ПАНЕЛЬ */
         .preview-cover { width: 100%; height: 200px; object-fit: cover; -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%); mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%); border-bottom: 2px solid var(--user-color, #a6e3a1); }
@@ -158,10 +189,27 @@
     <div class="loading-screen" id="loading-screen">Анализ данных профиля...</div>
 
     <nav class="top-nav">
-        <div style="display: flex; align-items: center; gap: 20px;">
+        <div style="display: flex; align-items: center; gap: 40px;">
             <a href="index.html" class="nav-logo">Skinwalker Аниме</a>
-            <button onclick="openUsersModal()" class="nav-btn">🔍 Поиск зрителей</button>
-            <button onclick="openLeaderboard()" class="nav-btn" style="border-color: #ffd700; color: #ffd700;">🏆 Зал славы</button>
+            
+            <div style="display: flex; gap: 25px; align-items: center;">
+                <a href="tierlist.html" id="nav-tier-link" class="nav-btn" style="--btn-color: #ff4a4a;">Тир-лист</a>
+                <button onclick="openLeaderboard()" class="nav-btn" style="--btn-color: #ffd700;">Зрители</button>
+                
+                <div class="visual-dropdown" id="visual-dropdown">
+                    <button class="nav-btn" style="--btn-color: #a6e3a1;" onclick="toggleVisualMenu()">Визуал</button>
+                    <div class="visual-dropdown-content">
+                        <div class="mode-toggle" style="margin: 0; justify-content: center;">
+                            <span id="label-score" class="mode-label inactive" onclick="document.getElementById('display-mode-switch').click()">123</span>
+                            <label class="switch">
+                                <input type="checkbox" id="display-mode-switch" onchange="toggleDisplayMode()">
+                                <span class="slider"></span>
+                            </label>
+                            <span id="label-tier" class="mode-label active" style="color: #ffd700;" onclick="document.getElementById('display-mode-switch').click()">S-F</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="nav-auth" id="nav-auth">
             <button class="twitch-btn" onclick="loginTwitch()">Войти через Twitch</button>
@@ -181,6 +229,7 @@
                     <div style="border-top: 1px dashed #283325; margin: 5px 0;"></div>
                     <div style="color: #829c73; font-weight: bold; text-align: center; text-transform: uppercase; font-size: 15px; letter-spacing: 1px;">Вкусовой Радар</div>
                     <div class="chart-wrapper"><canvas id="radarChart"></canvas></div>
+                    <button class="nav-btn" id="personal-tier-btn" style="margin: 15px auto 5px auto; width: 100%; justify-content: center; --btn-color: var(--user-color, #a6e3a1); border: 1px solid var(--user-color, #a6e3a1); border-radius: 8px;">📊 Личный Тир-лист</button>
                 </div>
             </div>
         </div>
@@ -224,23 +273,15 @@
 
     </div>
 
-    <!-- МОДАЛЬНЫЕ ОКНА ПОИСКА И ЛИДЕРБОРДА -->
+    <!-- ЕДИНОЕ ОКНО ЗРИТЕЛЕЙ (ЗАЛ СЛАВЫ + ПОИСК) -->
     <div id="leaderboard-modal" class="leaderboard-overlay" style="display: none;" onclick="if(event.target===this) this.style.display='none'">
-        <div class="leaderboard-box">
-            <div class="close-btn" style="position: absolute; top: 15px; right: 20px; font-size: 32px; color: #a6e3a1; cursor: pointer; transition: 0.2s;" onclick="document.getElementById('leaderboard-modal').style.display='none'" onmouseover="this.style.color='#ff5555'" onmouseout="this.style.color='#a6e3a1'">×</div>
-            <div class="leaderboard-header">Топ зрителей (Зал славы)</div>
-            <div class="leaderboard-list" id="leaderboard-list"></div>
-        </div>
-    </div>
-
-    <div id="users-modal" class="leaderboard-overlay" style="display: none;" onclick="if(event.target===this) this.style.display='none'">
-        <div class="leaderboard-box" style="height: 650px;">
-            <div class="close-btn" style="position: absolute; top: 15px; right: 20px; font-size: 32px; color: #a6e3a1; cursor: pointer; transition: 0.2s; z-index: 10;" onclick="document.getElementById('users-modal').style.display='none'" onmouseover="this.style.color='#ff5555'" onmouseout="this.style.color='#a6e3a1'">×</div>
-            <div class="leaderboard-header" style="border-bottom: none; padding-bottom: 15px;">Зрители с оценками</div>
+        <div class="leaderboard-box" style="height: 700px;">
+            <div class="close-btn" style="position: absolute; top: 15px; right: 20px; font-size: 32px; color: #a6e3a1; cursor: pointer; transition: 0.2s; z-index: 10;" onclick="document.getElementById('leaderboard-modal').style.display='none'" onmouseover="this.style.color='#ff5555'" onmouseout="this.style.color='#a6e3a1'">×</div>
+            <div class="leaderboard-header" style="border-bottom: none; padding-bottom: 15px;">Зал славы зрителей</div>
             <div style="padding: 0 20px 15px 20px; border-bottom: 1px solid #283325;">
-                <input type="text" id="modal-user-search" class="search-input" style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.5); border: 1px solid #4a5c41; border-radius: 8px; padding: 12px 15px; color: #c4d1b8; outline: none; font-family: 'Neucha', cursive; font-size: 16px;" placeholder="Введите никнейм для поиска..." oninput="filterModalUsers()">
+                <input type="text" id="lb-search" class="search-input" style="width: 100%; box-sizing: border-box; background: rgba(0,0,0,0.5); border: 1px solid #4a5c41; border-radius: 8px; padding: 12px 15px; color: #c4d1b8; outline: none; font-family: 'Neucha', cursive; font-size: 16px;" placeholder="Введите никнейм для поиска..." oninput="filterLeaderboard()">
             </div>
-            <div class="leaderboard-list" id="users-modal-list"></div>
+            <div class="leaderboard-list" id="leaderboard-list"></div>
         </div>
     </div>
 
@@ -302,12 +343,12 @@
                     
                     document.getElementById('nav-auth').innerHTML = `
                         <div class="user-profile-neon">
-                            <div class="avatar-glow-wrap" style="--user-color: ${uInfo.color};">
+                            <div class="avatar-glow-wrap" style="--user-color: ${uInfo.color}; cursor: pointer; transition: 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" onclick="window.location.href='profile.html?user=${currentUser.id}'" title="Мой профиль">
                                 <img src="${currentUser.profile_image_url}" class="user-avatar">
                             </div>
                             <div class="profile-info">
                                 <div class="profile-top">
-                                    <span class="profile-name-top" style="color: ${uInfo.color}; text-shadow: 0 0 8px ${uInfo.color};">${currentUser.display_name}</span>
+                                    <span class="profile-name-top" style="color: ${uInfo.color}; text-shadow: 0 0 8px ${uInfo.color}; cursor: pointer; transition: 0.2s;" onmouseover="this.style.filter='brightness(1.3)'" onmouseout="this.style.filter='none'" onclick="window.location.href='profile.html?user=${currentUser.id}'" title="Мой профиль">${currentUser.display_name}</span>
                                     <button class="logout-neon" onclick="logoutTwitch()">Выйти</button>
                                 </div>
                                 <div class="profile-bottom">
@@ -505,8 +546,42 @@
             allActivity.sort((a,b) => b.timestamp - a.timestamp);
             window.userActivityData = allActivity; 
 
+            // Привязываем обе кнопки Тир-листа к текущему пользователю
+            document.getElementById('personal-tier-btn').onclick = () => window.location.href = `tierlist.html?user=${userId}`;
+            document.getElementById('nav-tier-link').href = `tierlist.html?user=${userId}`;
             renderRatings();
         }
+
+        let currentDisplayMode = localStorage.getItem('skinwalker_display_mode') || 'score';
+
+        function toggleVisualMenu() { document.getElementById('visual-dropdown').classList.toggle('show'); }
+        window.addEventListener('click', function(e) {
+            if (!document.getElementById('visual-dropdown').contains(e.target)) {
+                document.getElementById('visual-dropdown').classList.remove('show');
+            }
+        });
+
+        function toggleDisplayMode() {
+            const switchEl = document.getElementById('display-mode-switch');
+            currentDisplayMode = switchEl.checked ? 'tier' : 'score';
+            localStorage.setItem('skinwalker_display_mode', currentDisplayMode);
+            
+            document.getElementById('label-tier').className = currentDisplayMode === 'tier' ? 'mode-label active' : 'mode-label inactive';
+            document.getElementById('label-tier').style.color = currentDisplayMode === 'tier' ? '#ffd700' : '';
+            document.getElementById('label-score').className = currentDisplayMode === 'score' ? 'mode-label active' : 'mode-label inactive';
+            document.getElementById('label-score').style.color = currentDisplayMode === 'score' ? '#a6e3a1' : '';
+            
+            renderRatings(); // Перерисовываем сетку при переключении
+        }
+
+        // Вызовем настройку при загрузке
+        setTimeout(() => {
+            document.getElementById('display-mode-switch').checked = (currentDisplayMode === 'tier');
+            document.getElementById('label-tier').className = currentDisplayMode === 'tier' ? 'mode-label active' : 'mode-label inactive';
+            document.getElementById('label-tier').style.color = currentDisplayMode === 'tier' ? '#ffd700' : '';
+            document.getElementById('label-score').className = currentDisplayMode === 'score' ? 'mode-label active' : 'mode-label inactive';
+            document.getElementById('label-score').style.color = currentDisplayMode === 'score' ? '#a6e3a1' : '';
+        }, 500);
 
         function renderRatings() {
             const container = document.getElementById('hof-grid');
@@ -522,13 +597,36 @@
 
             if (uniqueList.length === 0) { container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #6b7a62;">Пользователь еще ничего не оценил</div>`; return; }
 
-            container.innerHTML = uniqueList.map(item => `
-                <div class="hof-item" onmouseenter="openPreview(${item.index})" onclick="window.location.href='${item.data.link}'">
-                    <img src="${item.data.cover}" class="hof-img">
-                    <div class="hof-score">★ ${item.data.overall}</div>
-                    <div class="hof-title-overlay">${item.data.title}</div>
-                </div>
-            `).join('');
+            const uColor = getComputedStyle(document.documentElement).getPropertyValue('--user-color').trim() || '#a6e3a1';
+
+            container.innerHTML = uniqueList.map(item => {
+                const f = item.data;
+                const score = f.overall;
+                let scoreHtml = '';
+                
+                if (currentDisplayMode === 'tier') {
+                    const tier = getTierData(score);
+                    scoreHtml = `
+                        <div class="score-box-mini" style="background: ${tier.color}15; border: 1px solid ${tier.color}60; box-shadow: inset 0 0 10px ${tier.color}15;">
+                            <div class="main-score-mini" style="color:${tier.color}; text-shadow:${tier.glow}; font-size:32px;">${tier.letter}</div>
+                        </div>`;
+                } else {
+                    scoreHtml = `
+                        <div class="score-box-mini" style="${getGlassBoxStyle(score)}">
+                            <div class="main-score-mini" style="color:#fff; text-shadow:${getScoreShadow(score, true)};">${score}</div>
+                        </div>`;
+                }
+
+                return `
+                <div class="card-container" style="--card-color: ${uColor}; --card-border: ${uColor}40;" onmouseenter="openPreview(${item.index})" onclick="window.location.href='${f.link}'">
+                    <div class="card-face" style="background-image: url('${f.cover.replace(/'/g, "\\'")}');">
+                        ${scoreHtml}
+                        <div class="front-overlay" style="padding: 30px 10px 10px 10px;">
+                            <div class="anime-title">${f.title}</div>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
         }
 
         function openPreview(index) {
@@ -623,7 +721,9 @@
             }
         }
 
-        // МОДАЛЬНЫЕ ОКНА: ЛОГИКА
+        // ЛОГИКА ОБЪЕДИНЕННОГО ЗАЛА СЛАВЫ И ПОИСКА
+        let lbAllUsers = [];
+
         function openLeaderboard() {
             if (!window.globalCommData) return;
             const userStats = {};
@@ -641,93 +741,59 @@
                     }
                 }
             }
-            const sortedUsers = Object.values(userStats).sort((a, b) => b.count - a.count);
-            const listEl = document.getElementById('leaderboard-list');
-            listEl.innerHTML = '';
-            if (sortedUsers.length === 0) {
-                listEl.innerHTML = '<div style="text-align: center; color: #6b7a62; padding: 30px; font-size: 18px;">Никто еще не оценивал аниме.</div>';
-            } else {
-                sortedUsers.forEach((u, index) => {
-                    const rank = index + 1;
-                    let rankClass = ''; let crown = rank;
-                    if (rank === 1) { rankClass = 'top-1'; crown = '👑'; }
-                    else if (rank === 2) { rankClass = 'top-2'; crown = '🥈'; }
-                    else if (rank === 3) { rankClass = 'top-3'; crown = '🥉'; }
-                    const dbUser = window.globalUsersDB[u.name.toLowerCase()];
-                    const color = (dbUser && dbUser.color) ? dbUser.color : '#a4b09c';
-                    const html = `
-                    <a href="profile.html?user=${u.id}" class="lb-item">
-                        <div class="lb-rank ${rankClass}">${crown}</div>
-                        <div class="lb-user">
-                            <img src="${u.avatar}" class="lb-avatar" style="border-color: ${color};">
-                            <div class="lb-name" style="color: ${color}; text-shadow: 0 0 8px ${color}80;">${u.name}</div>
-                        </div>
-                        <div class="lb-stats">
-                            <div class="lb-count">${u.count}</div>
-                            <div class="lb-count-label">тайтлов</div>
-                        </div>
-                    </a>`;
-                    listEl.insertAdjacentHTML('beforeend', html);
-                });
-            }
+            
+            lbAllUsers = Object.values(userStats).sort((a, b) => b.count - a.count);
+            document.getElementById('lb-search').value = '';
+            renderLeaderboard(lbAllUsers);
             document.getElementById('leaderboard-modal').style.display = 'flex';
         }
 
-        function openUsersModal() {
-            if (!window.globalCommData) return;
-            const userStats = {};
-            for (const [franchiseId, seasons] of Object.entries(window.globalCommData)) {
-                for (const [seasonId, seasonData] of Object.entries(seasons)) {
-                    if (seasonData.ratings) {
-                        for (const [userId, rating] of Object.entries(seasonData.ratings)) {
-                            if ((Number(rating.overall) > 0) || (rating.theory && Object.values(rating.theory).some(v => Number(v) > 0))) {
-                                if (!userStats[userId]) { userStats[userId] = { id: userId, name: rating.displayName || userId, avatar: rating.profileImage || 'https://static-cdn.jtvnw.net/user-default-pictures-uv/41780b5a-def8-11e9-94d9-784f43822e80-profile_image-70x70.png', count: 0 }; }
-                                userStats[userId].count++;
-                                if (rating.displayName) userStats[userId].name = rating.displayName;
-                                if (rating.profileImage) userStats[userId].avatar = rating.profileImage;
-                            }
-                        }
-                    }
-                }
-            }
-            allActiveUsers = Object.values(userStats).sort((a, b) => a.name.localeCompare(b.name));
-            document.getElementById('modal-user-search').value = '';
-            renderModalUsers(allActiveUsers);
-            document.getElementById('users-modal').style.display = 'flex';
-        }
-
-        function renderModalUsers(usersArray) {
-            const listEl = document.getElementById('users-modal-list');
+        function renderLeaderboard(usersArray) {
+            const listEl = document.getElementById('leaderboard-list');
             listEl.innerHTML = '';
-            if (usersArray.length === 0) { listEl.innerHTML = '<div style="text-align: center; color: #6b7a62; padding: 30px; font-size: 18px;">Никого не найдено.</div>'; return; }
-            usersArray.forEach(u => {
+            if (usersArray.length === 0) {
+                listEl.innerHTML = '<div style="text-align: center; color: #6b7a62; padding: 30px; font-size: 18px;">Никого не найдено.</div>';
+                return;
+            }
+            
+            usersArray.forEach((u) => {
+                const originalIndex = lbAllUsers.findIndex(orig => orig.id === u.id);
+                const rank = originalIndex + 1;
+                
+                let rankClass = ''; let crown = rank;
+                if (rank === 1) { rankClass = 'top-1'; crown = '👑'; }
+                else if (rank === 2) { rankClass = 'top-2'; crown = '🥈'; }
+                else if (rank === 3) { rankClass = 'top-3'; crown = '🥉'; }
+
                 const dbUser = window.globalUsersDB[u.name.toLowerCase()];
                 const color = (dbUser && dbUser.color) ? dbUser.color : '#a4b09c';
                 const isOnline = dbUser && dbUser.last_online && (Date.now() - dbUser.last_online < 150000);
                 const statusDot = isOnline ? '<div class="status-dot status-online" style="display:inline-block; margin-right:6px;"></div><span style="color:#a6e3a1; font-size:13px; font-family:sans-serif;">В сети</span>' : '<div class="status-dot status-offline" style="display:inline-block; margin-right:6px;"></div><span style="color:#6b7a62; font-size:13px; font-family:sans-serif;">Не в сети</span>';
+
                 const html = `
-                <a href="profile.html?user=${u.id}" class="lb-item" style="padding: 10px 20px;">
-                    <div class="lb-user" style="margin-left: 0;">
-                        <img src="${u.avatar}" class="lb-avatar" style="border-color: ${color}; width: 45px; height: 45px;">
+                <a href="profile.html?user=${u.id}" class="lb-item">
+                    <div class="lb-rank ${rankClass}" style="width: 45px; text-align: center;">${crown}</div>
+                    <div class="lb-user" style="flex: 1; margin-left: 10px;">
+                        <img src="${u.avatar}" class="lb-avatar" style="border-color: ${color};">
                         <div style="display: flex; flex-direction: column; gap: 4px;">
                             <div class="lb-name" style="color: ${color}; text-shadow: 0 0 8px ${color}80; line-height: 1;">${u.name}</div>
                             <div style="display: flex; align-items: center;">${statusDot}</div>
                         </div>
                     </div>
                     <div class="lb-stats">
-                        <div class="lb-count" style="font-size: 22px;">${u.count}</div>
-                        <div class="lb-count-label" style="font-size: 10px;">оценок</div>
+                        <div class="lb-count">${u.count}</div>
+                        <div class="lb-count-label">оценок</div>
                     </div>
                 </a>`;
                 listEl.insertAdjacentHTML('beforeend', html);
             });
         }
 
-        function filterModalUsers() {
-            const query = document.getElementById('modal-user-search').value.toLowerCase().trim();
-            if (!query) { renderModalUsers(allActiveUsers); return; }
-            const filtered = allActiveUsers.filter(u => u.name.toLowerCase().includes(query));
-            renderModalUsers(filtered);
+        function filterLeaderboard() {
+            const query = document.getElementById('lb-search').value.toLowerCase().trim();
+            if (!query) { renderLeaderboard(lbAllUsers); return; }
+            const filtered = lbAllUsers.filter(u => u.name.toLowerCase().includes(query));
+            renderLeaderboard(filtered);
         }
 
         window.onload = initProfile;
