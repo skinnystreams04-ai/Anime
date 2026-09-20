@@ -126,43 +126,49 @@
 <body>
     
     <nav class="top-nav">
+        <!-- ЛЕВАЯ ЧАСТЬ С НАВИГАЦИЕЙ -->
         <div style="display: flex; align-items: center; gap: 40px;">
-            <a href="index.html" class="nav-logo">Skinwalker Аниме</a>
             
-            <div style="display: flex; gap: 25px; align-items: center;">
-                <a href="tierlist.html" class="nav-btn active" style="--btn-color: #ff4a4a; color: #ff4a4a; text-shadow: 0 0 10px rgba(255, 74, 74, 0.5);">Тир-лист</a>
-                <a href="index.html" class="nav-btn" style="--btn-color: #ffd700;">Хаб</a>
+            <!-- 1. ЛОГОТИП (Впиши вместо anime-hub.html файл твоего АНИМЕ хаба!) -->
+            <a href="anime-hub.html" class="nav-logo">Skinwalker Аниме</a>
+            
+            <div style="display: flex; gap: 20px; align-items: center;">
+                
+                <!-- БЛОК АНИМЕ -->
+                <div style="display: flex; gap: 15px; border-right: 2px solid #283325; padding-right: 20px;">
+                    <!-- 2. ССЫЛКА НА АНИМЕ ХАБ -->
+                    <a href="anime-hub.html" class="nav-btn" style="--btn-color: #a6e3a1;">Аниме Хаб</a>
+                    <a href="tierlist.html" class="nav-btn active" style="--btn-color: #ff4a4a; color: #ff4a4a; text-shadow: 0 0 10px rgba(255, 74, 74, 0.5);">Тир-лист</a>
+                </div>
+                
+                <!-- БЛОК ИГР -->
+                <div style="display: flex; gap: 15px; border-right: 2px solid #283325; padding-right: 20px;">
+                    <!-- 3. ССЫЛКА НА ИГРОВОЙ ХАБ (Если он index.html, то оставь так) -->
+                    <a href="index.html" class="nav-btn" style="--btn-color: #ffd700;">Игры Хаб</a>
+                    <a href="games-tierlist.html" class="nav-btn" style="--btn-color: #cba6f7;">Игры Тир-лист</a>
+                </div>
+                
                 <button onclick="openLeaderboard()" class="nav-btn" style="--btn-color: #89b4fa;">Зрители</button>
                 
+                <!-- МЕНЮ ВИЗУАЛА (Здесь лежат настройки конкретно для тир-листа) -->
                 <div class="visual-dropdown" id="visual-dropdown">
                     <button class="nav-btn" style="--btn-color: #a6e3a1;" onclick="toggleVisualMenu()">Визуал</button>
                     <div class="visual-dropdown-content">
                         <div class="role-toggles" id="role-toggles">
-                            <button id="btn-streamer" class="role-toggle-btn streamer" onclick="setRole('streamer')">Стример</button>
+                            <button id="btn-streamer" class="role-toggle-btn streamer active" onclick="setRole('streamer')">Стример</button>
                             <button id="btn-chat" class="role-toggle-btn chat" onclick="setRole('chat')">Чат</button>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
         
+        <!-- ПРАВАЯ ЧАСТЬ С ПРОФИЛЕМ TWITCH -->
         <div class="nav-auth" id="nav-auth">
             <button class="twitch-btn" onclick="loginTwitch()">Войти через Twitch</button>
         </div>
     </nav>
-
-    <div class="tier-board">
-        <!-- ФОН ТЕПЕРЬ ЗАПЕРТ В ЭТОЙ КОРОБКЕ -->
-        <div id="dynamic-bg"></div>
-        
-        <div class="board-header">
-            <div class="board-title">Аниме Тир-лист</div>
-        </div>
-        
-        <div id="tier-content-area">
-            <div style="text-align: center; font-size: 20px; color: #829c73; padding: 50px;">Синхронизация с базой данных...</div>
-        </div>
-    </div>
 
     <!-- ЕДИНОЕ ОКНО ЗРИТЕЛЕЙ (ЗАЛ СЛАВЫ + ПОИСК) -->
     <div id="leaderboard-modal" class="leaderboard-overlay" style="display: none;" onclick="if(event.target===this) this.style.display='none'">
