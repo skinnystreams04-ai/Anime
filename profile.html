@@ -18,25 +18,33 @@
             --theme-panel-border: #283325;
         }
 
-        /* БЛОКИРУЕМ ПРОКРУТКУ И ДЕЛАЕМ FLEX-ПРИЛОЖЕНИЕ */
+        /* РАЗРЕШАЕМ ПРОКРУТКУ И ДОБАВЛЯЕМ ХАМЕЛЕОН */
         body { 
-            margin: 0; padding: 0; font-family: 'Neucha', cursive, sans-serif; 
+            margin: 0; padding: 0 0 40px 0; font-family: 'Neucha', cursive, sans-serif; 
             background-color: #0b0d0a; color: #a4b09c; min-width: 1200px; 
-            height: 100vh; overflow: hidden; display: flex; flex-direction: column;
-            background-image: radial-gradient(circle at 50% 0%, rgba(var(--user-color-rgb, 166, 227, 161), 0.08) 0%, #0b0d0a 60%);
+            min-height: 100vh; overflow-x: hidden; display: flex; flex-direction: column;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.03'/%3E%3C/svg%3E");
+        }
+
+        #dynamic-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; filter: blur(40px) brightness(0.2); opacity: 0; z-index: -1; pointer-events: none; transition: opacity 0.5s ease, background-image 0.5s ease; }
+        #dynamic-bg.active { opacity: 1; }
+
+        /* ПЛАВНЫЕ ПЕРЕХОДЫ */
+        .top-nav, .nav-logo, .widget-base, .widget-header, .preview-title, #dynamic-right-panel, .tab-btn {
+            transition: color 0.5s ease, text-shadow 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease !important;
         }
 
         /* ШАПКА ФИКСИРУЕТСЯ СВЕРХУ */
         .top-nav { 
-            background: #0b0d0a; border-bottom: 2px solid #283325; padding: 15px 40px; 
+            background: #0b0d0a; border-bottom: 2px solid var(--theme-panel-border, #283325); padding: 15px 40px; 
             display: flex; justify-content: space-between; align-items: center; 
             box-shadow: 0 5px 20px rgba(0,0,0,0.5); width: 100%; box-sizing: border-box; 
-            flex-shrink: 0; z-index: 1000;
+            flex-shrink: 0; z-index: 1000; position: relative;
         }
-        .nav-logo { color: #a6e3a1; font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; transition: 0.2s; cursor: pointer; }
-        .nav-logo:hover { filter: brightness(1.2); text-shadow: 0 0 15px rgba(166, 227, 161, 0.5); }
+        .nav-logo { color: var(--theme-primary, #a6e3a1); font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; transition: 0.5s; cursor: pointer; text-shadow: 0 0 10px var(--theme-glow, rgba(166, 227, 161, 0.4)); }
+        .nav-logo:hover { filter: brightness(1.2); }
 
-        /* КНОПКИ В ШАПКЕ (СОВРЕМЕННЫЙ МИНИМАЛИЗМ) */
+        /* КНОПКИ В ШАПКЕ */
         .nav-btn { 
             background: transparent; border: none; color: #a4b09c; padding: 5px 0; 
             font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; 
@@ -45,7 +53,7 @@
             text-transform: uppercase; letter-spacing: 1px; outline: none;
         }
         .nav-btn::after {
-            content: ''; position: absolute; width: 0; height: 2px; bottom: 0; left: 50%;
+            content: ''; position: absolute; width: 0; height: 2px; bottom: -6px; left: 50%;
             background-color: var(--btn-color, #a6e3a1); transition: 0.3s;
             transform: translateX(-50%); box-shadow: 0 0 8px var(--btn-color, #a6e3a1);
         }
@@ -55,49 +63,60 @@
         /* ПРОФИЛЬ TWITCH В ШАПКЕ */
         .nav-auth .twitch-btn { background: #6441a5; color: white; padding: 8px 16px; border-radius: 8px; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; cursor: pointer; border: 1px solid #4a307a; transition: 0.2s; letter-spacing: 1px;}
         .nav-auth .twitch-btn:hover { background: #7d5bbe; box-shadow: 0 0 15px rgba(100, 65, 165, 0.8); }
-        .user-profile-neon { display: flex; align-items: center; gap: 18px; background: rgba(15, 20, 15, 0.2); backdrop-filter: blur(16px); padding: 10px 25px 10px 10px; border-radius: 12px; border: 1px solid rgba(166, 227, 161, 0.15); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+        .user-profile-neon { display: flex; align-items: center; gap: 18px; background: rgba(15, 20, 15, 0.2); backdrop-filter: blur(16px); padding: 10px 25px 10px 10px; border-radius: 12px; border: 1px solid var(--theme-panel-border, rgba(166, 227, 161, 0.15)); box-shadow: 0 8px 32px rgba(0,0,0,0.5); transition: 0.5s; }
+        .user-profile-neon:hover { background: rgba(15, 20, 15, 0.3); border-color: rgba(166, 227, 161, 0.3); box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 15px rgba(166, 227, 161, 0.1); }
         .avatar-glow-wrap { position: relative; display: flex; justify-content: center; align-items: center; }
-        .avatar-glow-wrap::before { content: ''; position: absolute; width: 120%; height: 120%; border-radius: 50%; background: var(--user-color, #a6e3a1); filter: blur(10px); opacity: 0.3; }
+        .avatar-glow-wrap::before { content: ''; position: absolute; width: 120%; height: 120%; border-radius: 50%; background: var(--user-color, #a6e3a1); filter: blur(10px); opacity: 0.3; transition: 0.3s; }
+        .user-profile-neon:hover .avatar-glow-wrap::before { opacity: 0.6; }
         .user-avatar { width: 50px; height: 50px; border-radius: 50%; border: 2px solid var(--user-color, #a6e3a1); position: relative; z-index: 2; object-fit: cover; }
         .profile-info { display: flex; flex-direction: column; justify-content: center; gap: 6px; }
         .profile-top { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
-        .profile-name-top { font-family: 'Neucha', cursive; font-size: 22px; font-weight: bold; letter-spacing: 1px; line-height: 1; }
+        .profile-name-top { font-family: 'Neucha', cursive; font-size: 16px; font-weight: bold; letter-spacing: 1px; line-height: 1; }
         .profile-bottom { display: flex; align-items: center; gap: 15px; }
         .wallet-item { display: flex; align-items: center; gap: 6px; font-size: 18px; font-weight: bold; line-height: 1; text-shadow: 1px 1px 2px #000; }
-        .wallet-item img { width: 18px; height: 18px; }
+        .wallet-item img { width: 18px; height: 18px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.8)); }
         .logout-neon { background: transparent; border: none; color: rgba(255, 85, 85, 0.6); font-family: 'Neucha', cursive; font-size: 15px; text-transform: uppercase; font-weight: bold; cursor: pointer; transition: 0.3s; padding: 0; line-height: 1;}
         .logout-neon:hover { color: #ff5555; text-shadow: 0 0 12px rgba(255, 85, 85, 0.8); transform: scale(1.05); }
 
-        /* ОСНОВНОЙ ЛЕЙАУТ */
+        /* ОСНОВНОЙ ЛЕЙАУТ (НА ВСЮ ШИРИНУ ЭКРАНА) */
         .layout { 
-            display: flex; gap: 4vw; align-items: flex-start; padding: 25px 3vw; width: 100%; 
-            box-sizing: border-box; max-width: 1920px; margin: 0 auto; 
-            flex: 1; overflow: hidden; /* Занимает всё оставшееся место под шапкой */
+            display: flex; gap: 30px; align-items: flex-start; padding: 25px 40px; width: 100%; 
+            box-sizing: border-box; max-width: 100%; margin: 0 auto; 
+            flex: 1;
         }
         
-        .col-left { width: 300px; display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; margin: auto 0; }
-        .col-right { width: 350px; display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; margin: auto 0; }
-        .col-center { flex: 1 1 auto; display: flex; flex-direction: column; gap: 20px; min-width: 0; width: 100%; height: 100%; }
+        .col-left { width: 420px; display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; }
+        .col-right { width: 420px; display: flex; flex-direction: column; gap: 20px; flex-shrink: 0; position: sticky; top: 20px; }
         
-        /* ВНУТРЕННИЙ СКРОЛЛ ТОЛЬКО ДЛЯ СЕТКИ АНИМЕ */
-        .col-center .widget-content {
-            flex: 1; overflow-y: auto; padding: 10px;
-            scrollbar-width: thin; scrollbar-color: var(--user-color, #a6e3a1) transparent;
-        }
-        .col-center .widget-content::-webkit-scrollbar { width: 8px; }
-        .col-center .widget-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 8px; }
-        .col-center .widget-content::-webkit-scrollbar-thumb { background: var(--user-color, #a6e3a1); border-radius: 8px; }
+        .col-center { flex: 1; display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+        
+        .widget-content { padding: 20px; flex: 1; }
 
-        /* ПЕРСОНАЛИЗИРОВАННЫЕ ПАНЕЛИ */
+        /* СТЕКЛЯННЫЕ ПАНЕЛИ */
         .widget-base { 
-            background: linear-gradient(180deg, var(--theme-panel-bg-top) 0%, var(--theme-panel-bg-bottom) 100%); 
-            border: 2px solid rgba(var(--user-color-rgb, 166, 227, 161), 0.3); 
-            border-radius: 6px; display: flex; flex-direction: column; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(var(--user-color-rgb, 166, 227, 161), 0.05); 
-            overflow: hidden; transition: border-color 0.5s, box-shadow 0.5s;
+            background: rgba(14, 17, 13, 0.4); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--theme-panel-border, #283325); 
+            border-radius: 12px; display: flex; flex-direction: column; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8); 
+            overflow: hidden; 
         }
-        .widget-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 15px; background: var(--theme-panel-header); border-bottom: 2px solid rgba(var(--user-color-rgb, 166, 227, 161), 0.3); flex-shrink: 0; }
-        .widget-title { color: var(--user-color, #a6e3a1); font-weight: bold; font-size: 18px; text-transform: uppercase; letter-spacing: 1px; text-shadow: 0 0 10px rgba(var(--user-color-rgb, 166, 227, 161), 0.4); }
+        .widget-header { display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; background: rgba(14, 17, 13, 0.8); border-bottom: 1px solid var(--theme-panel-border, #283325); flex-shrink: 0; }
+
+        /* ДИЗАЙН ВКЛАДОК */
+        .tabs-container { display: flex; gap: 20px; }
+        .tab-btn { background: transparent; border: none; color: #6b7a62; font-family: inherit; font-size: 20px; font-weight: bold; text-transform: uppercase; cursor: pointer; transition: 0.3s; padding: 5px 10px; position: relative; outline: none; }
+        .tab-btn:hover { color: #c4d1b8; }
+        .tab-btn.active { color: var(--theme-primary, #a6e3a1); text-shadow: 0 0 10px var(--theme-glow, rgba(166, 227, 161, 0.5)); transition: 0.5s; }
+        .tab-btn.active::after { content: ''; position: absolute; width: 100%; height: 3px; bottom: -8px; left: 0; background-color: var(--theme-primary, #a6e3a1); box-shadow: 0 0 10px var(--theme-glow, rgba(166, 227, 161, 0.5)); transition: 0.5s; }
+        .tab-content { display: none; flex-direction: column; gap: 20px; flex: 1; }
+        .tab-content.active { display: flex; }
+
+        /* СТАТИСТИКА ЛЕВОЙ КОЛОНКИ */
+        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
+        .stat-box { background: rgba(0,0,0,0.3); border: 1px solid var(--theme-panel-border, #283325); padding: 15px 10px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; transition: 0.5s; }
+        .stat-val { font-size: 32px; font-weight: bold; color: #fff; line-height: 1; margin-bottom: 5px; text-shadow: 2px 2px 4px #000; font-family: 'Neucha', cursive, sans-serif; }
+        .stat-label { font-size: 13px; text-transform: uppercase; color: #829c73; font-weight: bold; letter-spacing: 1px; text-align: center; }
+        .chart-wrapper { width: 100%; height: 260px; margin-top: 10px; }
 
         /* ПРОФИЛЬНАЯ КАРТОЧКА */
         .profile-card { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 10px 0; }
@@ -105,46 +124,49 @@
         .avatar-wrap::before { content: ''; position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; border-radius: 50%; background: var(--user-color, #a6e3a1); filter: blur(20px); opacity: 0.3; }
         .profile-avatar { width: 100%; height: 100%; border-radius: 50%; border: 3px solid var(--user-color, #a6e3a1); position: relative; z-index: 2; object-fit: cover; box-shadow: 0 0 20px rgba(0,0,0,0.8); }
         .profile-name { font-size: 32px; font-weight: bold; letter-spacing: 1px; margin-bottom: 10px; line-height: 1; }
-        
         .badges-row { display: flex; gap: 10px; justify-content: center; align-items: center; margin-bottom: 15px; }
-        .role-badge { padding: 4px 12px; border-radius: 6px; font-size: 14px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 2px 5px rgba(0,0,0,0.5); }
-        .role-sub { background: #6441a5; color: #fff; border: 1px solid #4a307a; } 
-        .role-vip { background: #e05e85; color: #fff; border: 1px solid #b83d63; } 
-        .role-f { background: #333333; color: #a4b09c; border: 1px solid #222; } 
+        .role-badge { display: inline-block; padding: 4px 14px; border-radius: 6px; font-size: 13px; font-weight: bold; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 2px 5px rgba(0,0,0,0.5); line-height: 1.2; font-family: Neucha; }
+        .role-sub { background: #6441a5; color: #fff !important; border: 1px solid #4a307a; text-shadow: 1px 1px 2px #000; } 
+        .role-vip { background: #e05e85; color: #fff !important; border: 1px solid #b83d63; text-shadow: 1px 1px 2px #000; } 
+        .role-f { background: #333333; color: #a4b09c !important; border: 1px solid #222; }
 
-        /* СТАТИСТИКА ЛЕВОЙ КОЛОНКИ */
-        .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; }
-        .stat-box { background: rgba(0,0,0,0.3); border: 1px solid #283325; padding: 15px 10px; border-radius: 8px; display: flex; flex-direction: column; align-items: center; }
-        .stat-val { font-size: 32px; font-weight: bold; color: #c4d1b8; line-height: 1; margin-bottom: 5px; text-shadow: 2px 2px 4px #000; font-family: 'Neucha', cursive, sans-serif; }
-        .stat-label { font-size: 13px; text-transform: uppercase; color: #829c73; font-weight: bold; letter-spacing: 1px; }
-        .chart-wrapper { width: 100%; height: 260px; margin-top: 10px; }
+        /* СЕТКА ОЦЕНОК (СТИЛЬ ХАБА) */
+        .hof-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
+        .card-container { width: 100%; aspect-ratio: 2 / 3; position: relative; justify-self: center; }
+        .card-container::before { content: ''; position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; background: var(--card-color); filter: blur(30px); opacity: 0.15; z-index: -1; transition: 0.5s; border-radius: 50%; }
+        .card-container:hover::before { opacity: 0.35; transform: scale(1.05); }
+        .card-face { position: absolute; width: 100%; height: 100%; border-radius: 10px; overflow: hidden; background-size: cover; background-position: center; display: flex; flex-direction: column; transition: 0.3s; border: 2px solid var(--card-border); cursor: pointer; box-shadow: 0 0 15px var(--card-shadow, rgba(0,0,0,0.5)); }
+        .card-container:hover .card-face { border-color: var(--card-color); transform: translateY(-8px); box-shadow: 0 10px 30px var(--card-shadow-hover, rgba(0,0,0,0.8)); }
+        .front-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 30px 10px 10px 10px; box-sizing: border-box; background: linear-gradient(0deg, rgba(11,13,10,1) 0%, rgba(11,13,10,0.9) 50%, transparent 100%); display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; }
+        .anime-title { color: var(--theme-light, #fff); font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; text-align: center; text-shadow: 2px 2px 4px #000; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.2; transition: 0.5s; }
+        
+        /* БРОНЗОВО-ЗОЛОТАЯ ОЦЕНКА */
+        .score-box-mini { 
+            position: absolute; top: 6px; right: 6px; 
+            background: linear-gradient(145deg, rgba(30, 25, 20, 0.95) 0%, rgba(10, 8, 5, 0.95) 100%);
+            border: 1px solid #c5a059; padding: 4px 8px; border-radius: 6px; 
+            display: flex; align-items: center; gap: 4px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.8), 0 0 10px rgba(197, 160, 89, 0.2); 
+            z-index: 10; backdrop-filter: blur(5px); 
+        }
+        .main-score-mini { font-size: 16px; font-weight: bold; line-height: 1; color: #ffd700; text-shadow: 0 0 8px rgba(255, 215, 0, 0.6); font-family: 'Neucha', cursive; margin-top: 1px; }
+        .star-icon { color: #ffd700; font-size: 14px; text-shadow: 0 0 8px rgba(255, 215, 0, 0.8); }
+        .tier-score-mini { font-size: 22px; font-weight: bold; line-height: 1; font-family: 'Neucha', cursive; margin-top: 1px; }
 
         /* ВЫПАДАЮЩЕЕ МЕНЮ ВИЗУАЛА */
         .visual-dropdown { position: relative; display: inline-block; }
-        .visual-dropdown-content { display: none; position: absolute; right: 0; top: 100%; margin-top: 15px; background: rgba(14, 17, 13, 0.95); border: 1px solid #4a5c41; border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 2000; min-width: 160px; backdrop-filter: blur(10px); flex-direction: column; gap: 15px; }
+        .visual-dropdown-content { display: none; position: absolute; right: 0; top: 100%; margin-top: 15px; background: rgba(14, 17, 13, 0.95); border: 1px solid var(--theme-panel-border, #283325); border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 2000; min-width: 160px; backdrop-filter: blur(10px); flex-direction: column; gap: 15px; }
         .visual-dropdown.show .visual-dropdown-content { display: flex; }
-        .mode-toggle { display: flex; align-items: center; gap: 10px; font-family: 'Neucha', cursive; font-size: 18px; }
+        .mode-toggle { display: flex; align-items: center; gap: 10px; font-family: 'Neucha', cursive; font-size: 18px; justify-content: center; margin: 0; }
         .switch { position: relative; display: inline-block; width: 46px; height: 24px; }
         .switch input { opacity: 0; width: 0; height: 0; }
-        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: rgba(14, 17, 13, 0.6); border: 1px solid #283325; transition: .4s; border-radius: 34px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
-        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background: #a4b09c; transition: .4s; border-radius: 50%; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: rgba(14, 17, 13, 0.6); border: 1px solid var(--theme-panel-border, #283325); transition: .4s; border-radius: 34px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background: #a4b09c; transition: .4s; border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
         input:checked + .slider { background: rgba(255, 215, 0, 0.15); border-color: #ffd700; }
         input:checked + .slider:before { transform: translateX(22px); background: #ffd700; box-shadow: 0 0 10px #ffd700; }
         .mode-label { font-weight: bold; text-shadow: 1px 1px 2px #000; transition: 0.3s; cursor: pointer; }
         .mode-label.active { color: #fff; text-shadow: 0 0 8px currentColor; }
         .mode-label.inactive { color: #6b7a62; }
-
-        /* СЕТКА ОЦЕНОК (СТИЛЬ ХАБА) */
-        .hof-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 15px; padding: 10px; }
-        .card-container { width: 100%; aspect-ratio: 2 / 3; position: relative; justify-self: center; }
-        .card-container::before { content: ''; position: absolute; top: -10%; left: -10%; width: 120%; height: 120%; background: var(--card-color); filter: blur(30px); opacity: 0.1; z-index: -1; transition: 0.5s; border-radius: 50%; }
-        .card-container:hover::before { opacity: 0.35; transform: scale(1.05); }
-        .card-face { position: absolute; width: 100%; height: 100%; border-radius: 10px; overflow: hidden; background-size: cover; background-position: center; display: flex; flex-direction: column; transition: 0.3s; border: 2px solid var(--card-border); cursor: pointer; }
-        .card-container:hover .card-face { border-color: var(--card-color); transform: translateY(-8px); box-shadow: 0 10px 20px rgba(0,0,0,0.8); }
-        .front-overlay { position: absolute; bottom: 0; left: 0; width: 100%; padding: 30px 10px 10px 10px; box-sizing: border-box; background: linear-gradient(0deg, rgba(11,13,10,1) 0%, rgba(11,13,10,0.9) 50%, transparent 100%); display: flex; flex-direction: column; justify-content: flex-end; pointer-events: none; }
-        .anime-title { color: #fff; font-size: 13px; font-weight: bold; text-transform: uppercase; letter-spacing: 1px; text-align: center; text-shadow: 2px 2px 4px #000; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.2; }
-        .score-box-mini { position: absolute; top: 6px; right: 6px; padding: 4px 10px; border-radius: 6px; backdrop-filter: blur(8px); text-align: center; display: flex; flex-direction: column; justify-content: center; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.8); }
-        .main-score-mini { font-size: 20px; font-weight: bold; line-height: 1; text-shadow: 1px 1px 2px #000; font-family: 'Neucha', cursive; }
 
         /* ПРАВАЯ ВСПЛЫВАЮЩАЯ ПАНЕЛЬ */
         .preview-cover { width: 100%; height: 200px; object-fit: cover; -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%); mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%); border-bottom: 2px solid var(--user-color, #a6e3a1); }
@@ -185,16 +207,17 @@
     </style>
 </head>
 <body>
-
+    <div id="dynamic-bg"></div>
     <div class="loading-screen" id="loading-screen">Анализ данных профиля...</div>
 
     <nav class="top-nav">
         <div style="display: flex; align-items: center; gap: 40px;">
-            <a href="index.html" class="nav-logo">Skinwalker Аниме</a>
+            <a href="index.html" class="nav-logo">Skinwalker</a>
             
             <div style="display: flex; gap: 25px; align-items: center;">
-                <a href="tierlist.html" id="nav-tier-link" class="nav-btn" style="--btn-color: #ff4a4a;">Тир-лист</a>
-                <button onclick="openLeaderboard()" class="nav-btn" style="--btn-color: #ffd700;">Зрители</button>
+                <a href="index.html" class="nav-btn" style="--btn-color: #ffd700;">Игры</a>
+                <!-- Аниме хаб будет тут -->
+                <button onclick="openLeaderboard()" class="nav-btn" style="--btn-color: #cba6f7;">Зрители</button>
                 
                 <div class="visual-dropdown" id="visual-dropdown">
                     <button class="nav-btn" style="--btn-color: #a6e3a1;" onclick="toggleVisualMenu()">Визуал</button>
@@ -236,16 +259,26 @@
 
         <div class="col-center">
             <div class="widget-base" style="flex: 1;">
-                <div class="widget-header" style="display: flex; gap: 10px;">
-                    <div class="widget-title">Оценки</div>
-                    <select id="sort-ratings" onchange="renderRatings()" style="background: #121612; color: #a6e3a1; border: 1px solid #4a5c41; border-radius: 6px; font-family: 'Neucha', cursive; font-weight: bold; outline: none; cursor: pointer; padding: 2px 8px;">
+                <div class="widget-header">
+                    <div class="tabs-container">
+                        <button class="tab-btn active" id="tab-btn-anime" onclick="switchTab('anime')">Аниме</button>
+                        <button class="tab-btn" id="tab-btn-games" onclick="switchTab('games')">Игры</button>
+                    </div>
+                    <select id="sort-ratings" onchange="renderRatings()" style="background: #121612; color: #a6e3a1; border: 1px solid #4a5c41; border-radius: 6px; font-family: 'Neucha', cursive; font-weight: bold; outline: none; cursor: pointer; padding: 4px 10px; font-size: 16px; transition: 0.5s;">
                         <option value="high">Сначала высокие</option>
                         <option value="low">Сначала низкие</option>
                         <option value="new">Сначала новые</option>
                     </select>
                 </div>
+                
                 <div class="widget-content">
-                    <div class="hof-grid" id="hof-grid"></div>
+                    <div id="tab-anime" class="tab-content active">
+                        <div class="hof-grid" id="anime-grid"></div>
+                    </div>
+                    
+                    <div id="tab-games" class="tab-content">
+                        <div class="hof-grid" id="games-grid"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -290,10 +323,23 @@
         const REDIRECT_URI = 'https://skinnystreams04-ai.github.io/Anime/';
         const FIREBASE_BASE = 'https://skinwalkerauction-default-rtdb.europe-west1.firebasedatabase.app';
         let currentUser = null;
-        let allRatedAnime = [];
         let targetUserId = null;
         let radarChart = null;
-        let allActiveUsers = []; 
+        
+        // Два отдельных массива для Аниме и Игр
+        window.userAnimeData = { list: [], count: 0, sum: 0, th: {plot:0, vis:0, mus:0, wor:0, atm:0} };
+        window.userGamesData = { list: [], count: 0, sum: 0, th: {vis:0, game:0, snd:0, tech:0, atm:0} };
+
+        function getTierData(score) {
+            const num = Number(score) || 0;
+            if (num === 0) return { letter: '—', color: '#6b7a62', glow: 'none' };
+            if (num >= 9.0) return { letter: 'S', color: '#ff4a4a', glow: '0 0 15px rgba(255, 74, 74, 0.8)' };
+            if (num >= 8.0) return { letter: 'A', color: '#ffd700', glow: '0 0 15px rgba(255, 215, 0, 0.8)' };
+            if (num >= 7.0) return { letter: 'B', color: '#cba6f7', glow: '0 0 15px rgba(203, 166, 247, 0.8)' };
+            if (num >= 5.0) return { letter: 'C', color: '#89b4fa', glow: '0 0 15px rgba(137, 180, 250, 0.8)' };
+            if (num >= 3.0) return { letter: 'D', color: '#a6e3a1', glow: '0 0 15px rgba(166, 227, 161, 0.8)' };
+            return { letter: 'F', color: '#888888', glow: '0 0 15px rgba(136, 136, 136, 0.8)' };
+        }
 
         if (typeof Chart !== 'undefined') { Chart.defaults.font.family = "'Neucha', cursive, sans-serif"; Chart.defaults.color = "#829c73"; }
 
@@ -424,22 +470,28 @@
             if (!targetUserId) { document.getElementById('loading-screen').innerHTML = `<span style="color:#ff5555;">Пользователь не найден!</span>`; return; }
 
             try {
-                const [usersRes, animeRes, commRes] = await Promise.all([
+                // Подключаем ВСЕ базы (и игры, и аниме)
+                const [usersRes, animeRes, commRes, gamesRes, gamesCommRes] = await Promise.all([
                     fetch(`${FIREBASE_BASE}/global_users.json`),
                     fetch(`${FIREBASE_BASE}/anime_db.json`),
-                    fetch(`${FIREBASE_BASE}/community_db.json`)
+                    fetch(`${FIREBASE_BASE}/community_db.json`),
+                    fetch(`${FIREBASE_BASE}/games_db.json`),
+                    fetch(`${FIREBASE_BASE}/games_community_db.json`)
                 ]);
 
                 const globalUsers = await usersRes.json() || {};
                 const animeDb = await animeRes.json() || {};
                 const commDb = await commRes.json() || {};
+                const gamesDb = await gamesRes.json() || {};
+                const gamesCommDb = await gamesCommRes.json() || {};
                 
                 window.globalUsersDB = globalUsers; 
-                window.globalCommData = commDb;
+                window.animeCommData = commDb;
+                window.gamesCommData = gamesCommDb;
 
                 await checkTwitchAuth();
 
-                processData(targetUserId, globalUsers, animeDb, commDb);
+                processData(targetUserId, globalUsers, animeDb, commDb, gamesDb, gamesCommDb);
                 
                 document.getElementById('loading-screen').style.display = 'none';
                 document.getElementById('main-layout').style.display = 'flex';
@@ -449,62 +501,111 @@
             }
         }
 
-        window.userActivityData = []; 
         let previewRadarChart = null;
 
-        function processData(userId, usersDb, animeDb, commDb) {
+        function processData(userId, usersDb, animeDb, commDb, gamesDb, gamesCommDb) {
             let userName = "Неизвестный";
             let userAvatar = "https://static-cdn.jtvnw.net/user-default-pictures-uv/41780b5a-def8-11e9-94d9-784f43822e80-profile_image-70x70.png";
             let userColor = "#a6e3a1";
-            let totalOverall = 0; let titleCount = 0;
-            let th = { plot: 0, vis: 0, mus: 0, wor: 0, atm: 0 };
-            let allActivityMap = {};
-            
             const searchId = userId.toString().toLowerCase();
 
+            // 1. ПАРСИМ АНИМЕ
             for (const [franchise, seasons] of Object.entries(commDb)) {
                 for (const [season, data] of Object.entries(seasons)) {
                     const animeInfo = animeDb[franchise] && animeDb[franchise][season] ? animeDb[franchise][season] : null;
                     if (!animeInfo) continue;
 
-                    const titleName = animeInfo.title;
-                    const cover = animeInfo.coverUrl;
-                    const linkUrl = `Anime-Page.html?id=${franchise}`;
-                    const key = `${franchise}_${season}`;
-
-                    if (!allActivityMap[key]) { allActivityMap[key] = { title: titleName, cover: cover, link: linkUrl, timestamp: 0, overall: 0, theory: null, comment: null }; }
-                    const actObj = allActivityMap[key];
-
                     let r = null;
                     if (data.ratings) {
-                        if (data.ratings[userId]) {
-                            r = data.ratings[userId]; 
-                        } else {
+                        if (data.ratings[userId]) { r = data.ratings[userId]; } 
+                        else {
                             const foundUid = Object.keys(data.ratings).find(uid => data.ratings[uid].displayName && data.ratings[uid].displayName.toLowerCase() === searchId);
                             if (foundUid) r = data.ratings[foundUid];
                         }
                     }
 
-                    if (r) {
-                        userName = r.displayName || userName; userAvatar = r.profileImage || userAvatar;
-                        if (r.overall > 0) {
-                            actObj.overall = r.overall; actObj.theory = r.theory; actObj.timestamp = Math.max(actObj.timestamp, r.timestamp);
-                            totalOverall += r.overall; titleCount++;
-                            if (r.theory) { th.plot += r.theory.plot || 0; th.vis += r.theory.visuals || 0; th.mus += r.theory.music || 0; th.wor += r.theory.world || 0; th.atm += r.theory.atmosphere || 0; }
-                        }
-                    }
-
+                    let commentText = null; let timestamp = 0;
                     if (data.comments) {
                         for (const [cId, c] of Object.entries(data.comments)) {
                             if (c.userId === userId || (c.displayName && c.displayName.toLowerCase() === searchId)) {
                                 userName = c.displayName || userName; userAvatar = c.profileImage || userAvatar; userColor = c.userColor || userColor;
-                                actObj.comment = c.text; actObj.timestamp = Math.max(actObj.timestamp, c.timestamp);
+                                commentText = c.text; timestamp = Math.max(timestamp, c.timestamp);
                             }
                         }
+                    }
+
+                    if (r || commentText) {
+                        if (r) {
+                            userName = r.displayName || userName; userAvatar = r.profileImage || userAvatar;
+                            if (r.overall > 0) {
+                                window.userAnimeData.sum += r.overall;
+                                window.userAnimeData.count++;
+                                if (r.theory) {
+                                    window.userAnimeData.th.plot += r.theory.plot || 0;
+                                    window.userAnimeData.th.vis += r.theory.visuals || 0;
+                                    window.userAnimeData.th.mus += r.theory.music || 0;
+                                    window.userAnimeData.th.wor += r.theory.world || 0;
+                                    window.userAnimeData.th.atm += r.theory.atmosphere || 0;
+                                }
+                                timestamp = Math.max(timestamp, r.timestamp);
+                            }
+                        }
+                        window.userAnimeData.list.push({
+                            title: animeInfo.title || franchise, cover: animeInfo.coverUrl, link: `Anime-Page.html?id=${franchise}`,
+                            overall: r ? r.overall : 0, theory: r ? r.theory : null, comment: commentText, timestamp: timestamp
+                        });
                     }
                 }
             }
 
+            // 2. ПАРСИМ ИГРЫ
+            for (const [gameId, data] of Object.entries(gamesCommDb)) {
+                const gameInfo = gamesDb[gameId];
+                if (!gameInfo) continue;
+
+                let r = null;
+                if (data.ratings) {
+                    if (data.ratings[userId]) { r = data.ratings[userId]; } 
+                    else {
+                        const foundUid = Object.keys(data.ratings).find(uid => data.ratings[uid].displayName && data.ratings[uid].displayName.toLowerCase() === searchId);
+                        if (foundUid) r = data.ratings[foundUid];
+                    }
+                }
+
+                let commentText = null; let timestamp = 0;
+                if (data.comments) {
+                    for (const [cId, c] of Object.entries(data.comments)) {
+                        if (c.userId === userId || (c.displayName && c.displayName.toLowerCase() === searchId)) {
+                            userName = c.displayName || userName; userAvatar = c.profileImage || userAvatar; userColor = c.userColor || userColor;
+                            commentText = c.text; timestamp = Math.max(timestamp, c.timestamp);
+                        }
+                    }
+                }
+
+                if (r || commentText) {
+                    if (r) {
+                        userName = r.displayName || userName; userAvatar = r.profileImage || userAvatar;
+                        if (r.overall > 0) {
+                            window.userGamesData.sum += r.overall;
+                            window.userGamesData.count++;
+                            if (r.theory) {
+                                window.userGamesData.th.vis += r.theory.visuals || 0;
+                                window.userGamesData.th.game += r.theory.gameplay || 0;
+                                window.userGamesData.th.snd += r.theory.sound || 0;
+                                window.userGamesData.th.tech += r.theory.tech || 0;
+                                window.userGamesData.th.atm += r.theory.atmosphere || 0;
+                            }
+                            timestamp = Math.max(timestamp, r.timestamp);
+                        }
+                    }
+                    window.userGamesData.list.push({
+                        title: gameInfo.title || gameId, cover: gameInfo.coverUrl, link: `games-page.html?id=${gameId}`,
+                        overall: r ? r.overall : 0, theory: r ? r.theory : null, comment: commentText, timestamp: timestamp
+                    });
+                }
+            }
+
+            // --- ОБНОВЛЕНИЕ ДАННЫХ ПРОФИЛЯ ---
             const finalLogin = userName === "Неизвестный" ? searchId : userName.toLowerCase();
             const dbUser = usersDb[finalLogin];
             let role = "F"; 
@@ -534,22 +635,41 @@
                 <div class="badges-row">${badgeHtml}</div>
             `;
 
-            document.getElementById('stat-ovr').innerText = titleCount > 0 ? (totalOverall / titleCount).toFixed(1) : 0;
-            document.getElementById('stat-count').innerText = titleCount;
+            // Запускаем Аниме-вкладку по умолчанию
+            switchTab('anime');
+        }
 
+        // --- УМНАЯ ЛЕВАЯ ПАНЕЛЬ ---
+        function updateLeftPanel(tabId) {
+            const data = tabId === 'anime' ? window.userAnimeData : window.userGamesData;
+            const count = data.count;
+            const avg = count > 0 ? (data.sum / count).toFixed(1) : 0;
+            
+            document.getElementById('stat-ovr').innerText = avg;
+            document.getElementById('stat-count').innerText = count;
+
+            const th = data.th;
             const ctx = document.getElementById('radarChart').getContext('2d');
-            const avgT = titleCount > 0 ? [(th.plot / titleCount).toFixed(1), (th.vis / titleCount).toFixed(1), (th.mus / titleCount).toFixed(1), (th.wor / titleCount).toFixed(1), (th.atm / titleCount).toFixed(1)] : [0,0,0,0,0];
+            const userColor = getComputedStyle(document.documentElement).getPropertyValue('--user-color').trim() || '#a6e3a1';
+            
+            let labels, avgT;
+            if (tabId === 'anime') {
+                labels = ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Персонажи'];
+                avgT = count > 0 ? [(th.plot/count).toFixed(1), (th.vis/count).toFixed(1), (th.mus/count).toFixed(1), (th.wor/count).toFixed(1), (th.atm/count).toFixed(1)] : [0,0,0,0,0];
+            } else {
+                labels = ['Визуал', 'Геймплей', 'Звук', 'Техника', 'Атмосфера'];
+                avgT = count > 0 ? [(th.vis/count).toFixed(1), (th.game/count).toFixed(1), (th.snd/count).toFixed(1), (th.tech/count).toFixed(1), (th.atm/count).toFixed(1)] : [0,0,0,0,0];
+            }
+            
             if(radarChart) radarChart.destroy();
-            radarChart = new Chart(ctx, { type: 'radar', data: { labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Персонажи'], datasets: [{ data: avgT, backgroundColor: `${userColor}33`, borderColor: userColor, pointBackgroundColor: userColor, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 4 }] }, options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: '#283325' }, angleLines: { color: '#283325' }, pointLabels: { font: { size: 13, weight: 'bold' }, color: '#c4d1b8' } } } } });
-
-            let allActivity = Object.values(allActivityMap).filter(a => a.overall > 0 || a.comment);
-            allActivity.sort((a,b) => b.timestamp - a.timestamp);
-            window.userActivityData = allActivity; 
-
-            // Привязываем обе кнопки Тир-листа к текущему пользователю
-            document.getElementById('personal-tier-btn').onclick = () => window.location.href = `tierlist.html?user=${userId}`;
-            document.getElementById('nav-tier-link').href = `tierlist.html?user=${userId}`;
-            renderRatings();
+            radarChart = new Chart(ctx, { 
+                type: 'radar', 
+                data: { labels: labels, datasets: [{ data: avgT, backgroundColor: `${userColor}33`, borderColor: userColor, pointBackgroundColor: userColor, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 4 }] }, 
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: '#283325' }, angleLines: { color: '#283325' }, pointLabels: { font: { size: 13, weight: 'bold' }, color: '#c4d1b8' } } } } 
+            });
+            
+            // Кнопка личного тир-листа меняет ссылку в зависимости от вкладки
+            document.getElementById('personal-tier-btn').onclick = () => window.location.href = tabId === 'anime' ? `tierlist.html?user=${targetUserId}` : `games-tierlist.html?user=${targetUserId}`;
         }
 
         let currentDisplayMode = localStorage.getItem('skinwalker_display_mode') || 'score';
@@ -571,10 +691,9 @@
             document.getElementById('label-score').className = currentDisplayMode === 'score' ? 'mode-label active' : 'mode-label inactive';
             document.getElementById('label-score').style.color = currentDisplayMode === 'score' ? '#a6e3a1' : '';
             
-            renderRatings(); // Перерисовываем сетку при переключении
+            renderRatings(); 
         }
 
-        // Вызовем настройку при загрузке
         setTimeout(() => {
             document.getElementById('display-mode-switch').checked = (currentDisplayMode === 'tier');
             document.getElementById('label-tier').className = currentDisplayMode === 'tier' ? 'mode-label active' : 'mode-label inactive';
@@ -583,54 +702,115 @@
             document.getElementById('label-score').style.color = currentDisplayMode === 'score' ? '#a6e3a1' : '';
         }, 500);
 
-        function renderRatings() {
-            const container = document.getElementById('hof-grid');
-            const sortType = document.getElementById('sort-ratings').value;
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(`tab-${tabId}`).classList.add('active');
+            document.getElementById(`tab-btn-${tabId}`).classList.add('active');
+            removeChameleon();
             
-            let ratedList = window.userActivityData.map((data, index) => ({ data, index })).filter(item => item.data.overall > 0);
-            let uniqueList = []; const seen = new Set();
-            ratedList.forEach(item => { if(!seen.has(item.data.title)) { seen.add(item.data.title); uniqueList.push(item); } });
-
-            if (sortType === 'high') uniqueList.sort((a, b) => b.data.overall - a.data.overall);
-            else if (sortType === 'low') uniqueList.sort((a, b) => a.data.overall - b.data.overall);
-            else if (sortType === 'new') uniqueList.sort((a, b) => b.data.timestamp - a.data.timestamp);
-
-            if (uniqueList.length === 0) { container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #6b7a62;">Пользователь еще ничего не оценил</div>`; return; }
-
-            const uColor = getComputedStyle(document.documentElement).getPropertyValue('--user-color').trim() || '#a6e3a1';
-
-            container.innerHTML = uniqueList.map(item => {
-                const f = item.data;
-                const score = f.overall;
-                let scoreHtml = '';
-                
-                if (currentDisplayMode === 'tier') {
-                    const tier = getTierData(score);
-                    scoreHtml = `
-                        <div class="score-box-mini" style="background: ${tier.color}15; border: 1px solid ${tier.color}60; box-shadow: inset 0 0 10px ${tier.color}15;">
-                            <div class="main-score-mini" style="color:${tier.color}; text-shadow:${tier.glow}; font-size:32px;">${tier.letter}</div>
-                        </div>`;
-                } else {
-                    scoreHtml = `
-                        <div class="score-box-mini" style="${getGlassBoxStyle(score)}">
-                            <div class="main-score-mini" style="color:#fff; text-shadow:${getScoreShadow(score, true)};">${score}</div>
-                        </div>`;
-                }
-
-                return `
-                <div class="card-container" style="--card-color: ${uColor}; --card-border: ${uColor}40;" onmouseenter="openPreview(${item.index})" onclick="window.location.href='${f.link}'">
-                    <div class="card-face" style="background-image: url('${f.cover.replace(/'/g, "\\'")}');">
-                        ${scoreHtml}
-                        <div class="front-overlay" style="padding: 30px 10px 10px 10px;">
-                            <div class="anime-title">${f.title}</div>
-                        </div>
-                    </div>
-                </div>`;
-            }).join('');
+            updateLeftPanel(tabId);
+            renderRatings();
         }
 
-        function openPreview(index) {
-            const data = window.userActivityData[index];
+        // --- УНИВЕРСАЛЬНЫЙ РЕНДЕР КАРТОЧЕК ---
+        function renderRatings() {
+            const sortType = document.getElementById('sort-ratings').value;
+            const uColor = getComputedStyle(document.documentElement).getPropertyValue('--user-color').trim() || '#a6e3a1';
+
+            const drawGrid = (dataObj, gridId, mediaType) => {
+                let ratedList = dataObj.list.map((data, index) => ({ data, index })).filter(item => item.data.overall > 0);
+                let uniqueList = []; const seen = new Set();
+                ratedList.forEach(item => { if(!seen.has(item.data.title)) { seen.add(item.data.title); uniqueList.push(item); } });
+
+                if (sortType === 'high') uniqueList.sort((a, b) => b.data.overall - a.data.overall);
+                else if (sortType === 'low') uniqueList.sort((a, b) => a.data.overall - b.data.overall);
+                else if (sortType === 'new') uniqueList.sort((a, b) => b.data.timestamp - a.data.timestamp);
+
+                const container = document.getElementById(gridId);
+                if (uniqueList.length === 0) { container.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: #6b7a62; font-size: 18px;">Пользователь еще ничего не оценил в этом разделе</div>`; return; }
+
+                container.innerHTML = uniqueList.map(item => {
+                    const f = item.data;
+                    const score = f.overall;
+                    let scoreHtml = '';
+                    
+                    if (currentDisplayMode === 'tier') {
+                        const tier = getTierData(score);
+                        scoreHtml = `
+                            <div class="score-box-mini" style="border-color: ${tier.color}; box-shadow: 0 0 10px ${tier.color}40;">
+                                <span class="star-icon" style="color: ${tier.color}; text-shadow: 0 0 8px ${tier.color};">★</span>
+                                <div class="tier-score-mini" style="color: ${tier.color}; text-shadow: 0 0 8px ${tier.color};">${tier.letter}</div>
+                            </div>`;
+                    } else {
+                        scoreHtml = `
+                            <div class="score-box-mini">
+                                <span class="star-icon">★</span>
+                                <div class="main-score-mini">${score}</div>
+                            </div>`;
+                    }
+
+                    return `
+                    <div class="card-container anime-card" data-cover="${f.cover}" style="--card-color: ${uColor}; --card-border: ${uColor}40; --card-shadow: rgba(0,0,0,0.5); --card-shadow-hover: ${uColor}40;" onmouseenter="openPreview(${item.index}, '${mediaType}', this)" onmouseleave="closePreview()" onclick="window.location.href='${f.link}'">
+                        <div class="card-face" style="background-image: url('${f.cover.replace(/'/g, "\\'")}');">
+                            ${scoreHtml}
+                            <div class="front-overlay">
+                                <div class="anime-title">${f.title}</div>
+                            </div>
+                        </div>
+                    </div>`;
+                }).join('');
+            };
+
+            drawGrid(window.userAnimeData, 'anime-grid', 'anime');
+            drawGrid(window.userGamesData, 'games-grid', 'game');
+            extractColors();
+        }
+
+        function extractColors() {
+            if (typeof ColorThief === 'undefined') return;
+            const colorThief = new ColorThief();
+            document.querySelectorAll('.anime-card').forEach(card => {
+                const imgUrl = card.getAttribute('data-cover');
+                if (!imgUrl) return;
+                const hiddenImg = new Image();
+                hiddenImg.crossOrigin = 'Anonymous';
+                hiddenImg.onload = function() {
+                    try {
+                        const color = colorThief.getColor(hiddenImg);
+                        let r = color[0], g = color[1], b = color[2];
+                        const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
+                        let tr = r, tg = g, tb = b;
+                        if (luminance < 90) { tr = Math.min(255, r + 80); tg = Math.min(255, g + 80); tb = Math.min(255, b + 80); }
+
+                        card.style.setProperty('--card-color', `rgb(${r}, ${g}, ${b})`);
+                        card.style.setProperty('--card-border', `rgba(${r}, ${g}, ${b}, 0.6)`);
+                        card.style.setProperty('--card-shadow', `rgba(${r}, ${g}, ${b}, 0.2)`);
+                        card.style.setProperty('--card-shadow-hover', `rgba(${r}, ${g}, ${b}, 0.8)`);
+                        card.style.setProperty('--theme-light', `rgb(${tr}, ${tg}, ${tb})`); 
+                        card.dataset.rgb = `${tr}, ${tg}, ${tb}`;
+                    } catch(e) {}
+                };
+                hiddenImg.src = imgUrl + '?bypassCache=' + Date.now();
+            });
+        }
+
+        function removeChameleon() {
+            document.getElementById('dynamic-bg').classList.remove('active');
+            const uColor = document.documentElement.style.getPropertyValue('--user-color').trim() || '#a6e3a1';
+            document.documentElement.style.setProperty('--theme-primary', uColor);
+            document.documentElement.style.setProperty('--theme-glow', `${uColor}80`);
+            document.documentElement.style.setProperty('--theme-panel-border', '#283325');
+            
+            const panel = document.getElementById('dynamic-right-panel');
+            if (panel) { panel.style.borderColor = `rgba(166, 227, 161, 0.3)`; panel.style.boxShadow = `0 10px 30px rgba(0,0,0,0.8), 0 0 15px rgba(166, 227, 161, 0.05)`; }
+        }
+
+        function closePreview() { removeChameleon(); }
+
+        // --- УМНОЕ ОТКРЫТИЕ ПРЕВЬЮ (РАДАР МЕНЯЕТСЯ) ---
+        function openPreview(index, mediaType, cardElem) {
+            const data = mediaType === 'anime' ? window.userAnimeData.list[index] : window.userGamesData.list[index];
             if (!data) return;
 
             document.getElementById('preview-placeholder').style.display = 'none';
@@ -646,101 +826,110 @@
             
             document.getElementById('preview-comment').innerHTML = data.comment ? `"${data.comment.replace(/\n/g, '<br>')}"` : '<span style="opacity:0.5; font-style: normal;">Только оценка, без рецензии.</span>';
 
-            const t = data.theory || {plot:0, visuals:0, music:0, world:0, atmosphere:0};
-            
-            const avgTh = ((t.plot||0) + (t.visuals||0) + (t.music||0) + (t.world||0) + (t.atmosphere||0)) / 5;
+            const createRow = (name, val) => `<div class="preview-crit-row" style="${getGlassRowStyle(val)}"><span style="color:${getScoreColor(val, 1)}; text-shadow: 1px 1px 2px #000;">${name}</span><span style="color:#fff; text-shadow: ${getScoreShadow(val, false)};">${val || '-'}</span></div>`;
+
+            let chartLabels = [], chartData = [], avgTh = 0;
+            const t = data.theory || (mediaType === 'anime' ? {plot:0, visuals:0, music:0, world:0, atmosphere:0} : {vis:0, game:0, snd:0, tech:0, atm:0});
+
+            if (mediaType === 'anime') {
+                avgTh = ((t.plot||0) + (t.visuals||0) + (t.music||0) + (t.world||0) + (t.atmosphere||0)) / 5;
+                document.getElementById('preview-theory-list').innerHTML = createRow('Сюжет', t.plot) + createRow('Визуал', t.visuals) + createRow('Музыка', t.music) + createRow('Мир', t.world) + createRow('Персонажи', t.atmosphere);
+                chartLabels = ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Персонажи'];
+                chartData = [t.plot||0, t.visuals||0, t.music||0, t.world||0, t.atmosphere||0];
+            } else {
+                avgTh = ((t.visuals||0) + (t.gameplay||0) + (t.sound||0) + (t.tech||0) + (t.atmosphere||0)) / 5;
+                document.getElementById('preview-theory-list').innerHTML = createRow('Визуал', t.visuals) + createRow('Геймплей', t.gameplay) + createRow('Звук', t.sound) + createRow('Техника', t.tech) + createRow('Атмосфера', t.atmosphere);
+                chartLabels = ['Визуал', 'Геймплей', 'Звук', 'Техника', 'Атмосфера'];
+                chartData = [t.visuals||0, t.gameplay||0, t.sound||0, t.tech||0, t.atmosphere||0];
+            }
+
             document.getElementById('preview-avg-theory').innerText = `Ср. критерий: ${avgTh > 0 ? avgTh.toFixed(1) : '-'}`;
             document.getElementById('preview-avg-theory').style.color = getScoreColor(avgTh, 1);
             document.getElementById('preview-avg-theory').style.textShadow = getScoreShadow(avgTh, false);
 
-            const createRow = (name, val) => `<div class="preview-crit-row" style="${getGlassRowStyle(val)}"><span style="color:${getScoreColor(val, 1)}; text-shadow: 1px 1px 2px #000;">${name}</span><span style="color:#fff; text-shadow: ${getScoreShadow(val, false)};">${val || '-'}</span></div>`;
-            
-            document.getElementById('preview-theory-list').innerHTML = createRow('Сюжет', t.plot) + createRow('Визуал', t.visuals) + createRow('Музыка', t.music) + createRow('Мир', t.world) + createRow('Персонажи', t.atmosphere);
+            // АКТИВАЦИЯ ХАМЕЛЕОНА
+            const bg = document.getElementById('dynamic-bg');
+            bg.style.backgroundImage = `url('${data.cover}')`;
+            bg.classList.add('active');
 
-            const fallbackColor = getComputedStyle(document.documentElement).getPropertyValue('--user-color').trim() || '#a6e3a1';
-            const colorThief = new ColorThief();
-            const hiddenImg = new Image();
-            hiddenImg.crossOrigin = 'Anonymous';
-            hiddenImg.onload = function() {
-                try {
-                    const color = colorThief.getColor(hiddenImg);
-                    const r = color[0], g = color[1], b = color[2];
-                    
-                    const luminance = (0.299 * r + 0.587 * g + 0.114 * b);
-                    let tr = r, tg = g, tb = b;
-                    if (luminance < 90) { tr = Math.min(255, r+80); tg = Math.min(255, g+80); tb = Math.min(255, b+80); }
+            let themeColor = getComputedStyle(document.documentElement).getPropertyValue('--user-color').trim() || '#a6e3a1';
+            let rawColor = themeColor;
 
-                    const themeColor = `rgb(${tr}, ${tg}, ${tb})`;
-                    const rawColor = `rgba(${r}, ${g}, ${b}, 0.8)`;
-
-                    const panel = document.getElementById('dynamic-right-panel');
-                    panel.style.borderColor = rawColor;
-                    panel.style.boxShadow = `0 10px 30px rgba(0,0,0,0.8), 0 0 20px rgba(${r}, ${g}, ${b}, 0.3)`;
-
-                    document.getElementById('preview-cover').style.borderColor = themeColor;
-                    document.getElementById('preview-comment').style.borderColor = themeColor;
-                    document.getElementById('preview-title').style.color = themeColor;
-                    document.getElementById('preview-title').style.textShadow = `2px 2px 5px #000, 0 0 10px rgba(${r}, ${g}, ${b}, 0.5)`;
-
-                    if (previewRadarChart) {
-                        previewRadarChart.data.datasets[0].borderColor = themeColor;
-                        previewRadarChart.data.datasets[0].backgroundColor = `rgba(${tr}, ${tg}, ${tb}, 0.2)`;
-                        previewRadarChart.data.datasets[0].pointBackgroundColor = themeColor;
-                        previewRadarChart.update();
-                    }
-                } catch(e) {}
-            };
-            hiddenImg.onerror = function() {
-                const panel = document.getElementById('dynamic-right-panel');
-                panel.style.borderColor = fallbackColor;
-                panel.style.boxShadow = `0 10px 30px rgba(0,0,0,0.8), 0 0 20px ${fallbackColor}40`;
+            if (cardElem && cardElem.dataset.rgb) {
+                const rgb = cardElem.dataset.rgb;
+                themeColor = `rgb(${rgb})`;
+                rawColor = `rgba(${rgb}, 0.8)`;
                 
-                document.getElementById('preview-cover').style.borderColor = fallbackColor;
-                document.getElementById('preview-comment').style.borderColor = fallbackColor;
-                document.getElementById('preview-title').style.color = fallbackColor;
-                
-                if (previewRadarChart) {
-                    previewRadarChart.data.datasets[0].borderColor = fallbackColor;
-                    previewRadarChart.data.datasets[0].backgroundColor = fallbackColor + '40';
-                    previewRadarChart.data.datasets[0].pointBackgroundColor = fallbackColor;
-                    previewRadarChart.update();
-                }
-            };
-            hiddenImg.src = data.cover + '?bypassCache=' + Date.now();
+                document.documentElement.style.setProperty('--theme-primary', themeColor);
+                document.documentElement.style.setProperty('--theme-glow', `rgba(${rgb}, 0.5)`);
+                document.documentElement.style.setProperty('--theme-panel-border', `rgba(${rgb}, 0.4)`);
+            }
+
+            const panel = document.getElementById('dynamic-right-panel');
+            panel.style.borderColor = rawColor;
+            panel.style.boxShadow = `0 10px 30px rgba(0,0,0,0.8), 0 0 20px ${rawColor.replace('0.8', '0.3')}`;
+
+            document.getElementById('preview-cover').style.borderColor = themeColor;
+            document.getElementById('preview-comment').style.borderColor = themeColor;
+            document.getElementById('preview-title').style.color = themeColor;
+            document.getElementById('preview-title').style.textShadow = `2px 2px 5px #000, 0 0 10px ${rawColor.replace('0.8', '0.5')}`;
 
             const ctx = document.getElementById('previewChart').getContext('2d');
             if (previewRadarChart) {
-                previewRadarChart.data.datasets[0].data = [t.plot||0, t.visuals||0, t.music||0, t.world||0, t.atmosphere||0];
+                previewRadarChart.data.labels = chartLabels;
+                previewRadarChart.data.datasets[0].data = chartData;
+                previewRadarChart.data.datasets[0].borderColor = themeColor;
+                previewRadarChart.data.datasets[0].backgroundColor = rawColor.replace('0.8', '0.2');
+                previewRadarChart.data.datasets[0].pointBackgroundColor = themeColor;
                 previewRadarChart.update();
             } else {
                 previewRadarChart = new Chart(ctx, {
                     type: 'radar',
-                    data: { labels: ['Сюжет', 'Визуал', 'Музыка', 'Мир', 'Персонажи'], datasets: [{ data: [t.plot||0, t.visuals||0, t.music||0, t.world||0, t.atmosphere||0], backgroundColor: fallbackColor + '40', borderColor: fallbackColor, pointBackgroundColor: fallbackColor, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 }] },
+                    data: { labels: chartLabels, datasets: [{ data: chartData, backgroundColor: rawColor.replace('0.8', '0.2'), borderColor: themeColor, pointBackgroundColor: themeColor, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 2 }] },
                     options: { animation: false, responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false }, tooltip: { filter: (i) => i.raw > 0 } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: 'rgba(255,255,255,0.1)' }, angleLines: { color: 'rgba(255,255,255,0.1)' }, pointLabels: { font: { size: 11, weight: 'bold' }, color: '#c4d1b8' } } } }
                 });
             }
         }
 
-        // ЛОГИКА ОБЪЕДИНЕННОГО ЗАЛА СЛАВЫ И ПОИСКА
+        // ОБЪЕДИНЕННЫЙ ЗАЛ СЛАВЫ (АНИМЕ + ИГРЫ)
         let lbAllUsers = [];
 
         function openLeaderboard() {
-            if (!window.globalCommData) return;
             const userStats = {};
-            for (const [franchiseId, seasons] of Object.entries(window.globalCommData)) {
-                for (const [seasonId, seasonData] of Object.entries(seasons)) {
-                    if (seasonData.ratings) {
-                        for (const [userId, rating] of Object.entries(seasonData.ratings)) {
+            
+            const countRatings = (commDbObj) => {
+                if (!commDbObj) return;
+                for (const [key1, val1] of Object.entries(commDbObj)) {
+                    // Проверяем, это Аниме (франшиза -> сезон) или Игры (игра -> рейтинг напрямую)
+                    if (val1.ratings) {
+                        for (const [userId, rating] of Object.entries(val1.ratings)) {
                             if ((Number(rating.overall) > 0) || (rating.theory && Object.values(rating.theory).some(v => Number(v) > 0))) {
-                                if (!userStats[userId]) { userStats[userId] = { id: userId, name: rating.displayName || userId, avatar: rating.profileImage || 'https://static-cdn.jtvnw.net/user-default-pictures-uv/41780b5a-def8-11e9-94d9-784f43822e80-profile_image-70x70.png', count: 0 }; }
+                                if (!userStats[userId]) userStats[userId] = { id: userId, name: rating.displayName || userId, avatar: rating.profileImage || 'https://static-cdn.jtvnw.net/user-default-pictures-uv/41780b5a-def8-11e9-94d9-784f43822e80-profile_image-70x70.png', count: 0 };
                                 userStats[userId].count++;
                                 if (rating.displayName) userStats[userId].name = rating.displayName;
                                 if (rating.profileImage) userStats[userId].avatar = rating.profileImage;
                             }
                         }
+                    } else {
+                        // Это Аниме (вложенность на сезон)
+                        for (const [seasonId, seasonData] of Object.entries(val1)) {
+                            if (seasonData.ratings) {
+                                for (const [userId, rating] of Object.entries(seasonData.ratings)) {
+                                    if ((Number(rating.overall) > 0) || (rating.theory && Object.values(rating.theory).some(v => Number(v) > 0))) {
+                                        if (!userStats[userId]) userStats[userId] = { id: userId, name: rating.displayName || userId, avatar: rating.profileImage || 'https://static-cdn.jtvnw.net/user-default-pictures-uv/41780b5a-def8-11e9-94d9-784f43822e80-profile_image-70x70.png', count: 0 };
+                                        userStats[userId].count++;
+                                        if (rating.displayName) userStats[userId].name = rating.displayName;
+                                        if (rating.profileImage) userStats[userId].avatar = rating.profileImage;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
-            }
+            };
+
+            countRatings(window.animeCommData);
+            countRatings(window.gamesCommData);
             
             lbAllUsers = Object.values(userStats).sort((a, b) => b.count - a.count);
             document.getElementById('lb-search').value = '';
@@ -752,8 +941,7 @@
             const listEl = document.getElementById('leaderboard-list');
             listEl.innerHTML = '';
             if (usersArray.length === 0) {
-                listEl.innerHTML = '<div style="text-align: center; color: #6b7a62; padding: 30px; font-size: 18px;">Никого не найдено.</div>';
-                return;
+                listEl.innerHTML = '<div style="text-align: center; color: #6b7a62; padding: 30px; font-size: 18px;">Никого не найдено.</div>'; return;
             }
             
             usersArray.forEach((u) => {
