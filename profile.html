@@ -18,6 +18,18 @@
             --theme-panel-border: #283325;
         }
 
+        /* ГЛОБАЛЬНЫЙ ПЕРЕКЛЮЧАТЕЛЬ САЙТОВ (ЛОГОТИП) */
+        .logo-dropdown { position: relative; display: inline-block; padding: 10px 0; }
+        .nav-logo-wrap { display: flex; align-items: center; gap: 8px; color: var(--theme-primary, #a6e3a1); font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--theme-glow, rgba(166, 227, 161, 0.5)); cursor: pointer; transition: 0.3s; font-family: 'Neucha', cursive; }
+        .nav-logo-wrap:hover { filter: brightness(1.2); }
+        .logo-arrow { font-size: 14px; opacity: 0.7; transition: transform 0.3s; }
+        .logo-dropdown:hover .logo-arrow { transform: rotate(180deg); }
+        .logo-dropdown-content { display: none; position: absolute; left: 0; top: 100%; margin-top: -5px; background: rgba(14, 17, 13, 0.95); border: 1px solid var(--theme-panel-border, #283325); border-radius: 12px; padding: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 2000; min-width: 200px; backdrop-filter: blur(10px); flex-direction: column; gap: 5px; }
+        .logo-dropdown:hover .logo-dropdown-content { display: flex; }
+        .logo-link { color: #a4b09c; text-decoration: none; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; text-transform: uppercase; padding: 10px 15px; border-radius: 8px; transition: 0.3s; text-align: left; display: flex; align-items: center; gap: 10px; border: 1px solid transparent; }
+        .logo-link:hover { background: rgba(0,0,0,0.4); color: var(--site-color); text-shadow: 0 0 10px var(--site-color); border-color: var(--site-color); }
+        .logo-link.active { color: var(--site-color); background: rgba(0,0,0,0.3); border-left: 3px solid var(--site-color); border-radius: 4px 8px 8px 4px; }
+
         /* РАЗРЕШАЕМ ПРОКРУТКУ И ДОБАВЛЯЕМ ХАМЕЛЕОН */
         body { 
             margin: 0; padding: 0 0 40px 0; font-family: 'Neucha', cursive, sans-serif; 
@@ -211,37 +223,35 @@
     <div class="loading-screen" id="loading-screen">Анализ данных профиля...</div>
 
     <nav class="top-nav">
-        <div style="display: flex; align-items: center; gap: 40px;">
-            
-            <a href="https://skinnystreams04-ai.github.io/Anime/index.html" class="nav-logo">Skinwalker</a>
-            
-            <div style="display: flex; gap: 20px; align-items: center;">
-                
-                <!-- БЛОК АНИМЕ (Абсолютные ссылки на репозиторий Anime) -->
-                <div style="display: flex; gap: 15px; border-right: 2px solid #283325; padding-right: 20px;">
-                    <a href="https://skinnystreams04-ai.github.io/Anime/index.html" class="nav-btn" style="--btn-color: #a6e3a1;">Аниме Хаб</a>
-                    <a href="https://skinnystreams04-ai.github.io/Anime/tierlist.html" class="nav-btn" style="--btn-color: #ff4a4a;">Тир-лист</a>
+        <div style="display: flex; align-items: center; gap: 50px;">
+            <!-- ГЛОБАЛЬНЫЙ ПЕРЕКЛЮЧАТЕЛЬ САЙТОВ -->
+            <div class="logo-dropdown">
+                <div class="nav-logo-wrap">Skinwalker Аниме <span class="logo-arrow">▼</span></div>
+                <div class="logo-dropdown-content">
+                    <a href="https://skinnystreams04-ai.github.io/Anime/index.html" class="logo-link active" style="--site-color: #a6e3a1;"><span style="font-size: 14px;">▶</span> Аниме</a>
+                    <a href="https://skinnystreams04-ai.github.io/Game/index.html" class="logo-link" style="--site-color: #ffd700;"><span style="font-size: 14px;">▶</span> Игры</a>
                 </div>
-                
-                <!-- БЛОК ИГР (Абсолютные ссылки на репозиторий Game) -->
-                <div style="display: flex; gap: 15px; border-right: 2px solid #283325; padding-right: 20px;">
-                    <a href="https://skinnystreams04-ai.github.io/Game/index.html" class="nav-btn" style="--btn-color: #ffd700;">Игры Хаб</a>
-                    <a href="https://skinnystreams04-ai.github.io/Game/games-tierlist.html" class="nav-btn" style="--btn-color: #cba6f7;">Игры Тир-лист</a>
-                </div>
-                
+            </div>
+            
+            <div style="display: flex; gap: 25px; align-items: center;">
+                <!-- ВАЖНО: id="nav-tier-link" нужен для перехода на ЛИЧНЫЙ тир-лист пользователя -->
+                <a href="tierlist.html" id="nav-tier-link" class="nav-btn" style="--btn-color: #ff4a4a;">Тир-лист</a>
+                <a href="index.html" class="nav-btn" style="--btn-color: #a6e3a1;">Хаб</a>
                 <button onclick="openLeaderboard()" class="nav-btn" style="--btn-color: #89b4fa;">Зрители</button>
                 
-                <!-- МЕНЮ ВИЗУАЛА -->
                 <div class="visual-dropdown" id="visual-dropdown">
                     <button class="nav-btn" style="--btn-color: #a6e3a1;" onclick="toggleVisualMenu()">Визуал</button>
                     <div class="visual-dropdown-content">
-                        <div class="role-toggles" id="role-toggles">
-                            <button id="btn-streamer" class="role-toggle-btn streamer active" onclick="setRole('streamer')">Стример</button>
-                            <button id="btn-chat" class="role-toggle-btn chat" onclick="setRole('chat')">Чат</button>
+                        <div class="mode-toggle" style="margin: 0; justify-content: center;">
+                            <span id="label-score" class="mode-label inactive" onclick="document.getElementById('display-mode-switch').click()">123</span>
+                            <label class="switch">
+                                <input type="checkbox" id="display-mode-switch" onchange="toggleDisplayMode()">
+                                <span class="slider"></span>
+                            </label>
+                            <span id="label-tier" class="mode-label active" style="color: #ffd700;" onclick="document.getElementById('display-mode-switch').click()">S-F</span>
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
         

@@ -7,6 +7,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Neucha&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/color-thief/2.3.0/color-thief.umd.js"></script>
     <style>
+
+        /* ГЛОБАЛЬНЫЙ ПЕРЕКЛЮЧАТЕЛЬ САЙТОВ (ЛОГОТИП) */
+        .logo-dropdown { position: relative; display: inline-block; padding: 10px 0; }
+        .nav-logo-wrap { display: flex; align-items: center; gap: 8px; color: var(--theme-primary, #a6e3a1); font-size: 24px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 10px var(--theme-glow, rgba(166, 227, 161, 0.5)); cursor: pointer; transition: 0.3s; font-family: 'Neucha', cursive; }
+        .nav-logo-wrap:hover { filter: brightness(1.2); }
+        .logo-arrow { font-size: 14px; opacity: 0.7; transition: transform 0.3s; }
+        .logo-dropdown:hover .logo-arrow { transform: rotate(180deg); }
+        .logo-dropdown-content { display: none; position: absolute; left: 0; top: 100%; margin-top: -5px; background: rgba(14, 17, 13, 0.95); border: 1px solid var(--theme-panel-border, #283325); border-radius: 12px; padding: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 2000; min-width: 200px; backdrop-filter: blur(10px); flex-direction: column; gap: 5px; }
+        .logo-dropdown:hover .logo-dropdown-content { display: flex; }
+        .logo-link { color: #a4b09c; text-decoration: none; font-family: 'Neucha', cursive; font-size: 18px; font-weight: bold; text-transform: uppercase; padding: 10px 15px; border-radius: 8px; transition: 0.3s; text-align: left; display: flex; align-items: center; gap: 10px; border: 1px solid transparent; }
+        .logo-link:hover { background: rgba(0,0,0,0.4); color: var(--site-color); text-shadow: 0 0 10px var(--site-color); border-color: var(--site-color); }
+        .logo-link.active { color: var(--site-color); background: rgba(0,0,0,0.3); border-left: 3px solid var(--site-color); border-radius: 4px 8px 8px 4px; }
+
         /* ГЛОБАЛЬНЫЕ ЦВЕТА И ХАМЕЛЕОН */
         :root {
             --theme-primary: #a6e3a1;
@@ -126,27 +139,21 @@
 <body>
     
     <nav class="top-nav">
-        <div style="display: flex; align-items: center; gap: 40px;">
-            
-            <a href="https://skinnystreams04-ai.github.io/Anime/index.html" class="nav-logo">Skinwalker</a>
-            
-            <div style="display: flex; gap: 20px; align-items: center;">
-                
-                <!-- БЛОК АНИМЕ (Абсолютные ссылки на репозиторий Anime) -->
-                <div style="display: flex; gap: 15px; border-right: 2px solid #283325; padding-right: 20px;">
-                    <a href="https://skinnystreams04-ai.github.io/Anime/index.html" class="nav-btn" style="--btn-color: #a6e3a1;">Аниме Хаб</a>
-                    <a href="https://skinnystreams04-ai.github.io/Anime/tierlist.html" class="nav-btn" style="--btn-color: #ff4a4a;">Тир-лист</a>
+        <div style="display: flex; align-items: center; gap: 50px;">
+            <!-- ГЛОБАЛЬНЫЙ ПЕРЕКЛЮЧАТЕЛЬ САЙТОВ -->
+            <div class="logo-dropdown">
+                <div class="nav-logo-wrap">Skinwalker Аниме <span class="logo-arrow">▼</span></div>
+                <div class="logo-dropdown-content">
+                    <a href="https://skinnystreams04-ai.github.io/Anime/index.html" class="logo-link active" style="--site-color: #a6e3a1;"><span style="font-size: 14px;">▶</span> Аниме</a>
+                    <a href="https://skinnystreams04-ai.github.io/Game/index.html" class="logo-link" style="--site-color: #ffd700;"><span style="font-size: 14px;">▶</span> Игры</a>
                 </div>
-                
-                <!-- БЛОК ИГР (Абсолютные ссылки на репозиторий Game) -->
-                <div style="display: flex; gap: 15px; border-right: 2px solid #283325; padding-right: 20px;">
-                    <a href="https://skinnystreams04-ai.github.io/Game/index.html" class="nav-btn" style="--btn-color: #ffd700;">Игры Хаб</a>
-                    <a href="https://skinnystreams04-ai.github.io/Game/games-tierlist.html" class="nav-btn" style="--btn-color: #cba6f7;">Игры Тир-лист</a>
-                </div>
-                
+            </div>
+            
+            <div style="display: flex; gap: 25px; align-items: center;">
+                <a href="tierlist.html" class="nav-btn active" style="--btn-color: #ff4a4a; color: #ff4a4a; text-shadow: 0 0 10px rgba(255, 74, 74, 0.5);">Тир-лист</a>
+                <a href="index.html" class="nav-btn" style="--btn-color: #a6e3a1;">Хаб</a>
                 <button onclick="openLeaderboard()" class="nav-btn" style="--btn-color: #89b4fa;">Зрители</button>
                 
-                <!-- МЕНЮ ВИЗУАЛА -->
                 <div class="visual-dropdown" id="visual-dropdown">
                     <button class="nav-btn" style="--btn-color: #a6e3a1;" onclick="toggleVisualMenu()">Визуал</button>
                     <div class="visual-dropdown-content">
@@ -156,7 +163,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
         
@@ -164,6 +170,20 @@
             <button class="twitch-btn" onclick="loginTwitch()">Войти через Twitch</button>
         </div>
     </nav>
+
+    <!-- === ВОТ ЭТОТ БЛОК МЫ ВОЗВРАЩАЕМ НА МЕСТО === -->
+    <div class="tier-board">
+        <!-- Фон Хамелеона заперт внутри доски -->
+        <div id="dynamic-bg"></div>
+        
+        <div class="board-header">
+            <div class="board-title">Аниме Тир-лист</div>
+        </div>
+        
+        <div id="tier-content-area">
+            <div style="text-align: center; font-size: 20px; color: #829c73; padding: 50px;">Синхронизация с базой данных...</div>
+        </div>
+    </div>
 
     <!-- ЕДИНОЕ ОКНО ЗРИТЕЛЕЙ (ЗАЛ СЛАВЫ + ПОИСК) -->
     <div id="leaderboard-modal" class="leaderboard-overlay" style="display: none;" onclick="if(event.target===this) this.style.display='none'">
