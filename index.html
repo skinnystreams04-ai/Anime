@@ -159,8 +159,6 @@
         .loading { font-size: 24px; color: #829c73; text-align: center; margin-top: 50px; width: 100%; grid-column: 1 / -1; }
 
         .vod-badge { position: absolute; top: 12px; left: 12px; background: rgba(11, 13, 10, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid var(--card-border); color: var(--theme-light, #a6e3a1); width: 32px; height: 32px; border-radius: 8px; z-index: 10; box-shadow: 0 4px 10px rgba(0,0,0,0.8), 0 0 10px var(--card-shadow); display: flex; justify-content: center; align-items: center; pointer-events: none; transition: 0.5s; }
-        .vod-badge::before { content: ''; display: inline-block; width: 6px; height: 6px; background: #fff; border-radius: 50%; animation: pulseVod 1.5s infinite; }
-        @keyframes pulseVod { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
         
         body.is-admin .me-element { display: none !important; }
 
@@ -210,12 +208,13 @@
             
             <!-- ЛОКАЛЬНОЕ МЕНЮ (Только для текущего сайта) -->
             <div style="display: flex; gap: 25px; align-items: center;">
+                <a href="index.html" class="nav-btn active" style="--btn-color: #ffd700; color: #ffd700; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);">Хаб</a>
                 <a href="tierlist.html" class="nav-btn" style="--btn-color: #ff4a4a;">Тир-лист</a>
-                <a href="index.html" class="nav-btn active" style="--btn-color: #a6e3a1; color: #a6e3a1; text-shadow: 0 0 10px rgba(166, 227, 161, 0.5);">Хаб</a>
                 <button onclick="openLeaderboard()" class="nav-btn" style="--btn-color: #89b4fa;">Зрители</button>
                 
                 <!-- МЕНЮ ВИЗУАЛА ДЛЯ ХАБА -->
                 <div class="visual-dropdown" id="visual-dropdown">
+                    <!-- ... тут остальной код меню визуала без изменений ... -->
                     <button class="nav-btn" style="--btn-color: #a6e3a1;" onclick="toggleVisualMenu()">Визуал</button>
                     <div class="visual-dropdown-content">
                         <div class="mode-toggle" style="margin: 0; justify-content: center;">
@@ -712,7 +711,12 @@
                     scoresObj.me.avgTheory = getAvg(scoresObj.me.plot + scoresObj.me.visuals + scoresObj.me.music + scoresObj.me.world + scoresObj.me.atmosphere, 5);
 
                     const baseSeason = seasons[0];
-                    const seasonUrls = baseSeason.videoUrls || (baseSeason.videoUrl ? [baseSeason.videoUrl] : []);
+                    
+                    // Проверяем ВСЕ сезоны и фильмы внутри франшизы на наличие ссылок
+                    const hasAnyVod = seasons.some(s => 
+                        (s.videoUrls && s.videoUrls.length > 0) || 
+                        (typeof s.videoUrl === 'string' && s.videoUrl.trim() !== '')
+                    );
                     
                     globalFranchises.push({
                         id: franchiseId, title: franchiseId.replace(/_/g, ' '), coverUrl: baseSeason.coverUrl,
@@ -720,7 +724,7 @@
                         release_year: parseInt(baseSeason.info.year) || 0, date_watched: baseSeason.info.dateWatched ? new Date(baseSeason.info.dateWatched).getTime() : 0,
                         az: franchiseId.replace(/_/g, ' ').toLowerCase(),
                         scores: scoresObj,
-                        hasVod: seasonUrls.length > 0
+                        hasVod: hasAnyVod // Теперь камера появится, если запись есть хоть где-то
                     });
                 }
 
