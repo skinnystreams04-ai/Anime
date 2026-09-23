@@ -62,6 +62,17 @@
         .visual-dropdown { position: relative; display: inline-block; }
         .visual-dropdown-content { display: none; position: absolute; left: 50%; transform: translateX(-50%); top: 100%; margin-top: 15px; background: rgba(14, 17, 13, 0.95); border: 1px solid var(--theme-panel-border); border-radius: 12px; padding: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 2000; min-width: 250px; backdrop-filter: blur(10px); flex-direction: column; gap: 15px; }
         .visual-dropdown.show .visual-dropdown-content { display: flex; }
+        /* ПЕРЕКЛЮЧАТЕЛЬ 123 / S-F */
+        .mode-toggle { display: flex; align-items: center; justify-content: center; gap: 15px; font-family: 'Neucha', cursive; font-size: 18px; }
+        .switch { position: relative; display: inline-block; width: 46px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(14, 17, 13, 0.6); border: 1px solid var(--theme-panel-border, #283325); transition: .4s; border-radius: 34px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: #a4b09c; transition: .4s; border-radius: 50%; box-shadow: 0 0 5px rgba(0,0,0,0.5); }
+        input:checked + .slider { background-color: rgba(255, 215, 0, 0.15); border-color: #ffd700; }
+        input:checked + .slider:before { transform: translateX(22px); background-color: #ffd700; box-shadow: 0 0 10px #ffd700; }
+        .mode-label { font-weight: bold; text-shadow: 1px 1px 2px #000; transition: 0.3s; cursor: pointer; }
+        .mode-label.active { color: #fff; text-shadow: 0 0 8px currentColor; }
+        .mode-label.inactive { color: #6b7a62; }
         .role-toggles { display: flex; gap: 20px; align-items: center; justify-content: center; flex-wrap: wrap; margin: 0; }
         .role-toggle-btn { background: transparent; border: none; border-bottom: 2px solid rgba(107, 122, 98, 0.3); color: #6b7a62; padding: 4px 2px; font-family: inherit; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; text-transform: uppercase; outline: none; }
         .role-toggle-btn:hover { color: #c4d1b8; border-bottom-color: rgba(196, 209, 184, 0.5); }
@@ -176,39 +187,36 @@
     <div class="loading-screen" id="loading-screen">Анализ данных профиля...</div>
 
     <nav class="top-nav">
-        <!-- ЛЕВАЯ ЧАСТЬ -->
         <div style="display: flex; align-items: center; gap: 50px;">
             <div class="logo-dropdown">
                 <div class="nav-logo-wrap">Skinwalker Аниме <span class="logo-arrow">▼</span></div>
                 <div class="logo-dropdown-content">
-                    <a href="index.html" class="logo-link active" style="--site-color: #a6e3a1;">
-                        <span style="font-size: 14px;">▶</span> Аниме
-                    </a>
-                    <a href="../Game/index.html" class="logo-link" style="--site-color: #ffd700;">
-                        <span style="font-size: 14px;">▶</span> Игры
-                    </a>
+                    <a href="index.html" class="logo-link active" style="--site-color: #a6e3a1;"><span style="font-size: 14px;">▶</span> Аниме</a>
+                    <a href="../Game/index.html" class="logo-link" style="--site-color: #ffd700;"><span style="font-size: 14px;">▶</span> Игры</a>
                 </div>
             </div>
             
-            <div style="display: flex; gap: 20px; align-items: center;">
-                <a href="index.html" class="nav-btn btn-hub">Хаб</a>
-                <a href="tierlist.html" class="nav-btn btn-tier">Тир-лист</a>
+            <div style="display: flex; gap: 25px; align-items: center;">
+                <a href="index.html" class="nav-btn" style="--btn-color: #ffd700;">Хаб</a>
+                <a href="tierlist.html" class="nav-btn" style="--btn-color: #ff4a4a;">Тир-лист</a>
                 <button onclick="window.openLeaderboard()" class="nav-btn" style="--btn-color: #89b4fa;">Зрители</button>
                 
                 <div class="visual-dropdown" id="visual-dropdown">
-                    <button class="nav-btn btn-visual" onclick="toggleVisualMenu()">Визуал</button>
-                    <div class="visual-dropdown-content">
-                        <div class="role-toggles" style="margin: 0; justify-content: center; flex-wrap: wrap;">
-                            <button id="toggle-streamer" class="role-toggle-btn active streamer" onclick="toggleRoleVis('streamer')">Стример</button>
-                            <button id="toggle-me" class="role-toggle-btn active me" onclick="toggleRoleVis('me')">Я</button>
-                            <button id="toggle-chat" class="role-toggle-btn active chat" onclick="toggleRoleVis('chat')">Чат</button>
+                    <button class="nav-btn" style="--btn-color: #a6e3a1;" onclick="toggleVisualMenu()">Визуал</button>
+                    <div class="visual-dropdown-content" style="min-width: 150px;">
+                        <div class="mode-toggle" style="margin: 0; justify-content: center;">
+                            <span id="label-score" class="mode-label inactive" onclick="document.getElementById('display-mode-switch').click()">123</span>
+                            <label class="switch">
+                                <input type="checkbox" id="display-mode-switch" onchange="toggleDisplayMode()">
+                                <span class="slider"></span>
+                            </label>
+                            <span id="label-tier" class="mode-label active" style="color: #ffd700;" onclick="document.getElementById('display-mode-switch').click()">S-F</span>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ПРАВАЯ ЧАСТЬ -->
         <div class="nav-auth" id="nav-auth">
             <button class="twitch-btn" onclick="loginTwitch()">Войти через Twitch</button>
         </div>
@@ -226,7 +234,6 @@
                     <div style="border-top: 1px dashed #283325; margin: 5px 0;"></div>
                     <div style="color: #829c73; font-weight: bold; text-align: center; text-transform: uppercase; font-size: 15px; letter-spacing: 1px;">Вкусовой Радар</div>
                     <div class="chart-wrapper"><canvas id="radarChart"></canvas></div>
-                    <button class="nav-btn" id="personal-tier-btn" style="margin: 15px auto 5px auto; width: 100%; justify-content: center; --btn-color: var(--user-color); border: 1px solid var(--user-color); border-radius: 8px;">📊 Личный Тир-лист</button>
                 </div>
             </div>
         </div>
@@ -238,11 +245,14 @@
                         <button class="tab-btn active" id="tab-btn-anime" onclick="switchTab('anime')">Аниме</button>
                         <button class="tab-btn" id="tab-btn-games" onclick="switchTab('games')">Игры</button>
                     </div>
-                    <select id="sort-ratings" onchange="renderRatings()" style="background: #121612; color: #a6e3a1; border: 1px solid #4a5c41; border-radius: 6px; font-family: inherit; font-weight: bold; outline: none; cursor: pointer; padding: 4px 10px; font-size: 16px;">
-                        <option value="high">Сначала высокие</option>
-                        <option value="low">Сначала низкие</option>
-                        <option value="new">Сначала новые</option>
-                    </select>
+                    <div style="position: relative; display: inline-flex; align-items: center;">
+                        <select id="sort-ratings" onchange="renderRatings()" style="background: transparent; color: #6b7a62; border: none; font-family: 'Neucha', cursive; font-size: 16px; font-weight: bold; text-transform: uppercase; cursor: pointer; outline: none; appearance: none; -webkit-appearance: none; padding-right: 15px; transition: 0.3s;" onmouseover="this.style.color='#a6e3a1'" onmouseout="this.style.color='#6b7a62'">
+                            <option value="high" style="background: #0b0d0a;">Сначала высокие</option>
+                            <option value="low" style="background: #0b0d0a;">Сначала низкие</option>
+                            <option value="new" style="background: #0b0d0a;">Сначала новые</option>
+                        </select>
+                        <span style="color: #6b7a62; font-size: 10px; position: absolute; right: 0; pointer-events: none;">▼</span>
+                    </div>
                 </div>
                 
                 <div class="widget-content">
@@ -296,6 +306,9 @@
         
         window.userAnimeData = { list: [], count: 0, sum: 0, th: {plot:0, vis:0, mus:0, wor:0, atm:0} };
         window.userGamesData = { list: [], count: 0, sum: 0, th: {vis:0, game:0, snd:0, tech:0, atm:0} };
+        
+        let currentDisplayMode = localStorage.getItem('skinwalker_display_mode') || 'score';
+        let visRoles = JSON.parse(localStorage.getItem('skinwalker_vis_roles')) || { streamer: true, me: true, chat: true };
 
         function getTierData(score) {
             const num = Number(score) || 0;
@@ -376,21 +389,8 @@
                             </div>
                         </div>
                     `;
-                    startOnlineHeartbeat();
                 }
             } catch (e) {}
-        }
-
-        function startOnlineHeartbeat() {
-            if (!currentUser) return;
-            const updateOnline = () => {
-                const dbId = currentUser.login.toLowerCase();
-                fetch(`${FIREBASE_BASE}/global_users/${dbId}/last_online.json`, {
-                    method: 'PUT', body: JSON.stringify(Date.now())
-                }).catch(e => console.log('Heartbeat error', e));
-            };
-            updateOnline(); 
-            setInterval(updateOnline, 60000); 
         }
 
         function getScoreColor(score, alpha = 1) {
@@ -447,9 +447,7 @@
                 const gamesCommDb = await gamesCommRes.json() || {};
                 
                 window.globalUsersDB = globalUsers; 
-                window.animeCommData = commDb;
-                window.gamesCommData = gamesCommDb;
-
+                
                 await checkTwitchAuth();
                 processData(targetUserId, globalUsers, animeDb, commDb, gamesDb, gamesCommDb);
                 
@@ -622,8 +620,6 @@
                 data: { labels: labels, datasets: [{ data: avgT, backgroundColor: `${userColor}33`, borderColor: userColor, pointBackgroundColor: userColor, pointBorderColor: '#0b0d0a', borderWidth: 2, pointRadius: 4 }] }, 
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { r: { min: 0, max: 10, ticks: { display: false, stepSize: 2 }, grid: { color: '#283325' }, angleLines: { color: '#283325' }, pointLabels: { font: { size: 13, weight: 'bold' }, color: '#c4d1b8' } } } } 
             });
-            
-            document.getElementById('personal-tier-btn').onclick = () => window.location.href = tabId === 'anime' ? `tierlist.html?user=${targetUserId}` : `../Game/games-tierlist.html?user=${targetUserId}`;
         }
 
         function switchTab(tabId) {
@@ -657,17 +653,17 @@
                     const f = item.data;
                     let scoreHtml = '';
 
-                    if (mediaType === 'anime') {
-                        const scoreColor = getScoreColor(f.overall, 1);
-                        scoreHtml = `
-                        <div class="score-box-mini" style="border-color: ${scoreColor}; box-shadow: 0 0 10px ${getScoreColor(f.overall, 0.4)}; padding: 4px 10px;">
-                            <div class="tier-score-mini" style="color: ${scoreColor}; text-shadow: 0 0 8px ${scoreColor}; font-size: 22px;">${f.overall}</div>
-                        </div>`;
-                    } else {
+                    if (currentDisplayMode === 'tier') {
                         const tier = getTierData(f.overall);
                         scoreHtml = `
                         <div class="score-box-mini" style="border-color: ${tier.color}; box-shadow: 0 0 10px ${tier.color}40; padding: 4px 12px;">
                             <div class="tier-score-mini" style="color: ${tier.color}; text-shadow: 0 0 8px ${tier.color}; font-size: 24px;">${tier.letter}</div>
+                        </div>`;
+                    } else {
+                        const scoreColor = getScoreColor(f.overall, 1);
+                        scoreHtml = `
+                        <div class="score-box-mini" style="border-color: ${scoreColor}; box-shadow: 0 0 10px ${getScoreColor(f.overall, 0.4)}; padding: 4px 10px;">
+                            <div class="tier-score-mini" style="color: ${scoreColor}; text-shadow: 0 0 8px ${scoreColor}; font-size: 22px;">${f.overall}</div>
                         </div>`;
                     }
 
@@ -739,7 +735,7 @@
             document.getElementById('preview-cover').src = data.cover;
             document.getElementById('preview-title').innerText = data.title;
             
-            if (mediaType === 'anime') {
+            if (currentDisplayMode === 'score') {
                 const sColor = getScoreColor(data.overall, 1);
                 document.getElementById('preview-score-box').style.cssText = `background: ${getScoreColor(data.overall, 0.15)}; border: 1px solid ${getScoreColor(data.overall, 0.6)}; box-shadow: 0 4px 15px rgba(0,0,0,0.5), inset 0 0 15px ${getScoreColor(data.overall, 0.15)}; border-radius: 8px; padding: 8px; text-align: center; backdrop-filter: blur(5px);`;
                 document.getElementById('preview-score-label').style.cssText = `color: ${sColor}; text-shadow: 0 0 5px ${getScoreColor(data.overall, 0.5)};`;
@@ -819,8 +815,6 @@
             }
         }
 
-        let visRoles = JSON.parse(localStorage.getItem('skinwalker_games_roles')) || { streamer: true, me: true, chat: true };
-
         function toggleVisualMenu() { document.getElementById('visual-dropdown').classList.toggle('show'); }
         window.addEventListener('click', function(e) {
             if (!document.getElementById('visual-dropdown').contains(e.target)) {
@@ -828,74 +822,99 @@
             }
         });
 
+        function toggleDisplayMode() {
+            const switchEl = document.getElementById('display-mode-switch');
+            currentDisplayMode = switchEl.checked ? 'tier' : 'score';
+            localStorage.setItem('skinwalker_display_mode', currentDisplayMode);
+            
+            const tierLbl = document.getElementById('label-tier');
+            const scoreLbl = document.getElementById('label-score');
+            if (tierLbl) { tierLbl.className = currentDisplayMode === 'tier' ? 'mode-label active' : 'mode-label inactive'; tierLbl.style.color = currentDisplayMode === 'tier' ? '#ffd700' : ''; }
+            if (scoreLbl) { scoreLbl.className = currentDisplayMode === 'score' ? 'mode-label active' : 'mode-label inactive'; scoreLbl.style.color = currentDisplayMode === 'score' ? '#a6e3a1' : ''; }
+            
+            renderRatings();
+            closePreview();
+        }
+
         function toggleRoleVis(role) {
             visRoles[role] = !visRoles[role];
-            localStorage.setItem('skinwalker_games_roles', JSON.stringify(visRoles));
-            document.getElementById(`toggle-${role}`).classList.toggle('active', visRoles[role]);
-            if (typeof updateProfileVisuals === 'function') updateProfileVisuals();
+            localStorage.setItem('skinwalker_vis_roles', JSON.stringify(visRoles));
+            const btn = document.getElementById(`toggle-${role}`);
+            if (btn) btn.classList.toggle('active', visRoles[role]);
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            Object.keys(visRoles).forEach(role => {
-                const btn = document.getElementById(`toggle-${role}`);
-                if (btn) btn.classList.toggle('active', visRoles[role]);
+            const switchEl = document.getElementById('display-mode-switch');
+            if (switchEl) {
+                switchEl.checked = (currentDisplayMode === 'tier');
+                const tierLbl = document.getElementById('label-tier');
+                const scoreLbl = document.getElementById('label-score');
+                if (tierLbl) { tierLbl.className = currentDisplayMode === 'tier' ? 'mode-label active' : 'mode-label inactive'; tierLbl.style.color = currentDisplayMode === 'tier' ? '#ffd700' : ''; }
+                if (scoreLbl) { scoreLbl.className = currentDisplayMode === 'score' ? 'mode-label active' : 'mode-label inactive'; scoreLbl.style.color = currentDisplayMode === 'score' ? '#a6e3a1' : ''; }
+            }
+            Object.keys(visRoles).forEach(r => {
+                const btn = document.getElementById(`toggle-${r}`);
+                if(btn) btn.classList.toggle('active', visRoles[r]);
             });
         });
 
-        let lbAllUsers = [];
-
         window.openLeaderboard = async function() {
             try {
-                if (!window.globalCommData) {
-                    const btn = document.querySelector('button[onclick="window.openLeaderboard()"]');
-                    const oldText = btn ? btn.innerText : 'Зрители';
-                    if (btn) btn.innerText = "Загрузка...";
-                    
-                    const res = await fetch(`${FIREBASE_BASE}/games_community_db.json`);
-                    window.globalCommData = await res.json() || {};
-                    
-                    if (btn) btn.innerText = oldText;
+                const btn = document.querySelector('button[onclick*="openLeaderboard"]');
+                const oldText = btn ? btn.innerText : 'Зрители';
+                if (btn) btn.innerText = "Загрузка...";
+
+                if (!window.globalAnimeComm) {
+                    const res = await fetch(`${FIREBASE_BASE}/community_db.json`);
+                    window.globalAnimeComm = await res.json() || {};
                 }
+                if (btn) btn.innerText = oldText;
 
                 const userStats = {};
-                if (window.globalCommData && typeof window.globalCommData === 'object') {
-                    for (const [gameId, gameData] of Object.entries(window.globalCommData)) {
-                        if (gameData && gameData.ratings && typeof gameData.ratings === 'object') { 
-                            for (const [userId, rating] of Object.entries(gameData.ratings)) {
-                                if (!rating) continue; 
-                                if ((Number(rating.overall) > 0) || (rating.theory && Object.values(rating.theory).some(v => Number(v) > 0))) {
-                                    if (!userStats[userId]) { 
-                                        userStats[userId] = { id: userId, name: rating.displayName || userId, avatar: rating.profileImage || 'https://static-cdn.jtvnw.net/user-default-pictures-uv/41780b5a-def8-11e9-94d9-784f43822e80-profile_image-70x70.png', count: 0 }; 
+                
+                const processDb = (dbObj) => {
+                    for (const [franchiseId, seasons] of Object.entries(dbObj)) {
+                        for (const [seasonId, seasonData] of Object.entries(seasons)) {
+                            if (seasonData && seasonData.ratings) { 
+                                for (const [userId, rating] of Object.entries(seasonData.ratings)) {
+                                    if (!rating) continue; 
+                                    if ((Number(rating.overall) > 0) || (rating.theory && Object.values(rating.theory).some(v => Number(v) > 0))) {
+                                        if (!userStats[userId]) userStats[userId] = { id: userId, name: rating.displayName || userId, avatar: rating.profileImage || 'https://static-cdn.jtvnw.net/user-default-pictures-uv/41780b5a-def8-11e9-94d9-784f43822e80-profile_image-70x70.png', count: 0 };
+                                        userStats[userId].count++;
+                                        if (rating.displayName) userStats[userId].name = rating.displayName;
+                                        if (rating.profileImage) userStats[userId].avatar = rating.profileImage;
                                     }
-                                    userStats[userId].count++;
-                                    if (rating.displayName) userStats[userId].name = rating.displayName;
-                                    if (rating.profileImage) userStats[userId].avatar = rating.profileImage;
                                 }
                             }
                         }
                     }
-                }
+                };
+
+                processDb(window.globalAnimeComm);
                 
                 lbAllUsers = Object.values(userStats).sort((a, b) => b.count - a.count);
                 const searchInput = document.getElementById('lb-search');
                 if (searchInput) searchInput.value = '';
                 
                 window.renderLeaderboard(lbAllUsers);
+                document.getElementById('leaderboard-modal').style.display = 'flex';
                 
-                const modal = document.getElementById('leaderboard-modal');
-                if (modal) modal.style.display = 'flex';
-                
-            } catch(e) { console.error("Ошибка при сборке Зала Славы:", e); }
+            } catch(e) {
+                console.error("Ошибка при сборке Зала Славы:", e);
+                alert("Ошибка сборки зрителей: " + e.message);
+            }
         };
 
         window.renderLeaderboard = function(usersArray) {
             const listEl = document.getElementById('leaderboard-list');
             if (!listEl) return;
+            
             listEl.innerHTML = '';
             if (usersArray.length === 0) {
                 listEl.innerHTML = '<div style="text-align: center; color: #6b7a62; padding: 30px; font-size: 18px;">Никого не найдено.</div>'; 
                 return;
             }
+            
             usersArray.forEach((u) => {
                 const originalIndex = lbAllUsers.findIndex(orig => orig.id === u.id);
                 const rank = originalIndex + 1;
@@ -903,12 +922,16 @@
                 if (rank === 1) { rankClass = 'top-1'; crown = '👑'; }
                 else if (rank === 2) { rankClass = 'top-2'; crown = '🥈'; }
                 else if (rank === 3) { rankClass = 'top-3'; crown = '🥉'; }
+
                 const safeName = (u.name || '').toString().toLowerCase();
                 const dbUser = window.globalUsersDB ? window.globalUsersDB[safeName] : null;
                 const color = (dbUser && dbUser.color) ? dbUser.color : '#a4b09c';
                 const isOnline = dbUser && dbUser.last_online && (Date.now() - dbUser.last_online < 150000);
-                const statusDot = isOnline ? '<div class="status-dot status-online" style="display:inline-block; margin-right:6px;"></div><span style="color:#a6e3a1; font-size:13px; font-family:sans-serif;">В сети</span>' : '<div class="status-dot status-offline" style="display:inline-block; margin-right:6px;"></div><span style="color:#6b7a62; font-size:13px; font-family:sans-serif;">Не в сети</span>';
-                const html = `
+                const statusDot = isOnline 
+                    ? '<div class="status-dot status-online" style="display:inline-block; margin-right:6px;"></div><span style="color:#a6e3a1; font-size:13px; font-family:sans-serif;">В сети</span>' 
+                    : '<div class="status-dot status-offline" style="display:inline-block; margin-right:6px;"></div><span style="color:#6b7a62; font-size:13px; font-family:sans-serif;">Не в сети</span>';
+
+                listEl.insertAdjacentHTML('beforeend', `
                 <a href="profile.html?user=${u.id}" class="lb-item">
                     <div class="lb-rank ${rankClass}">${crown}</div>
                     <div class="lb-user">
@@ -918,9 +941,11 @@
                             <div style="display: flex; align-items: center;">${statusDot}</div>
                         </div>
                     </div>
-                    <div class="lb-stats"><div class="lb-count">${u.count}</div><div class="lb-count-label">оценок</div></div>
-                </a>`;
-                listEl.insertAdjacentHTML('beforeend', html);
+                    <div class="lb-stats">
+                        <div class="lb-count">${u.count}</div>
+                        <div class="lb-count-label">оценок</div>
+                    </div>
+                </a>`);
             });
         };
 
